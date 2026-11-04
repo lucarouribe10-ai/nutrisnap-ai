@@ -1,7 +1,7 @@
 # ESTADO — NutriSnap AI
-Última actualización: 2026-11-03 | Sesión actual: 2 CERRADA → siguiente: Sesión 3 (página de ventas)
+Última actualización: 2026-11-03 | Sesión actual: 3 (página de ventas) en curso
 
-⏸️ CHECKPOINT — Última acción completada: Sesión 2 cerrada; FICHA-ARTE.md APROBADA (estilo A+B, tour aprobado). / Siguiente acción exacta (tras OK del usuario): Sesión 3 página de ventas → leer SECUENCIA-MAESTRA, 19, 52, 55, 22, 28; definir política de reembolso/garantía; crear FICHA-MERCADO §3. Antes (histórico): esperar OK del usuario y arrancar Sesión 2: leer 16-DIRECCION-DE-ARTE, 54-BANCO-DE-DIRECCIONES, 29, 10, DESIGN-CORE; hacer LA PREGUNTA DE REFERENCIA (¿propongo yo o tienes capturas de un estilo?).
+⏸️ CHECKPOINT — Última acción completada: proyecto Next.js creado, tokens de FICHA-ARTE aplicados y página de ventas compuesta con el kit (pendiente veredicto del revisor visual). / Siguiente acción exacta: leer el veredicto docs/revisiones/landing-veredicto.md, corregir defectos, mostrar al usuario (npm run dev, http://localhost:3000) y pedir su OK; luego Sesión 4 (onboarding/paywall/login). Antes (histórico): esperar OK del usuario y arrancar Sesión 2: leer 16-DIRECCION-DE-ARTE, 54-BANCO-DE-DIRECCIONES, 29, 10, DESIGN-CORE; hacer LA PREGUNTA DE REFERENCIA (¿propongo yo o tienes capturas de un estilo?).
 
 ## Qué es esta app
 Registro de calorías y macros por FOTO con IA + corrección por VOZ + escáner de código de barras incluido. Para gente que entrena en el gym (22-38) y quiere déficit/proteína sin pesar ni teclear. Suscripción freemium: US$6.99/mes · US$39.99/año · trial 3 días con tarjeta.
@@ -96,6 +96,13 @@ Registro de calorías y macros por FOTO con IA + corrección por VOZ + escáner 
 ## Secuencia maestra de construcción
 - Estado: sin iniciar (pendiente). Ruta: `/` → `/onboarding` → `/paywall` → `/login` → `/app`
 
+## Sesión 3 — estado de la página de ventas (en curso)
+- Proyecto: Next.js 16 + Tailwind v4 en la raíz. Kit copiado a components/landing/ (EJEMPLO-page.tsx eliminado); tokens.css tematizado con FICHA-ARTE; fuentes Chivo + Hanken Grotesk vía next/font; copy en docs/copy/landing.md; página en app/page.tsx; hero con mini-demo honesta (ChequeoDemo.tsx).
+- Mecanismo bautizado: "el Chequeo de Grasas Ocultas". Garantía con nombre: "la Garantía de Cero Sorpresas" (7 días, Hotmart). País: Colombia.
+- Páginas legales creadas como BORRADOR (privacidad, términos, reembolsos, aviso-ia) — pendiente revisión legal (47) y email de soporte real; stubs de /onboarding y /entrar (Sesión 4).
+- Carrusel 'La app por dentro': placeholders rotulados — pendiente montar screenshots reales cuando exista la app.
+- Evidencia: docs/revisiones/landing-375.png (Playwright, scripts/screenshot.mjs); audit-conversion: los críticos restantes son falsos positivos del propio código del kit (comentarios/strings), el copy visible pasa.
+
 ## Sesiones completadas ✅
 - Instalación del SO (v6.10.0) y punto de guardado git — 2026-11-03
 - Sesión 2 — identidad visual (A/B/C → combinación A+B, tour aprobado, FICHA-ARTE) — 2026-11-03
@@ -111,7 +118,8 @@ Registro de calorías y macros por FOTO con IA + corrección por VOZ + escáner 
 - FICHA-MODELO: existe como BORRADOR (modelo propuesto: Cal AI). Falta verificar ≥2 señales de revenue con fuente/fecha y extraer su plano (onboarding, paywall, ads) — se hace en Sesión 1 antes de la Sesión 3. Estado: pospuesto a investigación de Sesión 1.
 
 ## Pendientes del usuario
-- [ ] (ninguno por ahora)
+- [ ] Aprobar la página de ventas (Sesión 3)
+- [ ] Más adelante: dominio y correo de soporte real; cuenta de Hotmart (configurar reembolso de 7 días antes de lanzar)
 
 ## Notas para la próxima sesión
 - Usuario no técnico, español neutro con tuteo. Una pregunta por mensaje, opciones en formato visual.

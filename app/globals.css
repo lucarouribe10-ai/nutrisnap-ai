@@ -1,0 +1,19 @@
+@import "tailwindcss";
+@import "../components/landing/tokens.css";
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-accent: var(--accent);
+  --font-sans: var(--font-body);
+  --font-display: var(--font-display);
+}
+
+/* Hairline degradé (55 gate G): borde con luz en el elemento clave (el mecanismo) */
+.hairline-card {
+  border: 1.5px solid transparent;
+  background:
+    linear-gradient(var(--surface), var(--surface)) padding-box,
+    linear-gradient(135deg, color-mix(in oklab, var(--accent) 50%, transparent), transparent 60%) border-box;
+}
