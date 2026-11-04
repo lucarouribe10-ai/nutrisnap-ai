@@ -1,5 +1,5 @@
 # FICHA DE AVATAR — NutriSnap AI
-- Estado: BORRADOR hasta OK del usuario (19 frases VoC con fuente en docs/proyecto/VOC-resenas.md; VoC en español, MX/CO/CL/AR/ES)
+- Estado: APROBADA por el usuario 2026-11-03 (19 frases VoC con fuente en docs/proyecto/VOC-resenas.md; VoC en español, MX/CO/CL/AR/ES)
 
 ## El avatar
 - Mateo Torres · 28 · ingeniero de software híbrido · entrena pesas 4-5x/sem · País(es): MX/CO/CL/AR (a confirmar el primero) · Ingreso medio-alto, ya paga suscripciones · Dispositivo: celular (iPhone/Android gama media)
@@ -48,4 +48,4 @@
 ## Cierre
 - Prueba día-1: NO ENCONTRADO (sin fundador-resultado ni betas aún) — sin testimonios inventados.
 - Entrevistas del 44: NO. Hallazgo clave: Fitia domina en español (72k calificaciones MX) y sus peores reseñas son por cobros sorpresa y paywall tras onboarding largo.
-- Aprobada por el usuario: NO (pendiente)
+- Fecha de cierre: 2026-11-03 · Aprobada por el usuario: SÍ

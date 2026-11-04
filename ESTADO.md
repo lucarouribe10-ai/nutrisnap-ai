@@ -1,7 +1,7 @@
 # ESTADO — NutriSnap AI
-Última actualización: 2026-11-03 | Sesión actual: 1 (Validación, avatar, monetización, arquitectura)
+Última actualización: 2026-11-03 | Sesión actual: 1 CERRADA → siguiente: Sesión 2 (identidad visual)
 
-⏸️ CHECKPOINT — Última acción completada: idea validada recibida (PDF de 3 pestañas) y guardada como contexto base. / Siguiente acción exacta: arrancar Sesión 1 → leer 57-AVATAR + 02C + 40-UNIT-ECONOMICS, completar FICHA-AVATAR y FICHA-MODELO, proponer precio/planes.
+⏸️ CHECKPOINT — Última acción completada: Sesión 1 cerrada (avatar aprobado, monetización y mejoras aprobadas). / Siguiente acción exacta: esperar OK del usuario y arrancar Sesión 2: leer 16-DIRECCION-DE-ARTE, 54-BANCO-DE-DIRECCIONES, 29, 10, DESIGN-CORE; hacer LA PREGUNTA DE REFERENCIA (¿propongo yo o tienes capturas de un estilo?).
 
 ## Qué es esta app
 Registro de calorías y macros por FOTO con IA + corrección por VOZ + escáner de código de barras incluido. Para gente que entrena en el gym (22-38) y quiere déficit/proteína sin pesar ni teclear. Suscripción freemium: US$6.99/mes · US$39.99/año · trial 3 días con tarjeta.
@@ -37,10 +37,11 @@ Registro de calorías y macros por FOTO con IA + corrección por VOZ + escáner 
 - Cal AI (App Store EE.UU.): US$14.99/mes · US$39.99/año (NO US$19.99). MyFitnessPal: US$19.99/mes · US$79.99/año.
 - Nuestro anual de US$39.99 del PDF = igual a Cal AI y NO pasa el gate de margen. Detalle en docs/proyecto/UNIT-ECONOMICS.md.
 
-## Estrategia de monetización (propuesta Sesión 1 — pendiente OK del usuario)
+## Estrategia de monetización (APROBADA por el usuario 2026-11-03)
 - Modelo: onboarding-first + trial (matriz 02C fila C fitness/tracking). Sin plan gratis permanente: el onboarding regala el PRIMER análisis y luego aparece el paywall. Motivo: el freemium convierte menos y cada foto gratis cuesta IA.
 - Precio: US$7.99/mes · US$49.99/año (se muestra como US$4.17/mes). Trial 7 días. Tope 8 registros por foto/día (protege el margen).
 - Afiliados: 30% recurrente en mensual; en anual 30% solo del primer pago.
+- Mejoras aprobadas 2026-11-03: (1) COBRO SIN SORPRESAS: aviso 2 días antes del fin de la prueba, cancelar en 2 toques, reembolso fácil, monto y fecha visibles. (2) ESCÁNER DE CÓDIGOS GRATIS PARA SIEMPRE (plan gratis mínimo: solo escáner + tablero básico, sin IA → costo ≈ 0); foto con chequeo de grasas, voz, historial/tendencias = pago. Reemplaza el 'sin plan gratis permanente' anterior.
 - Flujo: vista previa sin cuenta → paywall → login → app.
 
 ## Avatar (resumen; la FICHA-AVATAR.md se completa en Sesión 1)
@@ -72,7 +73,7 @@ Registro de calorías y macros por FOTO con IA + corrección por VOZ + escáner 
 - Escáner: base abierta (Open Food Facts) + plan B lectura de etiqueta por IA; cobertura LATAM a medir.
 - Idioma UI: español neutro mono-idioma.
 
-## Avatar y venta: FICHA-AVATAR.md en BORRADOR (19 frases reales en docs/proyecto/VOC-resenas.md) — pendiente OK del usuario.
+## Avatar y venta: FICHA-AVATAR.md APROBADA 2026-11-03 (19 frases reales en docs/proyecto/VOC-resenas.md).
 ## Hallazgo mayor (VoC): Fitia domina el español (72k calificaciones MX, 4.88★) pero sus peores reseñas son COBROS SORPRESA tras trial y paywall tras onboarding largo. MFP: escáner de pago y app lenta. Oportunidad: transparencia de cobro + onboarding corto + chequeo de grasas.
 
 ## Secuencia maestra de construcción
@@ -80,9 +81,13 @@ Registro de calorías y macros por FOTO con IA + corrección por VOZ + escáner 
 
 ## Sesiones completadas ✅
 - Instalación del SO (v6.10.0) y punto de guardado git — 2026-11-03
+- Sesión 1 — verificación de mercado, idea ajustada v2, unit economics, monetización, FICHA-AVATAR aprobada, arquitectura — 2026-11-03
 
 ## Sesión en progreso 🔧
-- Sesión 1 — en curso: pendiente FICHA-AVATAR, FICHA-MODELO (borrador creado), monetización y arquitectura.
+- Ninguna (Sesión 1 cerrada).
+
+## Próximas sesiones 📋
+- Sesión 2: identidad visual y tour de la app. Sesión 3: página de ventas. Sesiones 4-8 según el plan maestro.
 
 ## Problemas conocidos ⚠️
 - FICHA-MODELO: existe como BORRADOR (modelo propuesto: Cal AI). Falta verificar ≥2 señales de revenue con fuente/fecha y extraer su plano (onboarding, paywall, ads) — se hace en Sesión 1 antes de la Sesión 3. Estado: pospuesto a investigación de Sesión 1.
