@@ -115,6 +115,7 @@ Registro de calorías y macros por FOTO con IA + corrección por VOZ + escáner 
 - Sesión 2: identidad visual y tour de la app. Sesión 3: página de ventas. Sesiones 4-8 según el plan maestro.
 
 ## Problemas conocidos ⚠️
+- garantía / FICHA-MERCADO: CONFLICTO DE PLAZOS (regla dura de 18): prueba 7 días y garantía 7 días → si Hotmart cuenta la garantía desde la adhesión, el día del primer cobro ya venció y la cobertura real es CERO. Falta (a) decisión del usuario: A) prueba 3 d + garantía 7 d · B) prueba 7 d + garantía 14 d · C) confirmar con Hotmart que cuenta desde el primer cobro; (b) completar FICHA-MERCADO §4 ('Prueba elegida: N' / 'Garantía elegida: M', M>N) y ajustar el copy y las páginas /reembolsos. Estado: esperando decisión del usuario.
 - FICHA-MODELO: existe como BORRADOR (modelo propuesto: Cal AI). Falta verificar ≥2 señales de revenue con fuente/fecha y extraer su plano (onboarding, paywall, ads) — se hace en Sesión 1 antes de la Sesión 3. Estado: pospuesto a investigación de Sesión 1.
 
 ## Pendientes del usuario
