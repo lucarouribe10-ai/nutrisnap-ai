@@ -1,7 +1,7 @@
 # ESTADO — NutriSnap AI
 Última actualización: 2026-11-03 | Sesión actual: 1 CERRADA → siguiente: Sesión 2 (identidad visual)
 
-⏸️ CHECKPOINT — Última acción completada: Sesión 1 cerrada (avatar aprobado, monetización y mejoras aprobadas). / Siguiente acción exacta: esperar OK del usuario y arrancar Sesión 2: leer 16-DIRECCION-DE-ARTE, 54-BANCO-DE-DIRECCIONES, 29, 10, DESIGN-CORE; hacer LA PREGUNTA DE REFERENCIA (¿propongo yo o tienes capturas de un estilo?).
+⏸️ CHECKPOINT — Última acción completada: Sesión 1 cerrada (avatar aprobado, monetización y mejoras aprobadas). / Constitución del Producto aprobada. Siguiente acción exacta: esperar OK del usuario y arrancar Sesión 2: leer 16-DIRECCION-DE-ARTE, 54-BANCO-DE-DIRECCIONES, 29, 10, DESIGN-CORE; hacer LA PREGUNTA DE REFERENCIA (¿propongo yo o tienes capturas de un estilo?).
 
 ## Qué es esta app
 Registro de calorías y macros por FOTO con IA + corrección por VOZ + escáner de código de barras incluido. Para gente que entrena en el gym (22-38) y quiere déficit/proteína sin pesar ni teclear. Suscripción freemium: US$6.99/mes · US$39.99/año · trial 3 días con tarjeta.
@@ -64,6 +64,14 @@ Registro de calorías y macros por FOTO con IA + corrección por VOZ + escáner 
 - Escáner de código de barras requiere base de datos externa (p. ej. Open Food Facts): cobertura LATAM a verificar (GATE 4: integración de terceros).
 - Voz: definir motor de voz→texto y dialectos LATAM.
 - Promesa "precisión exacta" es riesgosa: suavizar en copy (regla de no inventar datos).
+
+## CONSTITUCIÓN DEL PRODUCTO (APROBADA por el usuario 2026-11-03 — cosa juzgada)
+- Promesa: "Ayudo a personas que entrenan a registrar sus comidas en segundos y a que las grasas ocultas no arruinen su déficit, sin cobros sorpresa."
+- Primera victoria (<2 min): 3 preguntas (objetivo, estatura, actividad) → foto → macros → chequeo de grasas ocultas y se ve cómo cambia el número.
+- MVP: (1) foto + chequeo de grasas ocultas · (2) ajuste por voz o 1 toque · (3) escáner de códigos gratis para siempre · (4) tablero diario (kcal, P, C, G) + gamificación: puntos (XP), niveles, logros, racha, reporte semanal.
+- Gamificación (propuesta del usuario): XP por acción útil (registro +10, chequeo +5, meta de proteína +20, día en rango +20); niveles nunca se pierden; logros por hitos del plan (25/50/100%) medidos por constancia y días en rango, NO solo kilos; logros "Cazador de grasas" y "Semana sin ceguera"; racha con reparación 48 h; lógica en servidor. Sin ranking social.
+- NO construir aún: recetas, planes de comida/entreno, hidratación, relojes, comunidad.
+- NUNCA: inventar números sin marcar estimado · cobrar sin aviso previo con fecha y monto · culpa/vergüenza corporal · vender/compartir datos o fotos · premiar bajar de peso a lo bruto (aviso si la meta es agresiva).
 
 ## Decisiones técnicas (Sesión 1 — internas, 2026-11-03)
 - Framework: Next.js 16 App Router (landing con SEO + rutas API/BFF para IA y webhook). Tailwind v4. PWA instalable (cámara, micrófono, escáner por navegador).
