@@ -21,7 +21,7 @@ export interface FooterLegalProps {
   /** Privacidad · Términos · Reembolsos · Aviso de IA (si aplica) — con 47. */
   enlaces: EnlaceLegal[];
   /** Email REAL que alguien lee. */
-  soporteEmail: string;
+  soporteEmail?: string;
   anio?: number;
 }
 
@@ -40,18 +40,19 @@ export function FooterLegal({ appName, logo, enlaces, soporteEmail, anio }: Foot
             <ul className="flex flex-wrap items-center gap-x-1 gap-y-0">
               {enlaces.map((e, i) => (
                 <li key={e.href} className="flex items-center">
-                  {i > 0 && (
-                    <span aria-hidden="true" className="px-1 text-[var(--text-tertiary)]">
-                      ·
-                    </span>
-                  )}
+
                   {/* py-3 = área táctil ≥44px sin líneas pegadas */}
                   <a
                     href={e.href}
-                    className="px-1 py-3 text-[13px] text-[var(--text-tertiary)] underline-offset-4 hover:text-[var(--text-secondary)] hover:underline"
+                    className="whitespace-nowrap px-1 py-3 text-[13px] text-[var(--text-tertiary)] underline-offset-4 hover:text-[var(--text-secondary)] hover:underline"
                   >
                     {e.label}
                   </a>
+                  {i < enlaces.length - 1 && (
+                    <span aria-hidden="true" className="pl-1 text-[var(--text-tertiary)]">
+                      ·
+                    </span>
+                  )}
                 </li>
               ))}
             </ul>
@@ -60,10 +61,15 @@ export function FooterLegal({ appName, logo, enlaces, soporteEmail, anio }: Foot
 
         {/* Fila 2: copyright + soporte */}
         <p className="mt-3 text-[13px] text-[var(--text-tertiary)]">
-          © {year} {appName} ·{' '}
-          <a href={`mailto:${soporteEmail}`} className="py-3 underline-offset-4 hover:underline">
-            {soporteEmail}
-          </a>
+          © {year} {appName}
+          {soporteEmail && (
+            <>
+              {' '}·{' '}
+              <a href={`mailto:${soporteEmail}`} className="py-3 underline-offset-4 hover:underline">
+                {soporteEmail}
+              </a>
+            </>
+          )}
         </p>
       </div>
     </footer>

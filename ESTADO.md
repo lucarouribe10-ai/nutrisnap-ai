@@ -39,7 +39,7 @@ Registro de calorías y macros por FOTO con IA + corrección por VOZ + escáner 
 
 ## Estrategia de monetización (APROBADA por el usuario 2026-11-03)
 - Modelo: onboarding-first + trial (matriz 02C fila C fitness/tracking). Sin plan gratis permanente: el onboarding regala el PRIMER análisis y luego aparece el paywall. Motivo: el freemium convierte menos y cada foto gratis cuesta IA.
-- Precio: US$7.99/mes · US$49.99/año (se muestra como US$4.17/mes). Trial 7 días. Tope 8 registros por foto/día (protege el margen).
+- Precio: US$7.99/mes · US$49.99/año (se muestra como US$4.17/mes). Prueba 3 días (antes 7). Tope 8 registros por foto/día (protege el margen).
 - Afiliados: 30% recurrente en mensual; en anual 30% solo del primer pago.
 - Mejoras aprobadas 2026-11-03: (1) COBRO SIN SORPRESAS: aviso 2 días antes del fin de la prueba, cancelar en 2 toques, reembolso fácil, monto y fecha visibles. (2) ESCÁNER DE CÓDIGOS GRATIS PARA SIEMPRE (plan gratis mínimo: solo escáner + tablero básico, sin IA → costo ≈ 0); foto con chequeo de grasas, voz, historial/tendencias = pago. Reemplaza el 'sin plan gratis permanente' anterior.
 - Flujo: vista previa sin cuenta → paywall → login → app.
@@ -78,7 +78,7 @@ Registro de calorías y macros por FOTO con IA + corrección por VOZ + escáner 
 - NO construir aún: recetas, planes de comida/entreno, hidratación, relojes, comunidad.
 - NUNCA: inventar números sin marcar estimado · cobrar sin aviso previo con fecha y monto · culpa/vergüenza corporal · vender/compartir datos o fotos · premiar bajar de peso a lo bruto (aviso si la meta es agresiva).
 
-- Garantía (decidida por el usuario 2026-11-03): reembolso de 7 días tras el primer cobro, sin preguntas (un correo), + 7 días de prueba gratis. Configurar Hotmart con 7 días ANTES de prometerlo en la landing.
+- Garantía (usuario, 2026-11-03/04): reembolso de 7 días, sin preguntas (un correo). PRUEBA GRATIS: 3 días (cambio decidido por el usuario 2026-11-04: antes 7; para que garantía 7 > prueba 3). Aviso 1 día antes del cobro. Configurar Hotmart con 7 días ANTES de prometerlo.
 
 - País de lanzamiento (decidido por el usuario 2026-11-03): COLOMBIA. Español neutro con tuteo, ejemplos de comida colombianos (arepa, bandeja paisa light, huevos pericos, pollo con arroz, aguacate, jugo de lulo), precios mostrados en USD + referencia COP pendiente de verificar con Hotmart.
 
@@ -103,6 +103,10 @@ Registro de calorías y macros por FOTO con IA + corrección por VOZ + escáner 
 - Carrusel 'La app por dentro': placeholders rotulados — pendiente montar screenshots reales cuando exista la app.
 - Evidencia: docs/revisiones/landing-375.png (Playwright, scripts/screenshot.mjs); audit-conversion: los críticos restantes son falsos positivos del propio código del kit (comentarios/strings), el copy visible pasa.
 
+- Cambios 2026-11-04 tras el 1er veredicto (NO LISTA 28/12/14): prueba 3 d; contraste del bloque oscuro (--accent-on-dark + CtaButton sobreOscuro); total anual a 15px; garantía nombrada en hero y cards; CTA único con ?plan=; mini-demo tocable (rejilla+ticks+foto); carrusel con VISTA PREVIA DEL DISEÑO (frames de las maquetas, rotulado); claims acotados; FAQ de 6; correo de soporte retirado hasta tener dominio.
+- Desviaciones del kit (documentadas): CtaButton.sobreOscuro, FooterLegal.soporteEmail opcional + separadores, Oferta total anual 15px, Hero sin doble marco. Falsos positivos de audit-conversion en el código del kit (strings/comentarios).
+- Nuevo 2026-11-04: scripts/screenshot.mjs (captura 375px completa) y scripts/captura-frames.mjs (frames del carrusel desde las maquetas).
+
 ## Sesiones completadas ✅
 - Instalación del SO (v6.10.0) y punto de guardado git — 2026-11-03
 - Sesión 2 — identidad visual (A/B/C → combinación A+B, tour aprobado, FICHA-ARTE) — 2026-11-03
@@ -115,12 +119,12 @@ Registro de calorías y macros por FOTO con IA + corrección por VOZ + escáner 
 - Sesión 2: identidad visual y tour de la app. Sesión 3: página de ventas. Sesiones 4-8 según el plan maestro.
 
 ## Problemas conocidos ⚠️
-- garantía / FICHA-MERCADO: CONFLICTO DE PLAZOS (regla dura de 18): prueba 7 días y garantía 7 días → si Hotmart cuenta la garantía desde la adhesión, el día del primer cobro ya venció y la cobertura real es CERO. Falta (a) decisión del usuario: A) prueba 3 d + garantía 7 d · B) prueba 7 d + garantía 14 d · C) confirmar con Hotmart que cuenta desde el primer cobro; (b) completar FICHA-MERCADO §4 ('Prueba elegida: N' / 'Garantía elegida: M', M>N) y ajustar el copy y las páginas /reembolsos. Estado: esperando decisión del usuario.
+- (resuelto 2026-11-04) plazos de garantía: el usuario eligió prueba 3 días + garantía 7 días; FICHA-MERCADO §4 completada (M>N).
 - FICHA-MODELO: existe como BORRADOR (modelo propuesto: Cal AI). Falta verificar ≥2 señales de revenue con fuente/fecha y extraer su plano (onboarding, paywall, ads) — se hace en Sesión 1 antes de la Sesión 3. Estado: pospuesto a investigación de Sesión 1.
 
 ## Pendientes del usuario
 - [ ] Aprobar la página de ventas (Sesión 3)
-- [ ] Más adelante: dominio y correo de soporte real; cuenta de Hotmart (configurar reembolso de 7 días antes de lanzar)
+- [ ] Más adelante: dominio y correo de soporte real (hoy el pie no muestra correo); cuenta de Hotmart (configurar reembolso de 7 días antes de lanzar)
 
 ## Notas para la próxima sesión
 - Usuario no técnico, español neutro con tuteo. Una pregunta por mensaje, opciones en formato visual.

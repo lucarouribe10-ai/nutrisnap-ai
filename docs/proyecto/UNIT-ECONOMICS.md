@@ -27,3 +27,6 @@
 
 ## Cupos (fórmula 02C: precio×0.20÷costo/resultado)
 - Mensual 7.99: 7.99×0.20÷0.005 ≈ 320 registros/mes → tope práctico **8 registros por foto/día (≈240/mes)**.
+
+## Actualización 2026-11-04
+- Prueba gratis reducida a 3 días (decisión del usuario para que la garantía de 7 días cubra el primer cobro): el COGS de IA del trial baja ~57% vs el supuesto de 7 días; los márgenes de arriba no empeoran.

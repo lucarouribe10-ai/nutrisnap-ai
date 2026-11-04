@@ -11,7 +11,7 @@ export default function Page() {
       <h2 className="mt-8 text-xl font-bold [font-family:var(--font-display)]">Qué es NutriSnap AI</h2>
       <p className="mt-2 leading-relaxed text-[var(--text-secondary)]">Una app para registrar tus comidas con foto, voz y escáner. Las calorías y macros son estimaciones y no sustituyen el consejo de un profesional de la salud.</p>
       <h2 className="mt-8 text-xl font-bold [font-family:var(--font-display)]">Suscripción y cobros</h2>
-      <p className="mt-2 leading-relaxed text-[var(--text-secondary)]">La suscripción incluye 7 días de prueba gratis. Te avisamos 2 días antes de cobrar. Puedes cancelar desde la app en cualquier momento antes del cobro. Hay un plan gratuito con el escáner de códigos.</p>
+      <p className="mt-2 leading-relaxed text-[var(--text-secondary)]">La suscripción incluye 3 días de prueba gratis. Te avisamos 1 día antes de cobrar. Puedes cancelar desde la app en cualquier momento antes del cobro. Hay un plan gratuito con el escáner de códigos.</p>
       <h2 className="mt-8 text-xl font-bold [font-family:var(--font-display)]">Uso justo</h2>
       <p className="mt-2 leading-relaxed text-[var(--text-secondary)]">El plan de pago incluye hasta 8 registros por foto al día.</p>
       <h2 className="mt-8 text-xl font-bold [font-family:var(--font-display)]">Contacto</h2>
