@@ -33,6 +33,16 @@ Registro de calorías y macros por FOTO con IA + corrección por VOZ + escáner 
 - Pendiente de evidencia: platos latinos mal reconocidos (solo lo afirma Fitia en su marketing), precios reales por tienda, reseñas con cita.
 - Riesgo mayor: mercado con gigantes (MFP+Cal AI) y Fitia en español → el foso es distribución (TikTok + afiliados), no la tecnología.
 
+## Precios reales verificados (2026-11-03) — CORRIGE EL PDF
+- Cal AI (App Store EE.UU.): US$14.99/mes · US$39.99/año (NO US$19.99). MyFitnessPal: US$19.99/mes · US$79.99/año.
+- Nuestro anual de US$39.99 del PDF = igual a Cal AI y NO pasa el gate de margen. Detalle en docs/proyecto/UNIT-ECONOMICS.md.
+
+## Estrategia de monetización (propuesta Sesión 1 — pendiente OK del usuario)
+- Modelo: onboarding-first + trial (matriz 02C fila C fitness/tracking). Sin plan gratis permanente: el onboarding regala el PRIMER análisis y luego aparece el paywall. Motivo: el freemium convierte menos y cada foto gratis cuesta IA.
+- Precio: US$7.99/mes · US$49.99/año (se muestra como US$4.17/mes). Trial 7 días. Tope 8 registros por foto/día (protege el margen).
+- Afiliados: 30% recurrente en mensual; en anual 30% solo del primer pago.
+- Flujo: vista previa sin cuenta → paywall → login → app.
+
 ## Avatar (resumen; la FICHA-AVATAR.md se completa en Sesión 1)
 - Mateo Torres, 28, ingeniero de software híbrido, gym 4-5x/sem, quiere abdomen marcado sin perder músculo.
 - Dolor #1: "Tardo más registrando el plato que comiéndomelo." Deseo #1: foto + 2 seg de voz y seguir con su vida.
