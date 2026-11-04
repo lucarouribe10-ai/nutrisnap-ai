@@ -17,6 +17,12 @@ Registro de calorías y macros por FOTO con IA + corrección por VOZ + escáner 
 - Evidencia citada en el PDF: compra de Cal AI por MyFitnessPal (2026), quejas del escáner bloqueado, Sensor Tower +21%.
 - Canal #1: TikTok/Reels orgánico (demos de tiempo de registro) + afiliados 30% recurrente a entrenadores.
 
+## Verificación independiente (2026-11-03) — VEREDICTO: VIABLE CON AJUSTES
+- Confirmado: MyFitnessPal compró Cal AI (anunciado 2-mar-2026). Ventas: CEO de MFP dice >US$40M/12 meses; terceros estiman ~US$30M.
+- CONTRADICE EL PDF: Cal AI sí parece tener escáner de código de barras (ficha App Store); su precio real no está claro (fuentes dicen desde ~US$9/mes, no US$19.99). MFP ya ofrece escáner IA de comidas + voz + código de barras. Fitia (español, LATAM) ya tiene foto (Premium) + voz + texto.
+- Implicación: el diferenciador NO puede ser "somos los únicos con voz/escáner". Debe ser velocidad + corrección por voz en español local + precio + simplicidad. Replantear en Sesión 1 (posicionamiento) y verificar precios reales en las stores.
+- Pendiente: precio real de Fitia, Cal AI y MFP desde las stores; reseñas 1-2★ con cita; cobertura LATAM del escáner.
+
 ## Avatar (resumen; la FICHA-AVATAR.md se completa en Sesión 1)
 - Mateo Torres, 28, ingeniero de software híbrido, gym 4-5x/sem, quiere abdomen marcado sin perder músculo.
 - Dolor #1: "Tardo más registrando el plato que comiéndomelo." Deseo #1: foto + 2 seg de voz y seguir con su vida.
