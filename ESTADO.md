@@ -1,7 +1,7 @@
 # ESTADO — NutriSnap AI
-Última actualización: 2026-11-03 | Sesión actual: 1 CERRADA → siguiente: Sesión 2 (identidad visual)
+Última actualización: 2026-11-03 | Sesión actual: 2 (identidad visual) — comparativa A/B/C presentada
 
-⏸️ CHECKPOINT — Última acción completada: Sesión 1 cerrada (avatar aprobado, monetización y mejoras aprobadas). / Constitución del Producto aprobada. Siguiente acción exacta: esperar OK del usuario y arrancar Sesión 2: leer 16-DIRECCION-DE-ARTE, 54-BANCO-DE-DIRECCIONES, 29, 10, DESIGN-CORE; hacer LA PREGUNTA DE REFERENCIA (¿propongo yo o tienes capturas de un estilo?).
+⏸️ CHECKPOINT — Última acción completada: direcciones-abc.html (A Salvia clínica / B Pista de gym / C Cítrica rápida) construida y verificada (fuentes cargadas, mockups llenos); usuario eligió ruta 'tú propones'. Esperando su elección A/B/C. Antes: Sesión 1 cerrada (avatar aprobado, monetización y mejoras aprobadas). / Constitución del Producto aprobada. Siguiente acción exacta: esperar OK del usuario y arrancar Sesión 2: leer 16-DIRECCION-DE-ARTE, 54-BANCO-DE-DIRECCIONES, 29, 10, DESIGN-CORE; hacer LA PREGUNTA DE REFERENCIA (¿propongo yo o tienes capturas de un estilo?).
 
 ## Qué es esta app
 Registro de calorías y macros por FOTO con IA + corrección por VOZ + escáner de código de barras incluido. Para gente que entrena en el gym (22-38) y quiere déficit/proteína sin pesar ni teclear. Suscripción freemium: US$6.99/mes · US$39.99/año · trial 3 días con tarjeta.
