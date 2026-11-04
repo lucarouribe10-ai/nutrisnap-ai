@@ -1,7 +1,7 @@
 # ESTADO — NutriSnap AI
-Última actualización: 2026-11-03 | Sesión actual: 2 (identidad visual) — comparativa A/B/C presentada
+Última actualización: 2026-11-03 | Sesión actual: 2 CERRADA → siguiente: Sesión 3 (página de ventas)
 
-⏸️ CHECKPOINT — Última acción completada: direcciones-abc.html (A Salvia clínica / B Pista de gym / C Cítrica rápida) construida y verificada (fuentes cargadas, mockups llenos); usuario eligió ruta 'tú propones'. El usuario pidió COMBINAR A+B (visual de A + gamificación de B + avance a la meta + fotos de comida; refs suyas: apps con tarjeta verde pálida, anillo, foto de comida a pantalla completa, escáner con modos). Combinación renderizada en docs/revisiones/direcciones-abc-combinacion.html; APROBADA por el usuario (2026-11-03). Tour construido en docs/revisiones/vista-previa-app.html (onboarding, primer resultado, plan, hoy, logros); tour ajustado (pantalla 5 Logros rediseñada: siguiente logro con anillo, barras de avance, medallas, gráfico semanal); esperando su OK al tour para cerrar FICHA-ARTE. Antes: Sesión 1 cerrada (avatar aprobado, monetización y mejoras aprobadas). / Constitución del Producto aprobada. Siguiente acción exacta: esperar OK del usuario y arrancar Sesión 2: leer 16-DIRECCION-DE-ARTE, 54-BANCO-DE-DIRECCIONES, 29, 10, DESIGN-CORE; hacer LA PREGUNTA DE REFERENCIA (¿propongo yo o tienes capturas de un estilo?).
+⏸️ CHECKPOINT — Última acción completada: Sesión 2 cerrada; FICHA-ARTE.md APROBADA (estilo A+B, tour aprobado). / Siguiente acción exacta (tras OK del usuario): Sesión 3 página de ventas → leer SECUENCIA-MAESTRA, 19, 52, 55, 22, 28; definir política de reembolso/garantía; crear FICHA-MERCADO §3. Antes (histórico): esperar OK del usuario y arrancar Sesión 2: leer 16-DIRECCION-DE-ARTE, 54-BANCO-DE-DIRECCIONES, 29, 10, DESIGN-CORE; hacer LA PREGUNTA DE REFERENCIA (¿propongo yo o tienes capturas de un estilo?).
 
 ## Qué es esta app
 Registro de calorías y macros por FOTO con IA + corrección por VOZ + escáner de código de barras incluido. Para gente que entrena en el gym (22-38) y quiere déficit/proteína sin pesar ni teclear. Suscripción freemium: US$6.99/mes · US$39.99/año · trial 3 días con tarjeta.
@@ -65,6 +65,11 @@ Registro de calorías y macros por FOTO con IA + corrección por VOZ + escáner 
 - Voz: definir motor de voz→texto y dialectos LATAM.
 - Promesa "precisión exacta" es riesgosa: suavizar en copy (regla de no inventar datos).
 
+## DIRECCIÓN DE ARTE (APROBADA 2026-11-03 — detalle en FICHA-ARTE.md)
+- Estilo A+B "Salvia clínica con energía de gym": claro · fondo #EFF2ED · acento #3D6B4F · 2ª nota #E8590C (racha/XP/grasas atrapadas) · Chivo + Hanken Grotesk · radio 14-16 · rejilla + ticks · fotos de comida.
+- Personalidad: enérgico + cálido + sobrio. Registro anti-repetición: paleta salvia y par Chivo/Hanken vetados para el próximo proyecto.
+- Tokens a volcar en globals.css al crear el proyecto (Sesión 3).
+
 ## CONSTITUCIÓN DEL PRODUCTO (APROBADA por el usuario 2026-11-03 — cosa juzgada)
 - Promesa: "Ayudo a personas que entrenan a registrar sus comidas en segundos y a que las grasas ocultas no arruinen su déficit, sin cobros sorpresa."
 - Primera victoria (<2 min): 3 preguntas (objetivo, estatura, actividad) → foto → macros → chequeo de grasas ocultas y se ve cómo cambia el número.
@@ -89,6 +94,7 @@ Registro de calorías y macros por FOTO con IA + corrección por VOZ + escáner 
 
 ## Sesiones completadas ✅
 - Instalación del SO (v6.10.0) y punto de guardado git — 2026-11-03
+- Sesión 2 — identidad visual (A/B/C → combinación A+B, tour aprobado, FICHA-ARTE) — 2026-11-03
 - Sesión 1 — verificación de mercado, idea ajustada v2, unit economics, monetización, FICHA-AVATAR aprobada, arquitectura — 2026-11-03
 
 ## Sesión en progreso 🔧
