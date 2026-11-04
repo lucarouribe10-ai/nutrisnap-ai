@@ -42,13 +42,16 @@ Registro de calorías y macros por FOTO con IA + corrección por VOZ + escáner 
 - Pendientes (Sesiones 1-2). Ninguna decidida aún.
 
 ## Secuencia maestra de construcción
-- Estado: nada construido. Ruta: `/` → `/onboarding` → `/paywall` → `/login` → `/app`
+- Estado: sin iniciar (pendiente). Ruta: `/` → `/onboarding` → `/paywall` → `/login` → `/app`
 
 ## Sesiones completadas ✅
 - Instalación del SO (v6.10.0) y punto de guardado git — 2026-11-03
 
 ## Sesión en progreso 🔧
-- Sesión 1 — iniciando.
+- Sesión 1 — en curso: pendiente FICHA-AVATAR, FICHA-MODELO (borrador creado), monetización y arquitectura.
+
+## Problemas conocidos ⚠️
+- FICHA-MODELO: existe como BORRADOR (modelo propuesto: Cal AI). Falta verificar ≥2 señales de revenue con fuente/fecha y extraer su plano (onboarding, paywall, ads) — se hace en Sesión 1 antes de la Sesión 3. Estado: pospuesto a investigación de Sesión 1.
 
 ## Pendientes del usuario
 - [ ] (ninguno por ahora)
