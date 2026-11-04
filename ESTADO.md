@@ -119,6 +119,7 @@ Registro de calorías y macros por FOTO con IA + corrección por VOZ + escáner 
 - Sesión 2: identidad visual y tour de la app. Sesión 3: página de ventas. Sesiones 4-8 según el plan maestro.
 
 ## Problemas conocidos ⚠️
+- veredicto landing: el revisor visual independiente dio NO LISTA dos veces (1ª: usab 28/40 · craft 12/20 · copy 14/20; 2ª: 28/40 · 13/20 · 15/20; gates 36/16/16). Ya corregido: contraste del CTA final, total anual, garantía nombrada, claims, CTA único, demo tocable, FAQ, pie, bullets de oferta. PENDIENTE: dato visual en Agitación, quitar Antes/Después repetido, logo/isotipo real, aviso de 'acceso anticipado' en la oferta (la app aún no existe), prueba social real. Decisión del usuario pendiente (ver pregunta). La landing se vuelve a puntuar con screenshots reales al cerrar la app (19 §5).
 - (resuelto 2026-11-04) plazos de garantía: el usuario eligió prueba 3 días + garantía 7 días; FICHA-MERCADO §4 completada (M>N).
 - FICHA-MODELO: existe como BORRADOR (modelo propuesto: Cal AI). Falta verificar ≥2 señales de revenue con fuente/fecha y extraer su plano (onboarding, paywall, ads) — se hace en Sesión 1 antes de la Sesión 3. Estado: pospuesto a investigación de Sesión 1.
 
