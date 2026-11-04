@@ -78,6 +78,8 @@ Registro de calorías y macros por FOTO con IA + corrección por VOZ + escáner 
 - NO construir aún: recetas, planes de comida/entreno, hidratación, relojes, comunidad.
 - NUNCA: inventar números sin marcar estimado · cobrar sin aviso previo con fecha y monto · culpa/vergüenza corporal · vender/compartir datos o fotos · premiar bajar de peso a lo bruto (aviso si la meta es agresiva).
 
+- Garantía (decidida por el usuario 2026-11-03): reembolso de 7 días tras el primer cobro, sin preguntas (un correo), + 7 días de prueba gratis. Configurar Hotmart con 7 días ANTES de prometerlo en la landing.
+
 ## Decisiones técnicas (Sesión 1 — internas, 2026-11-03)
 - Framework: Next.js 16 App Router (landing con SEO + rutas API/BFF para IA y webhook). Tailwind v4. PWA instalable (cámara, micrófono, escáner por navegador).
 - Backend: Supabase (Postgres + Auth + RLS). Auth: vista previa anónima → paywall → login (magic link + Google). Hosting: Vercel. Cobro: Hotmart (webhook verificado). Email: Resend.
