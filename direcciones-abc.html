@@ -1,0 +1,517 @@
+<!doctype html>
+<html lang="es" data-kit="abc-v2">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Direcciones de arte A/B/C — NutriSnap AI</title>
+
+<!-- ============================================================================
+  KIT-ABC-V2 — PLANTILLA DEL PROTOCOLO A/B/C (54, Regla Dura #0 + gate del CLAUDE.md)
+  ⚠️ EL MARCADOR data-kit="abc-v2" DEL <html> NO SE BORRA: el hook pre-stop lo
+  verifica. Una comparativa sin ese marcador se trata como escrita desde cero
+  (prohibido). Este archivo se COPIA y se TEMATIZA — nunca se reescribe a mano.
+  Comparativa AUTOCONTENIDA: 3 layouts ESTRUCTURALMENTE DISTINTOS de la MISMA
+  pantalla clave, cada uno con su dirección de arte completa. El usuario la ABRE
+  y VE — prohibido presentar direcciones solo con texto.
+
+  CÓMO USARLA:
+  1. Reemplazar los tokens de .op-a / .op-b / .op-c (marcados "← reemplazar") con
+     las 3 direcciones derivadas (16 PASO 0.2bis + banco del 54). La paleta del
+     líder/banco se toma TAL CUAL — la divergencia va en composición y dispositivo.
+  2. Reemplazar los DATOS SEMILLA por datos del dominio REAL del avatar (nunca
+     lorem ipsum, nunca pantallas a medias — el mockup ES la promesa de calidad).
+  3. Llenar la "Hipótesis de conversión" de cada opción (1 línea).
+  4. EMBEBER LAS FUENTES (obligatorio antes de mostrar — ver bloque de abajo).
+  5. Verificar el TEST DE DIVERGENCIA (54): en escala de grises deben verse 3
+     diseños distintos; si solo cambia el acento, NO son 3 opciones — rehacer.
+
+  ── CÓMO EMBEBER LAS FUENTES (elegir UNA vía según el vehículo) ──────────────
+  FALLBACK-TRAMPA: cada familia se declara `font-family: "X", monospace` — si la
+  fuente no carga, el monospace GRITA y el fallo no pasa desapercibido. NO quitar
+  el monospace "para que se vea mejor": es el detector.
+
+  VÍA A — data-URI (artifacts / CSP estricta que bloquea hosts externos):
+  descargar el .woff2 (solo los pesos usados), convertir a base64 y pegar:
+
+    @font-face {
+      font-family: 'NombreFamilia';
+      font-style: normal;
+      font-weight: 400 700;            /* variable font: rango */
+      font-display: swap;
+      src: url(data:font/woff2;base64,AAAA...) format('woff2');
+    }
+
+  (un @font-face por familia; los subsets latin bastan; vigilar el peso total —
+  el vehículo de artifacts admite hasta 16MB por página)
+
+  VÍA B — Google Fonts (solo si el vehículo permite red — p. ej. /dev/direcciones
+  servido por el dev server del proyecto): descomentar y ajustar familias:
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400..700&family=Mulish:wght@400..700&family=Geologica:wght@400..700&family=Wix+Madefor+Text:wght@400..700&family=EB+Garamond:wght@400..700&family=Inter+Tight:wght@400..700&display=swap" rel="stylesheet">
+
+  VERIFICACIÓN: el ESPÉCIMEN de cada opción muestra el nombre de la familia EN su
+  propia fuente. Si ahí se ve letra de máquina (monospace), la fuente NO está
+  embebida — no mostrar la comparativa así.
+============================================================================= -->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chivo:wght@400;600;700;800&family=Hanken+Grotesk:wght@400;500;600;700&family=Big+Shoulders+Display:wght@600;700;800&family=Barlow:wght@400;500;600;700&family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  /* ── Shell neutro de la comparativa (no compite con las opciones) ── */
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    /* fondo con PROFUNDIDAD (54): banda con mesh sutil, nunca un fill plano */
+    background:
+      radial-gradient(1100px 520px at 12% -6%, #f7f7f9, transparent 62%),
+      radial-gradient(900px 460px at 92% 4%, #e2e2e9, transparent 58%),
+      linear-gradient(180deg, #ededf0, #e4e4e9);
+    color: #1c1c1f;
+    font-family: 'Segoe UI', system-ui, sans-serif; /* shell utilitario — las OPCIONES llevan sus fuentes */
+    padding: 32px 20px 64px;
+  }
+  .cabecera { max-width: 1180px; margin: 0 auto 12px; }
+  .cabecera h1 { font-size: 26px; font-weight: 700; letter-spacing: -0.01em; }
+  .cabecera p.sub { margin-top: 6px; font-size: 14px; color: #55555c; max-width: 70ch; }
+
+  /* Las 4 SALIDAS del usuario (protocolo del 54): elegir · combinar · otras 3 · ajustar */
+  .salidas { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+  .salidas span {
+    display: inline-flex; align-items: center; gap: 6px;
+    border: 1px solid #c9c9cf; border-radius: 999px;
+    padding: 6px 12px; font-size: 12.5px; font-weight: 600; color: #3a3a40;
+    background: #f7f7f8;
+  }
+  .salidas b { color: #1c1c1f; }
+  .aviso-fuentes {
+    max-width: 1180px; margin: 10px auto 28px; font-size: 12.5px; color: #6a6a72;
+  }
+
+  .opciones { max-width: 1180px; margin: 0 auto; display: grid; gap: 40px;
+              grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); }
+
+  .opcion { display: flex; flex-direction: column; gap: 18px; }
+
+  /* ── Panel meta por opción ── */
+  .meta { background: #f7f7f8; border: 1px solid #d9d9de; border-radius: 14px; padding: 18px; }
+  .meta .letra {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 28px; height: 28px; border-radius: 8px; font-weight: 800; font-size: 15px;
+    color: #f7f7f8; background: #1c1c1f; margin-right: 8px;
+  }
+  .meta h2 { display: flex; align-items: center; font-size: 17px; font-weight: 700; }
+  .meta .direccion { margin-top: 4px; font-size: 13px; color: #55555c; }
+  .hipotesis { margin-top: 10px; font-size: 13px; line-height: 1.5; color: #3a3a40; }
+  .hipotesis .slot {
+    background: #fff3c7; border-radius: 4px; padding: 1px 4px; font-style: italic;
+  }
+  .meta ul.tokens { margin-top: 10px; list-style: none; font-size: 12px; color: #6a6a72;
+                    font-family: ui-monospace, monospace; line-height: 1.7; }
+
+  /* Espécimen tipográfico: el NOMBRE de la familia EN su fuente + fallback-trampa */
+  .especimen { margin-top: 12px; border-top: 1px solid #d9d9de; padding-top: 12px; }
+  .especimen .esp-display { font-size: 21px; font-weight: 700; letter-spacing: -0.01em; }
+  .especimen .esp-body { margin-top: 4px; font-size: 13.5px; color: #3a3a40; }
+
+  /* ── Chasis de teléfono REAL ── */
+  .telefono {
+    width: 310px; margin: 0 auto;
+    aspect-ratio: 9 / 19.5;
+    border: 10px solid #101014;
+    border-radius: 46px;
+    box-shadow: 0 24px 60px rgb(20 18 24 / 0.28);
+    overflow: hidden;
+    position: relative;
+    display: flex; flex-direction: column;
+  }
+  .statusbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 22px 6px; font-size: 13px; font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+  .statusbar .der { display: flex; align-items: center; gap: 5px; }
+  .statusbar svg { display: block; }
+  .home-indicator {
+    position: absolute; bottom: 7px; left: 50%; transform: translateX(-50%);
+    width: 116px; height: 5px; border-radius: 999px; opacity: 0.85;
+  }
+  .pantalla { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+  /* Utilidades compartidas de los mockups */
+  .chip-icono {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 40px; height: 40px; flex-shrink: 0;
+  }
+  .cta {
+    display: flex; align-items: center; justify-content: center;
+    height: 48px; font-size: 15px; font-weight: 600;
+    letter-spacing: 0.01em;
+  }
+
+  /* ── Tab bar del teléfono (mockup LLENO = nav visible — 54 Regla #3) ── */
+  .tabbar {
+    display: flex; align-items: stretch; justify-content: space-around;
+    margin: 12px -18px 0; padding: 8px 8px 16px;
+    border-top: 1px solid color-mix(in oklab, var(--text-2) 18%, transparent);
+    background: color-mix(in oklab, var(--surface) 88%, transparent);
+  }
+  .op-c .tabbar { margin-inline: -20px; }
+  .tabbar a {
+    display: flex; flex-direction: column; align-items: center; gap: 3px;
+    font-size: 9.5px; font-weight: 600; color: var(--text-2); text-decoration: none;
+  }
+  .tabbar .tab-chip {
+    display: flex; align-items: center; justify-content: center;
+    width: 36px; height: 26px; border-radius: 9px;
+  }
+  .tabbar a.activa { color: var(--accent); }
+  .tabbar a.activa .tab-chip { background: color-mix(in oklab, var(--accent) 14%, transparent); }
+
+  /* ── Muestra de paleta (54: 4-6 círculos con los colores reales) ── */
+  .paleta { display: flex; gap: 8px; margin-top: 10px; }
+  .paleta span {
+    width: 26px; height: 26px; border-radius: 999px;
+    box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.10), 0 1px 3px rgb(0 0 0 / 0.12);
+  }
+
+  /* ── HERO DE LANDING por opción (54: la dirección se elige mirando TAMBIÉN la
+       pantalla que vende — y aquí vive el MOMENTO DE COLOR VALIENTE) ── */
+  .rotulo-frame {
+    text-align: center; font-size: 11px; font-weight: 700; letter-spacing: 0.08em;
+    text-transform: uppercase; color: #85858e; margin-top: 2px;
+  }
+  .hero-landing {
+    width: 310px; margin: 6px auto 0; border-radius: 18px; overflow: hidden;
+    border: 1px solid rgb(0 0 0 / 0.10);
+    box-shadow: 0 16px 40px rgb(20 18 24 / 0.16);
+    background: var(--bg); color: var(--text-1);
+    font-family: var(--font-body); padding: 22px 18px 18px;
+  }
+  .hero-landing .hl-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 10.5px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--accent);
+    background: color-mix(in oklab, var(--accent) 10%, transparent);
+    border: 1px solid color-mix(in oklab, var(--accent) 25%, transparent);
+    border-radius: 999px; padding: 4px 10px;
+  }
+  .hero-landing h4 {
+    font-family: var(--font-display); font-size: 24px; font-weight: 700;
+    line-height: 1.14; letter-spacing: -0.01em; margin-top: 10px;
+  }
+  .hero-landing h4 em { font-style: normal; color: var(--accent); } /* la palabra que VENDE, en acento */
+  .hero-landing .hl-sub { margin-top: 8px; font-size: 13px; color: var(--text-2); line-height: 1.5; }
+  .hero-landing .hl-sub b { color: var(--text-1); font-weight: 600; }
+  .hero-landing .hl-cta {
+    margin-top: 14px; display: flex; align-items: center; justify-content: center;
+    height: 46px; border-radius: var(--radius-btn); font-size: 14.5px; font-weight: 700;
+    color: var(--bg);
+    /* botón VALIENTE: degradé tonal + luz interior + sombra TINTADA del propio acento (29) */
+    background: linear-gradient(180deg, color-mix(in oklab, var(--accent) 86%, white), var(--accent));
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.35),
+                0 10px 24px -6px color-mix(in oklab, var(--accent) 45%, transparent);
+  }
+  .hero-landing .hl-prueba { margin-top: 10px; font-size: 11.5px; color: var(--text-2); text-align: center; }
+
+
+  /* ==========================================================================
+     OPCIÓN A — "Salvia clínica" (banco 10 + lógica clara de Cal AI/Fitia) — CLARO
+     ========================================================================== */
+  .op-a {
+    --bg:#EFF2ED; --surface:#F9FBF7; --text-1:#242B24; --text-2:#5E6A60; --accent:#3D6B4F;
+    --radius-card:14px; --radius-btn:10px;
+    --font-display:'Chivo', monospace; --font-body:'Hanken Grotesk', monospace; --shadow-tinta:36 43 36;
+  }
+  .op-a .especimen .esp-display { font-family: var(--font-display); }
+  .op-a .especimen .esp-body { font-family: var(--font-body); }
+  .op-a .telefono { background: radial-gradient(260px 160px at 90% 0%, color-mix(in oklab, var(--accent) 12%, transparent), transparent 70%), var(--bg); }
+  .op-a .pantalla { font-family: var(--font-body); color: var(--text-1); padding: 0 16px; }
+  .op-a .statusbar { color: var(--text-1); }
+  .op-a .home-indicator { background: var(--text-1); }
+  .op-a .saludo { margin-top: 6px; font-size: 11.5px; font-weight: 600; color: var(--text-2); }
+  .op-a h3.titulo-a { font-family: var(--font-display); font-size: 21px; font-weight: 800; letter-spacing: -0.02em; }
+  /* dispositivo ownable: rejilla técnica + ticks de medición */
+  .op-a .heroe { margin-top: 10px; border-radius: var(--radius-card); padding: 13px 14px 12px; position: relative;
+    border: 1.5px solid transparent;
+    background:
+      linear-gradient(color-mix(in oklab, var(--text-1) 5%, transparent) 1px, transparent 1px) 0 0/22px 22px,
+      linear-gradient(90deg, color-mix(in oklab, var(--text-1) 5%, transparent) 1px, transparent 1px) 0 0/22px 22px,
+      linear-gradient(var(--surface), var(--surface)) padding-box,
+      linear-gradient(135deg, color-mix(in oklab, var(--accent) 50%, transparent), transparent 60%) border-box;
+    background-clip: padding-box, padding-box, padding-box, border-box;
+    box-shadow: 0 12px 26px -12px rgb(var(--shadow-tinta) / 0.30), 0 2px 4px -2px rgb(var(--shadow-tinta) / 0.12); }
+  .op-a .heroe .label { font-size: 11px; font-weight: 600; color: var(--text-2); }
+  .op-a .heroe .dato { font-family: var(--font-display); font-size: 40px; font-weight: 800; line-height: 1.02;
+    letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
+  .op-a .heroe .dato small { font-size: 13px; font-weight: 600; color: var(--text-2); letter-spacing: 0; }
+  .op-a .tick { margin-top: 8px; position: relative; height: 6px; border-radius: 3px;
+    background: color-mix(in oklab, var(--accent) 16%, transparent); }
+  .op-a .tick i { position: absolute; left: 0; top: 0; bottom: 0; width: 64%; border-radius: 3px;
+    background: linear-gradient(90deg, color-mix(in oklab, var(--accent) 80%, white), var(--accent)); }
+  .op-a .ticks { margin-top: 3px; height: 6px; background-image: repeating-linear-gradient(90deg, color-mix(in oklab, var(--text-1) 28%, transparent) 0 1px, transparent 1px 8px); }
+  .op-a .macros { margin-top: 8px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .op-a .macro { background: var(--surface); border-radius: 12px; padding: 8px 9px;
+    border: 1px solid color-mix(in oklab, var(--text-2) 18%, transparent); }
+  .op-a .macro b { display:block; font-family: var(--font-display); font-size: 15px; font-weight: 800; font-variant-numeric: tabular-nums; }
+  .op-a .macro span { font-size: 10px; color: var(--text-2); font-weight: 600; }
+  .op-a .macro .mb { margin-top: 5px; height: 4px; border-radius: 2px; background: color-mix(in oklab, var(--accent) 16%, transparent); overflow: hidden; }
+  .op-a .macro .mb i { display:block; height:100%; background: var(--accent); border-radius: 2px; }
+  /* momento de color valiente: bloque pleno */
+  .op-a .atrapada { margin-top: 8px; border-radius: var(--radius-card); padding: 11px 12px; display: flex; gap: 10px; align-items: center;
+    color: #F4FAF5; background: linear-gradient(160deg, #4B8062, #3D6B4F 55%, #2F5640);
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / .28), 0 12px 24px -10px color-mix(in oklab, var(--accent) 60%, transparent); }
+  .op-a .atrapada .chip-icono { width: 34px; height: 34px; border-radius: 10px; background: rgb(255 255 255 / .16); border: 1px solid rgb(255 255 255 / .22); }
+  .op-a .atrapada h4 { font-family: var(--font-display); font-size: 13.5px; font-weight: 800; }
+  .op-a .atrapada p { margin-top: 1px; font-size: 11.5px; opacity: .88; line-height: 1.35; }
+  .op-a .fila { margin-top: 8px; background: var(--surface); border-radius: var(--radius-card); padding: 9px 12px; display:flex; gap:10px; align-items:center;
+    border: 1px solid color-mix(in oklab, var(--text-2) 18%, transparent); }
+  .op-a .fila .chip-icono { width: 34px; height: 34px; border-radius: 10px; background: color-mix(in oklab, var(--accent) 11%, transparent); border: 1px solid color-mix(in oklab, var(--accent) 22%, transparent); }
+  .op-a .fila h4 { font-size: 12.5px; font-weight: 700; } .op-a .fila p { font-size: 11px; color: var(--text-2); margin-top: 1px; }
+  .op-a .cta { margin-top: 10px; height: 44px; border-radius: var(--radius-btn); gap: 8px; color: #F4FAF5;
+    background: linear-gradient(180deg, color-mix(in oklab, var(--accent) 84%, white), var(--accent));
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / .3), 0 10px 22px -6px color-mix(in oklab, var(--accent) 50%, transparent); }
+  .op-a .hero-landing .hl-cta { color: #F4FAF5; }
+
+  /* ==========================================================================
+     OPCIÓN B — "Pista de gym" (banco 4 + gamificación tipo Strava/Duolingo) — OSCURO
+     ========================================================================== */
+  .op-b {
+    --bg:#12100C; --surface:#1B1813; --text-1:#F1EDE4; --text-2:#A39B8C; --accent:#E8590C;
+    --radius-card:12px; --radius-btn:8px;
+    --font-display:'Big Shoulders Display', monospace; --font-body:'Barlow', monospace; --shadow-tinta:0 0 0;
+  }
+  .op-b .especimen .esp-display { font-family: var(--font-display); text-transform: uppercase; letter-spacing: .02em; }
+  .op-b .especimen .esp-body { font-family: var(--font-body); }
+  .op-b .telefono { background: radial-gradient(240px 200px at 10% 0%, color-mix(in oklab, var(--accent) 20%, transparent), transparent 70%), var(--bg); }
+  .op-b .pantalla { font-family: var(--font-body); color: var(--text-1); padding: 0 16px; }
+  .op-b .statusbar { color: var(--text-1); }
+  .op-b .home-indicator { background: var(--text-1); }
+  .op-b .top { margin-top: 6px; display:flex; justify-content: space-between; align-items: flex-end; }
+  .op-b h3.titulo-b { font-family: var(--font-display); font-size: 28px; font-weight: 800; text-transform: uppercase; letter-spacing: .02em; line-height: 1; }
+  .op-b .nivel { font-size: 10.5px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+  /* dispositivo ownable: esquina recortada (dorsal) */
+  .op-b .dorsal { margin-top: 10px; display:flex; align-items:center; gap: 12px; padding: 12px 14px;
+    clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 0 100%);
+    background: linear-gradient(135deg, color-mix(in oklab, var(--surface) 80%, white), var(--surface));
+    border-left: 3px solid var(--accent); box-shadow: inset 0 1px 0 rgb(255 255 255 / .06); }
+  .op-b .dorsal .anillo { position: relative; width: 82px; height: 82px; flex-shrink: 0; }
+  .op-b .dorsal .anillo .c { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .op-b .dorsal .anillo b { font-family: var(--font-display); font-size: 24px; font-weight: 800; font-variant-numeric: tabular-nums; line-height: 1; }
+  .op-b .dorsal .anillo span { font-size: 9px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--text-2); }
+  .op-b .dorsal h4 { font-family: var(--font-display); font-size: 22px; font-weight: 800; text-transform: uppercase; letter-spacing: .02em; line-height: 1.05; }
+  .op-b .dorsal p { font-size: 11.5px; color: var(--text-2); margin-top: 2px; line-height: 1.35; }
+  .op-b .xp { margin-top: 9px; }
+  .op-b .xp .xt { display:flex; justify-content: space-between; font-size: 10px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; color: var(--text-2); }
+  .op-b .xp .xb { margin-top: 4px; height: 8px; border-radius: 4px; background: rgb(255 255 255 / .08); overflow: hidden; }
+  .op-b .xp .xb i { display:block; width: 68%; height: 100%; border-radius: 4px; background: linear-gradient(90deg, #E8590C, #FF8A3D); box-shadow: 0 0 10px rgb(232 89 12 / .5); }
+  .op-b .grid2x2 { display:grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 9px; }
+  .op-b .tile { background: var(--surface); border-radius: var(--radius-card); padding: 10px 11px; border: 1px solid rgb(255 255 255 / .07); }
+  .op-b .tile.hot { border:1.5px solid transparent; background: linear-gradient(var(--surface), var(--surface)) padding-box, linear-gradient(135deg, rgb(232 89 12 / .7), transparent 65%) border-box; }
+  .op-b .t-label { display:flex; align-items:center; gap:6px; font-size: 10px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--text-2); }
+  .op-b .t-dato { margin-top: 3px; font-family: var(--font-display); font-size: 25px; font-weight: 800; font-variant-numeric: tabular-nums; line-height: 1.05; }
+  .op-b .t-dato small { font-size: 12px; color: var(--text-2); font-weight: 600; font-family: var(--font-body); }
+  .op-b .chip-icono { width: 22px; height: 22px; border-radius: 7px; background: rgb(232 89 12 / .16); color: var(--accent); }
+  .op-b .cta { margin-top: 10px; height: 44px; border-radius: var(--radius-btn); gap: 8px; color: #1A0C03; font-family: var(--font-display); font-size: 18px; font-weight: 800; text-transform: uppercase; letter-spacing: .06em;
+    background: linear-gradient(180deg, #FF7A33, #E8590C); box-shadow: inset 0 1px 0 rgb(255 255 255 / .35), 0 10px 24px -6px rgb(232 89 12 / .55); }
+  .op-b .hero-landing { background: radial-gradient(260px 160px at 100% 0%, rgb(232 89 12 / .22), transparent 70%), var(--bg); border-color: rgb(255 255 255 / .1); }
+  .op-b .hero-landing h4 { font-family: var(--font-display); font-size: 31px; font-weight: 800; text-transform: uppercase; letter-spacing: .01em; line-height: 1.02; }
+  .op-b .hero-landing .hl-cta { color: #1A0C03; font-family: var(--font-display); font-size: 18px; text-transform: uppercase; letter-spacing: .06em; }
+
+  /* ==========================================================================
+     OPCIÓN C — "Cítrica rápida" (banco 11 + sans sólida de Cal AI) — CLARO CÁLIDO
+     ========================================================================== */
+  .op-c {
+    --bg:#FBFAF6; --surface:#FFFEFB; --text-1:#232019; --text-2:#6B6555; --accent:#D97E00; --accent-text:#231A05;
+    --radius-card:16px; --radius-btn:12px;
+    --font-display:'Figtree', monospace; --font-body:'Figtree', monospace; --shadow-tinta:90 62 10;
+  }
+  .op-c .especimen .esp-display { font-family: var(--font-display); font-weight: 800; }
+  .op-c .especimen .esp-body { font-family: var(--font-body); }
+  .op-c .telefono { background: radial-gradient(260px 180px at 100% 0%, color-mix(in oklab, var(--accent) 14%, transparent), transparent 70%), var(--bg); }
+  .op-c .pantalla { font-family: var(--font-body); color: var(--text-1); padding: 0 16px; }
+  .op-c .statusbar { color: var(--text-1); }
+  .op-c .home-indicator { background: var(--text-1); }
+  .op-c .tabbar { margin-inline: -16px; }
+  /* dispositivo ownable: pastilla de dato partible */
+  .op-c .pastilla { background: var(--accent); color: var(--accent-text); border-radius: 8px; padding: 0.04em 0.3em;
+    box-decoration-break: clone; -webkit-box-decoration-break: clone; font-variant-numeric: tabular-nums; }
+  .op-c .top { margin-top: 6px; }
+  .op-c .top p { font-size: 11.5px; font-weight: 600; color: var(--text-2); }
+  .op-c h3.titulo-c { font-family: var(--font-display); font-size: 22px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.15; margin-top: 1px; }
+  .op-c .banda { margin-top: 9px; border-radius: var(--radius-card); padding: 11px 13px; color: var(--accent-text);
+    background: linear-gradient(160deg, #F2A02A, #D97E00 60%, #C26F00);
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / .4), 0 12px 24px -10px rgb(var(--shadow-tinta) / .55); display:flex; justify-content: space-between; align-items: center; }
+  .op-c .banda b { font-size: 25px; font-weight: 800; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; line-height: 1; }
+  .op-c .banda span { font-size: 11px; font-weight: 700; display:block; margin-top: 2px; opacity: .85; }
+  .op-c .banda .ok { text-align: right; font-size: 10.5px; font-weight: 700; line-height: 1.3; }
+  .op-c .timeline { margin-top: 9px; display:flex; flex-direction: column; gap: 6px; }
+  .op-c .comida { background: var(--surface); border-radius: var(--radius-card); padding: 8px 11px; display:flex; gap: 10px; align-items: center;
+    border: 1.5px solid transparent;
+    background: linear-gradient(var(--surface), var(--surface)) padding-box, linear-gradient(135deg, color-mix(in oklab, var(--accent) 30%, transparent), transparent 60%) border-box;
+    box-shadow: 0 8px 18px -12px rgb(var(--shadow-tinta) / .35); }
+  .op-c .comida .hora { width: 34px; font-size: 11px; font-weight: 700; color: var(--text-2); font-variant-numeric: tabular-nums; }
+  .op-c .comida h4 { font-size: 12.5px; font-weight: 700; line-height: 1.25; }
+  .op-c .comida p { font-size: 10.5px; color: var(--text-2); margin-top: 1px; line-height: 1.3; }
+  .op-c .comida .kc { margin-left: auto; text-align: right; font-size: 13px; font-weight: 800; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .op-c .comida .kc small { display:block; font-size: 9.5px; font-weight: 600; color: var(--text-2); }
+  .op-c .comida.pend { border: 1.5px dashed color-mix(in oklab, var(--accent) 55%, transparent); background: transparent; box-shadow: none; }
+  .op-c .chip-icono { width: 30px; height: 30px; border-radius: 10px; background: color-mix(in oklab, var(--accent) 14%, transparent); border: 1px solid color-mix(in oklab, var(--accent) 28%, transparent); color: #9A5A00; }
+  .op-c .cta { margin-top: 10px; height: 44px; border-radius: var(--radius-btn); gap: 8px; font-weight: 800; color: var(--accent-text);
+    background: linear-gradient(180deg, #F2A02A, #D97E00); box-shadow: inset 0 1px 0 rgb(255 255 255 / .4), 0 10px 22px -6px rgb(var(--shadow-tinta) / .5); }
+  .op-c .hero-landing .hl-cta { color: var(--accent-text); }
+  .op-c .hero-landing h4 { font-weight: 800; font-size: 25px; }
+  .op-c .hero-landing h4 em { background: var(--accent); color: var(--accent-text); border-radius: 8px; padding: 0 .2em; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+
+  .pie {
+    max-width: 1180px; margin: 40px auto 0; font-size: 12.5px; color: #6a6a72;
+    border-top: 1px solid #d0d0d6; padding-top: 14px; line-height: 1.6;
+  }
+</style>
+</head>
+<body>
+
+<header class="cabecera">
+  <h1>Dirección de arte — 3 opciones para NutriSnap AI</h1>
+  <p class="sub">Tu pantalla principal (el día de Mateo: calorías, macros, grasas atrapadas, racha) resuelta en tres estilos distintos. Abajo de cada una, cómo se vería la página que vende la app. Cualquiera puede ser la final. Ábrelo con internet para que carguen las letras.</p>
+  <div class="salidas" role="list">
+    <span role="listitem"><b>1 · Elegir</b> A, B o C</span>
+    <span role="listitem"><b>2 · Combinar</b> («la B pero con los colores de la A»)</span>
+    <span role="listitem"><b>3 · Pedir otras 3</b> direcciones nuevas</span>
+    <span role="listitem"><b>4 · Ajustar un detalle</b> («la A con el verde más oscuro»)</span>
+  </div>
+</header>
+<p class="aviso-fuentes">Verificación de fuentes: el nombre de cada familia (en el panel de cada opción) se muestra en su propia letra. Si se ve letra de máquina de escribir, esa fuente no cargó.</p>
+<div class="opciones">
+<section class="opcion op-a" aria-label="Opción A">
+    <div class="meta">
+      <h2><span class="letra">A</span> Salvia clínica</h2>
+      <p class="direccion">Limpia y de confianza, como un tablero de laboratorio amable: tu número del día en grande sobre una rejilla de medición, con barras de macros y un bloque verde que celebra lo que atrapaste. Mezcla lo claro y sobrio de Cal AI y Fitia.</p>
+      <p class="hipotesis"><strong>Hipótesis de conversión:</strong> Mateo desconfía de las apps que «adivinan»; un look de instrumento de medición le dice «aquí los números son serios» y empuja a probar el chequeo de grasas.</p>
+      <ul class="tokens"><li>fondo #EFF2ED · acento #3D6B4F</li><li>radio 14/10 · rejilla + ticks de medición</li></ul>
+      <div class="paleta" aria-hidden="true"><span style="background:#EFF2ED"></span><span style="background:#F9FBF7"></span><span style="background:#242B24"></span><span style="background:#5E6A60"></span><span style="background:#3D6B4F"></span></div>
+      <div class="especimen"><p class="esp-display">Chivo — AaBbÑñ 0123</p><p class="esp-body">Hanken Grotesk — El veloz murciélago hindú comía feliz cardillo y kiwi.</p></div>
+    </div>
+    <div class="telefono"><div class="statusbar"><span>9:41</span><span class="der">
+<svg width="17" height="11" viewBox="0 0 17 11" fill="currentColor" aria-hidden="true"><rect x="0" y="7" width="3" height="4" rx="0.8"/><rect x="4.5" y="5" width="3" height="6" rx="0.8"/><rect x="9" y="3" width="3" height="8" rx="0.8"/><rect x="13.5" y="0.5" width="3" height="10.5" rx="0.8"/></svg>
+<svg width="16" height="11" viewBox="0 0 16 11" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M1.5 4.2a9.5 9.5 0 0 1 13 0"/><path d="M3.8 6.6a6.2 6.2 0 0 1 8.4 0"/><path d="M6.2 9a2.8 2.8 0 0 1 3.6 0"/></svg>
+<svg width="25" height="12" viewBox="0 0 25 12" aria-hidden="true"><rect x="0.5" y="0.5" width="21" height="11" rx="3" fill="none" stroke="currentColor" opacity="0.4"/><rect x="2" y="2" width="15" height="8" rx="1.6" fill="currentColor"/><rect x="22.5" y="3.8" width="2" height="4.4" rx="1" fill="currentColor" opacity="0.4"/></svg>
+</span></div>
+      <div class="pantalla">
+        <p class="saludo">Martes · día 12 de racha</p>
+        <h3 class="titulo-a">Hola, Mateo</h3>
+        <div class="heroe">
+          <p class="label">Calorías de hoy</p>
+          <p class="dato">1.480 <small>de 2.300 kcal</small></p>
+          <div class="tick"><i></i></div><div class="ticks"></div>
+        </div>
+        <div class="macros">
+          <div class="macro"><b>112 g</b><span>Proteína · 160</span><div class="mb"><i style="width:70%"></i></div></div>
+          <div class="macro"><b>140 g</b><span>Carbos · 230</span><div class="mb"><i style="width:61%"></i></div></div>
+          <div class="macro"><b>41 g</b><span>Grasas · 70</span><div class="mb"><i style="width:59%"></i></div></div>
+        </div>
+        <div class="atrapada"><span class="chip-icono"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F4FAF5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.5s6 6.2 6 11a6 6 0 0 1-12 0c0-4.8 6-11 6-11z"/></svg></span>
+          <div><h4>Atrapaste 120 kcal de aceite</h4><p>La foto no lo veía. Tú lo dijiste por voz.</p></div></div>
+        <div class="fila"><span class="chip-icono"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3D6B4F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2c1 3 5 5 5 10a5 5 0 0 1-10 0c0-2 1-3 2-4 0 2 1 3 2 3 0-3-1-5 1-9z"/></svg></span>
+          <div><h4>Nivel 4 · Constante</h4><p>340 / 500 XP · 12 días seguidos</p></div></div>
+        <div class="cta"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F4FAF5" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3z"/><circle cx="12" cy="13" r="3.5"/></svg> Registrar comida</div>
+        <nav class="tabbar" aria-label="Navegación"><a class="activa" href="#"><span class="tab-chip"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 10 9-7 9 7v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span>Hoy</a><a href="#"><span class="tab-chip"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M7 14l4-4 3 3 5-6"/></svg></span>Progreso</a><a href="#"><span class="tab-chip"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3z"/><circle cx="12" cy="13" r="3.5"/></svg></span>Registrar</a><a href="#"><span class="tab-chip"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0zM17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg></span>Logros</a><a href="#"><span class="tab-chip"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6"/></svg></span>Perfil</a></nav>
+      </div>
+      <div class="home-indicator"></div>
+    </div>
+    <p class="rotulo-frame">Así se vería la página que vende tu app</p>
+    <div class="hero-landing"><span class="hl-badge">Chequeo de grasas ocultas</span>
+      <h4>Tu foto <em>no ve el aceite.</em> NutriSnap lo pregunta</h4><p class="hl-sub"><b>Foto, 2 segundos de voz y listo.</b> Sabes si de verdad estás en déficit.</p>
+      <div class="hl-cta">Probar 7 días</div><p class="hl-prueba">Aviso 2 días antes de cobrar · cancela en 2 toques</p></div>
+  </section>
+
+<section class="opcion op-b" aria-label="Opción B">
+    <div class="meta">
+      <h2><span class="letra">B</span> Pista de gym</h2>
+      <p class="direccion">Intensa y de competencia: fondo oscuro, naranja de pista y un dorsal con tu anillo de calorías. Puntos, nivel y racha siempre a la vista. Mezcla la energía de Strava con la gamificación de Duolingo.</p>
+      <p class="hipotesis"><strong>Hipótesis de conversión:</strong> Mateo vive de entrenar y de medirse; un look de marcador deportivo vuelve el registro un reto diario y empuja a mantener la racha (y a pagar para no perderla).</p>
+      <ul class="tokens"><li>fondo #12100C · acento #E8590C</li><li>radio 12/8 · esquina recortada (dorsal)</li></ul>
+      <div class="paleta" aria-hidden="true"><span style="background:#12100C"></span><span style="background:#1B1813"></span><span style="background:#F1EDE4"></span><span style="background:#A39B8C"></span><span style="background:#E8590C"></span></div>
+      <div class="especimen"><p class="esp-display">Big Shoulders Display — AaBbÑñ 0123</p><p class="esp-body">Barlow — El veloz murciélago hindú comía feliz cardillo y kiwi.</p></div>
+    </div>
+    <div class="telefono"><div class="statusbar"><span>9:41</span><span class="der">
+<svg width="17" height="11" viewBox="0 0 17 11" fill="currentColor" aria-hidden="true"><rect x="0" y="7" width="3" height="4" rx="0.8"/><rect x="4.5" y="5" width="3" height="6" rx="0.8"/><rect x="9" y="3" width="3" height="8" rx="0.8"/><rect x="13.5" y="0.5" width="3" height="10.5" rx="0.8"/></svg>
+<svg width="16" height="11" viewBox="0 0 16 11" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M1.5 4.2a9.5 9.5 0 0 1 13 0"/><path d="M3.8 6.6a6.2 6.2 0 0 1 8.4 0"/><path d="M6.2 9a2.8 2.8 0 0 1 3.6 0"/></svg>
+<svg width="25" height="12" viewBox="0 0 25 12" aria-hidden="true"><rect x="0.5" y="0.5" width="21" height="11" rx="3" fill="none" stroke="currentColor" opacity="0.4"/><rect x="2" y="2" width="15" height="8" rx="1.6" fill="currentColor"/><rect x="22.5" y="3.8" width="2" height="4.4" rx="1" fill="currentColor" opacity="0.4"/></svg>
+</span></div>
+      <div class="pantalla">
+        <div class="top"><h3 class="titulo-b">Hoy</h3><span class="nivel">Nivel 4 · Constante</span></div>
+        <div class="dorsal">
+          <div class="anillo"><svg width="82" height="82" viewBox="0 0 82 82"><circle cx="41" cy="41" r="34" fill="none" stroke-width="8" stroke="rgba(255,255,255,.08)"/><circle cx="41" cy="41" r="34" fill="none" stroke-width="8" stroke="#E8590C" stroke-linecap="round" stroke-dasharray="213.6" stroke-dashoffset="76.9" transform="rotate(-90 41 41)"/></svg>
+            <div class="c"><b>64%</b><span>del día</span></div></div>
+          <div><h4>1.480 kcal</h4><p>Te quedan 820. Cena con proteína y vas en rango.</p></div>
+        </div>
+        <div class="xp"><div class="xt"><span>XP · <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#E8590C" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg> +35 hoy</span><span>340 / 500</span></div><div class="xb"><i></i></div></div>
+        <div class="grid2x2">
+          <div class="tile hot"><p class="t-label"><span class="chip-icono"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.5s6 6.2 6 11a6 6 0 0 1-12 0c0-4.8 6-11 6-11z"/></svg></span>Grasas atrapadas</p><p class="t-dato">640<small> kcal/sem</small></p></div>
+          <div class="tile"><p class="t-label"><span class="chip-icono"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 7v10M18 7v10M3 10v4M21 10v4M6 12h12"/></svg></span>Proteína</p><p class="t-dato">112<small>/160 g</small></p></div>
+          <div class="tile"><p class="t-label"><span class="chip-icono"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2c1 3 5 5 5 10a5 5 0 0 1-10 0c0-2 1-3 2-4 0 2 1 3 2 3 0-3-1-5 1-9z"/></svg></span>Racha</p><p class="t-dato">12<small> días</small></p></div>
+          <div class="tile"><p class="t-label"><span class="chip-icono"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0zM17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg></span>Logro</p><p class="t-dato" style="font-size:17px;line-height:1.1">Cazador de grasas</p></div>
+        </div>
+        <div class="cta"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1A0C03" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3z"/><circle cx="12" cy="13" r="3.5"/></svg> Registrar</div>
+        <nav class="tabbar" aria-label="Navegación"><a class="activa" href="#"><span class="tab-chip"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 10 9-7 9 7v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span>Hoy</a><a href="#"><span class="tab-chip"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M7 14l4-4 3 3 5-6"/></svg></span>Progreso</a><a href="#"><span class="tab-chip"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3z"/><circle cx="12" cy="13" r="3.5"/></svg></span>Registrar</a><a href="#"><span class="tab-chip"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0zM17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg></span>Logros</a><a href="#"><span class="tab-chip"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6"/></svg></span>Perfil</a></nav>
+      </div>
+      <div class="home-indicator"></div>
+    </div>
+    <p class="rotulo-frame">Así se vería la página que vende tu app</p>
+    <div class="hero-landing"><span class="hl-badge">Racha · XP · Logros</span>
+      <h4>Atrapa el aceite. <em>Gana</em> el día.</h4><p class="hl-sub"><b>Cada comida suma.</b> Foto, voz y escáner te dan puntos, nivel y racha mientras llegas a tu meta.</p>
+      <div class="hl-cta">Empezar mi racha</div><p class="hl-prueba">Aviso 2 días antes de cobrar · cancela en 2 toques</p></div>
+  </section>
+
+<section class="opcion op-c" aria-label="Opción C">
+    <div class="meta">
+      <h2><span class="letra">C</span> Cítrica rápida</h2>
+      <p class="direccion">Rápida y luminosa: tu día contado comida por comida, con un bloque mandarina que te dice cuánto te falta y pastillas de color en los datos clave. Mezcla la sans sólida y limpia de Cal AI con un toque cálido propio.</p>
+      <p class="hipotesis"><strong>Hipótesis de conversión:</strong> Mateo odia perder minutos; un look de utilidad instantánea (casi sin texto, datos en pastillas) refuerza la promesa de «3 segundos» y baja la fricción hacia la prueba gratis.</p>
+      <ul class="tokens"><li>fondo #FBFAF6 · acento #D97E00</li><li>radio 16/12 · pastilla de dato</li></ul>
+      <div class="paleta" aria-hidden="true"><span style="background:#FBFAF6"></span><span style="background:#FFFEFB"></span><span style="background:#232019"></span><span style="background:#6B6555"></span><span style="background:#D97E00"></span></div>
+      <div class="especimen"><p class="esp-display">Figtree — AaBbÑñ 0123</p><p class="esp-body">Figtree — El veloz murciélago hindú comía feliz cardillo y kiwi.</p></div>
+    </div>
+    <div class="telefono"><div class="statusbar"><span>9:41</span><span class="der">
+<svg width="17" height="11" viewBox="0 0 17 11" fill="currentColor" aria-hidden="true"><rect x="0" y="7" width="3" height="4" rx="0.8"/><rect x="4.5" y="5" width="3" height="6" rx="0.8"/><rect x="9" y="3" width="3" height="8" rx="0.8"/><rect x="13.5" y="0.5" width="3" height="10.5" rx="0.8"/></svg>
+<svg width="16" height="11" viewBox="0 0 16 11" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M1.5 4.2a9.5 9.5 0 0 1 13 0"/><path d="M3.8 6.6a6.2 6.2 0 0 1 8.4 0"/><path d="M6.2 9a2.8 2.8 0 0 1 3.6 0"/></svg>
+<svg width="25" height="12" viewBox="0 0 25 12" aria-hidden="true"><rect x="0.5" y="0.5" width="21" height="11" rx="3" fill="none" stroke="currentColor" opacity="0.4"/><rect x="2" y="2" width="15" height="8" rx="1.6" fill="currentColor"/><rect x="22.5" y="3.8" width="2" height="4.4" rx="1" fill="currentColor" opacity="0.4"/></svg>
+</span></div>
+      <div class="pantalla">
+        <div class="top"><p>Martes 6 de agosto</p><h3 class="titulo-c">Te faltan <span class="pastilla">820 kcal</span></h3></div>
+        <div class="banda"><div><b>48 g</b><span>de proteína para tu meta</span></div><div class="ok">Atrapaste<br>120 kcal de aceite</div></div>
+        <div class="timeline">
+          <div class="comida"><span class="hora">8:10</span><div><h4>Avena con huevos</h4><p>Foto · 3 s</p></div><span class="kc">520<small>kcal</small></span></div>
+          <div class="comida"><span class="hora">13:05</span><div><h4>Pechuga con arroz</h4><p>Foto + voz: <b>+1 cda de aceite</b></p></div><span class="kc">640<small>kcal</small></span></div>
+          <div class="comida"><span class="hora">16:30</span><div><h4>Batido de proteína</h4><p>Escáner de código</p></div><span class="kc">210<small>kcal</small></span></div>
+          <div class="comida pend"><span class="hora">20:00</span><div><h4>Cena</h4><p>Foto o voz, 3 segundos</p></div><span class="chip-icono"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v4"/></svg></span></div>
+        </div>
+        <div class="cta"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#231A05" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3z"/><circle cx="12" cy="13" r="3.5"/></svg> Registrar comida</div>
+        <nav class="tabbar" aria-label="Navegación"><a class="activa" href="#"><span class="tab-chip"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 10 9-7 9 7v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span>Hoy</a><a href="#"><span class="tab-chip"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M7 14l4-4 3 3 5-6"/></svg></span>Progreso</a><a href="#"><span class="tab-chip"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3z"/><circle cx="12" cy="13" r="3.5"/></svg></span>Registrar</a><a href="#"><span class="tab-chip"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0zM17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg></span>Logros</a><a href="#"><span class="tab-chip"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6"/></svg></span>Perfil</a></nav>
+      </div>
+      <div class="home-indicator"></div>
+    </div>
+    <p class="rotulo-frame">Así se vería la página que vende tu app</p>
+    <div class="hero-landing"><span class="hl-badge">Foto + voz + escáner</span>
+      <h4>Registra en <em>3 segundos.</em> Sin que se te escape el aceite</h4><p class="hl-sub"><b>Foto, 2 segundos de voz y listo.</b> Tu déficit queda bajo control, sin cobros sorpresa.</p>
+      <div class="hl-cta">Probar 7 días gratis</div><p class="hl-prueba">Aviso 2 días antes de cobrar · cancela en 2 toques</p></div>
+  </section>
+
+</div>
+
+<footer class="pie">
+  Gates antes de mostrar esta página (54): TEST DE DIVERGENCIA — en escala de grises se ven 3
+  diseños distintos (si solo cambia el acento, no son 3 opciones: rehacer) · fuentes verificadas
+  clase por clase en el espécimen (el fallback monospace delata la que no cargó) · mockups LLENOS
+  con datos del dominio real Y tab bar visible, cero emojis (todo ícono es SVG inline), materiales
+  premium presentes (hairline, chip, sombra tintada) · cada opción con su HERO DE LANDING aplicado
+  (palabra que vende en acento + botón valiente) y su muestra de paleta · el marcador
+  data-kit="abc-v2" del &lt;html&gt; intacto (Regla Dura #0 — el hook lo verifica). La opción
+  elegida y las descartadas se anotan en FICHA-ARTE.md (sección "Trazabilidad") y ESTADO.md.
+</footer>
+
+</body>
+</html>
