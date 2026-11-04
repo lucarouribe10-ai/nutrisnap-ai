@@ -29,10 +29,10 @@ export default function Page() {
         ctaLabel={CTA_LABEL}
         ctaHref={CTA_HREF}
         socialProof={
-          <span className="inline-flex flex-wrap justify-center gap-x-3 gap-y-1">
-            <span className="whitespace-nowrap">Garantía de Cero Sorpresas</span>
-            <span className="whitespace-nowrap">Prueba de 3 días</span>
-            <span className="whitespace-nowrap">Reembolso de 7 días</span>
+          <span className="mx-auto grid max-w-[340px] grid-cols-3 divide-x divide-[color-mix(in_oklab,var(--text-secondary)_30%,transparent)] text-center text-[12px] leading-tight">
+            <span className="px-2">Garantía de Cero Sorpresas</span>
+            <span className="px-2">Prueba de 3 días</span>
+            <span className="px-2">Reembolso de 7 días</span>
           </span>
         }
         visual={<ChequeoDemo />}
@@ -109,10 +109,8 @@ export default function Page() {
           features: [
             'Fotos con Chequeo de Grasas Ocultas (hasta 8 al día)',
             'Corrección por voz en 2 segundos',
-            'Escáner de códigos incluido (gratis siempre)',
             'Puntos, logros y tu camino a la meta',
             'Reporte semanal de grasas atrapadas',
-            'Garantía de Cero Sorpresas: reembolso de 7 días',
           ],
         }}
         mensual={{
@@ -121,11 +119,9 @@ export default function Page() {
           ctaLabel: 'Probar con el plan mensual',
           ctaHref: '/onboarding?plan=mensual',
           features: [
-            'Fotos con Chequeo de Grasas Ocultas (hasta 8 al día)',
-            'Corrección por voz en 2 segundos',
-            'Escáner de códigos incluido (gratis siempre)',
-            'Puntos, logros y tu camino a la meta',
-            'Reporte semanal de grasas atrapadas',
+            'Todo lo del plan anual, mes a mes',
+            'Cancelas cuando quieras, en 2 toques',
+            'El escáner de códigos sigue gratis siempre',
             'Garantía de Cero Sorpresas: reembolso de 7 días',
           ],
         }}

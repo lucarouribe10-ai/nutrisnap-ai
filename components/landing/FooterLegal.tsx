@@ -37,7 +37,7 @@ export function FooterLegal({ appName, logo, enlaces, soporteEmail, anio }: Foot
             {appName}
           </p>
           <nav aria-label="Enlaces legales">
-            <ul className="flex flex-wrap items-center gap-x-1 gap-y-0">
+            <ul className="flex flex-wrap items-center gap-x-3 gap-y-0">
               {enlaces.map((e, i) => (
                 <li key={e.href} className="flex items-center">
 
@@ -48,11 +48,6 @@ export function FooterLegal({ appName, logo, enlaces, soporteEmail, anio }: Foot
                   >
                     {e.label}
                   </a>
-                  {i < enlaces.length - 1 && (
-                    <span aria-hidden="true" className="pl-1 text-[var(--text-tertiary)]">
-                      ·
-                    </span>
-                  )}
                 </li>
               ))}
             </ul>

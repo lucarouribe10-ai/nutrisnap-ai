@@ -93,7 +93,7 @@ export function CtaFinal({
         {recap && (
           <motion.p
             variants={item}
-            className="mt-3 text-[13px]"
+            className="mt-3 text-balance text-[13px]"
             style={{ color: 'color-mix(in oklab, var(--bg) 65%, transparent)' }}
           >
             {recap}
