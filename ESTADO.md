@@ -80,6 +80,8 @@ Registro de calorías y macros por FOTO con IA + corrección por VOZ + escáner 
 
 - Garantía (decidida por el usuario 2026-11-03): reembolso de 7 días tras el primer cobro, sin preguntas (un correo), + 7 días de prueba gratis. Configurar Hotmart con 7 días ANTES de prometerlo en la landing.
 
+- País de lanzamiento (decidido por el usuario 2026-11-03): COLOMBIA. Español neutro con tuteo, ejemplos de comida colombianos (arepa, bandeja paisa light, huevos pericos, pollo con arroz, aguacate, jugo de lulo), precios mostrados en USD + referencia COP pendiente de verificar con Hotmart.
+
 ## Decisiones técnicas (Sesión 1 — internas, 2026-11-03)
 - Framework: Next.js 16 App Router (landing con SEO + rutas API/BFF para IA y webhook). Tailwind v4. PWA instalable (cámara, micrófono, escáner por navegador).
 - Backend: Supabase (Postgres + Auth + RLS). Auth: vista previa anónima → paywall → login (magic link + Google). Hosting: Vercel. Cobro: Hotmart (webhook verificado). Email: Resend.
