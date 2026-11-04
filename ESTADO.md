@@ -64,8 +64,16 @@ Registro de calorías y macros por FOTO con IA + corrección por VOZ + escáner 
 - Voz: definir motor de voz→texto y dialectos LATAM.
 - Promesa "precisión exacta" es riesgosa: suavizar en copy (regla de no inventar datos).
 
-## Dirección de Arte / Avatar / Monetización / Decisiones técnicas
-- Pendientes (Sesiones 1-2). Ninguna decidida aún.
+## Decisiones técnicas (Sesión 1 — internas, 2026-11-03)
+- Framework: Next.js 16 App Router (landing con SEO + rutas API/BFF para IA y webhook). Tailwind v4. PWA instalable (cámara, micrófono, escáner por navegador).
+- Backend: Supabase (Postgres + Auth + RLS). Auth: vista previa anónima → paywall → login (magic link + Google). Hosting: Vercel. Cobro: Hotmart (webhook verificado). Email: Resend.
+- IA: BFF en servidor, nunca claves en el navegador. Foto comprimida en el dispositivo → modelo de visión barato → JSON de platos/macros + lista de "preguntas de grasas ocultas". Voz: audio corto → transcripción servidor → ajuste. SÍNCRONO (objetivo <5 s); sin cola. Fotos originales no se guardan (solo miniatura). Kill-switch con tabla ai_calls y tope 8 fotos/día.
+- Datos (tablas): profiles, entitlements, meals, meal_items, user_habits (defaults de aceite/cocido-crudo), daily_targets, streaks, ai_calls, barcode_cache. RLS por user_id en todas.
+- Escáner: base abierta (Open Food Facts) + plan B lectura de etiqueta por IA; cobertura LATAM a medir.
+- Idioma UI: español neutro mono-idioma.
+
+## Avatar y venta: FICHA-AVATAR.md en BORRADOR (19 frases reales en docs/proyecto/VOC-resenas.md) — pendiente OK del usuario.
+## Hallazgo mayor (VoC): Fitia domina el español (72k calificaciones MX, 4.88★) pero sus peores reseñas son COBROS SORPRESA tras trial y paywall tras onboarding largo. MFP: escáner de pago y app lenta. Oportunidad: transparencia de cobro + onboarding corto + chequeo de grasas.
 
 ## Secuencia maestra de construcción
 - Estado: sin iniciar (pendiente). Ruta: `/` → `/onboarding` → `/paywall` → `/login` → `/app`
