@@ -23,6 +23,16 @@ Registro de calorías y macros por FOTO con IA + corrección por VOZ + escáner 
 - Implicación: el diferenciador NO puede ser "somos los únicos con voz/escáner". Debe ser velocidad + corrección por voz en español local + precio + simplicidad. Replantear en Sesión 1 (posicionamiento) y verificar precios reales en las stores.
 - Pendiente: precio real de Fitia, Cal AI y MFP desde las stores; reseñas 1-2★ con cita; cobertura LATAM del escáner.
 
+## IDEA AJUSTADA v2 (propuesta 2026-11-03 — pendiente OK del usuario)
+- Cuña: "la foto NO te miente en las grasas ocultas". Dato: estudio NIH citado por varias fuentes → apps de foto subestiman 250-345 kcal/comida, la grasa es el mayor error (fuentes de proveedores; verificar original).
+- Mecanismo: Foto → la app detecta el tipo de plato y PREGUNTA lo que la cámara no ve (aceite, aderezo, mantequilla, queso) → respuesta en 1 toque o por voz → recuerda tus hábitos (menos toques con el tiempo).
+- Escáner: se mantiene como función base; si el código no existe en la base abierta (cobertura LATAM baja/inconsistente), plan B = foto de la etiqueta nutricional leída por IA.
+- Retención: racha + reporte semanal "grasas ocultas que atrapaste" (lo que la foto sola habría fallado).
+- Posicionamiento: velocidad + honestidad de precisión + precio bajo. YA NO: "Cal AI sin escáner", "$20/mes", "única con voz/escáner", "precisión exacta".
+- Precio: propuesto US$5.99-6.99/mes · US$39.99/año (se fija con unit economics). Fitia (competidor LATAM): trial 3 días solo en plan anual.
+- Pendiente de evidencia: platos latinos mal reconocidos (solo lo afirma Fitia en su marketing), precios reales por tienda, reseñas con cita.
+- Riesgo mayor: mercado con gigantes (MFP+Cal AI) y Fitia en español → el foso es distribución (TikTok + afiliados), no la tecnología.
+
 ## Avatar (resumen; la FICHA-AVATAR.md se completa en Sesión 1)
 - Mateo Torres, 28, ingeniero de software híbrido, gym 4-5x/sem, quiere abdomen marcado sin perder músculo.
 - Dolor #1: "Tardo más registrando el plato que comiéndomelo." Deseo #1: foto + 2 seg de voz y seguir con su vida.
