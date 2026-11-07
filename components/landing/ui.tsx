@@ -194,6 +194,7 @@ export function StickyCtaMobile({
   const [ofertaVisible, setOfertaVisible] = useState(false);
   const [ofertaVista, setOfertaVista] = useState(false);
   const [finalVisible, setFinalVisible] = useState(false);
+  const [inlineVisibles, setInlineVisibles] = useState(0);
 
   useEffect(() => {
     const observar = (id: string, onChange: (visible: boolean) => void): IntersectionObserver | null => {
@@ -215,14 +216,25 @@ export function StickyCtaMobile({
       if (v) setOfertaVista(true);
     });
     const c = observar(ctaFinalId, setFinalVisible);
+    // CTAs inline (data-cta-inline): mientras uno está en pantalla, el sticky se oculta (sin botones duplicados)
+    const vis = new Set<Element>();
+    const ioInline = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) (e.isIntersecting ? vis.add(e.target) : vis.delete(e.target));
+        setInlineVisibles(vis.size);
+      },
+      { threshold: 0.3 }
+    );
+    document.querySelectorAll('[data-cta-inline]').forEach((el) => ioInline.observe(el));
     return () => {
       a?.disconnect();
       b?.disconnect();
       c?.disconnect();
+      ioInline.disconnect();
     };
   }, [heroId, ofertaId, ctaFinalId]);
 
-  const visible = !heroVisible && !ofertaVisible && !finalVisible;
+  const visible = !heroVisible && !ofertaVisible && !finalVisible && inlineVisibles === 0;
 
   return (
     <AnimatePresence>

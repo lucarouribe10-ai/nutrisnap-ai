@@ -140,7 +140,7 @@ export function AppPorDentro({
                 onClick={() => irA(i)}
                 aria-label={`Ir a: ${f.label}`}
                 aria-current={activo === i ? 'true' : undefined}
-                className="flex size-6 items-center justify-center [touch-action:manipulation]"
+                className="flex size-11 items-center justify-center [touch-action:manipulation]"
               >
                 <span
                   className={`size-2 rounded-full transition-colors duration-200 ${
@@ -155,7 +155,7 @@ export function AppPorDentro({
         </motion.div>
 
         {/* CTA mid-page (reglas de CTA de 19): tras la prueba visual, cuando la confianza es alta */}
-        <motion.div variants={item} className="mt-10 flex justify-center">
+        <motion.div variants={item} data-cta-inline className="mt-10 flex justify-center">
           <CtaButton href={ctaHref}>{ctaLabel}</CtaButton>
         </motion.div>
       </motion.div>

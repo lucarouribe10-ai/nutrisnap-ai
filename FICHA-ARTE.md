@@ -36,4 +36,6 @@
 - Modo CLARO derivado por: avatar urbano que registra de día/comida (luz natural), líderes del nicho claros (Cal AI, Fitia) y la preferencia del usuario por el visual de la A
 - Pendientes de calidad: fotos del mockup son de Wikimedia (la app usará propias/licenciadas); líderes sin capturas reales
 
+- EXCEPCIÓN DOCUMENTADA (2026-11-07): en la landing, el bloque de CTA final es una sección INVERTIDA (fondo #242B24) con acento claro #9AD0AE (token --accent-on-dark) para cumplir contraste AA; el acento #3D6B4F sobre ese fondo daba ~2.4:1. Solo aplica a esa sección.
+
 ## Idioma UI: español neutro (tuteo) · Cierre: 2026-11-03 · Aprobada por el usuario: SÍ

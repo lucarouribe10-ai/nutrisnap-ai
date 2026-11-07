@@ -22,6 +22,8 @@ export interface PlanOferta {
   descomposicionDia?: string;
   ctaLabel: string;
   ctaHref: string;
+  /** Línea bajo el CTA (p. ej. garantía y aviso de cobro). */
+  notaCta?: string;
   /** 4-6 features en lenguaje de RESULTADO, máx 12 palabras c/u. */
   features: string[];
 }
@@ -174,6 +176,7 @@ export function Oferta({
                   <CtaButton href={anual.ctaHref} fullMobile>
                     {anual.ctaLabel}
                   </CtaButton>
+                  {anual.notaCta && <p className="mt-3 text-center text-[13px] text-[var(--text-secondary)]">{anual.notaCta}</p>}
                 </div>
               </div>
             </Hairline>
@@ -199,6 +202,7 @@ export function Oferta({
             >
               {mensual.ctaLabel}
             </motion.a>
+            {mensual.notaCta && <p className="mt-3 text-center text-[13px] text-[var(--text-secondary)]">{mensual.notaCta}</p>}
           </motion.div>
         </div>
       </motion.div>

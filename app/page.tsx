@@ -4,7 +4,7 @@ import { CreditCard, PenLine, ScanEye, Scale, Timer } from 'lucide-react';
 import { Hero } from '@/components/landing/Hero';
 import { Problema } from '@/components/landing/Problema';
 import { AgitacionCifras } from '@/components/landing/AgitacionCifras';
-import { Droplet, CalendarDays } from 'lucide-react';
+import { Droplet, CalendarDays, ShieldCheck } from 'lucide-react';
 import { CtaFila } from '@/components/landing/CtaFila';
 import { Isotipo } from '@/components/landing/Isotipo';
 import { Solucion } from '@/components/landing/Solucion';
@@ -33,17 +33,20 @@ export default function Page() {
         ctaLabel={CTA_LABEL}
         ctaHref={CTA_HREF}
         socialProof={
-          <span className="mx-auto grid max-w-[340px] grid-cols-3 divide-x divide-[color-mix(in_oklab,var(--text-secondary)_30%,transparent)] text-center text-[12px] leading-tight">
-            <span className="px-2">Garantía de Cero Sorpresas</span>
-            <span className="px-2">Prueba de 3 días</span>
-            <span className="px-2">Reembolso de 7 días</span>
-          </span>
+          <ul className="mx-auto flex w-fit flex-col gap-1 text-left text-[14px]">
+            {['Garantía de Cero Sorpresas', 'Prueba de 3 días, aviso antes de cobrar', 'Reembolso de 7 días, sin preguntas'].map((t) => (
+              <li key={t} className="flex items-center gap-2">
+                <ShieldCheck size={16} strokeWidth={2.2} aria-hidden="true" className="shrink-0 text-[var(--accent)]" />
+                <span>{t}</span>
+              </li>
+            ))}
+          </ul>
         }
         visual={<ChequeoDemo />}
       />
 
       <Problema
-        titulo="¿Te suena?"
+        titulo="Registrar tu comida no debería ser tan lento"
         preguntas={[
           { icon: Timer, textoMarked: '¿Tardas más registrando el plato que [b]comiéndotelo[/b]?' },
           { icon: ScanEye, textoMarked: '¿Tu app dice 440 kcal y [b]no vio el aceite[/b]?' },
@@ -54,10 +57,11 @@ export default function Page() {
       />
 
       <AgitacionCifras
+        tituloMarked="Lo que tu foto [acento]no cuenta[/acento]"
         cifras={[
-          { icon: Droplet, dato: '120', unidad: 'kcal', etiquetaMarked: 'en [b]una cucharada de aceite[/b] que la cámara no ve' },
-          { icon: CalendarDays, dato: '3.600', unidad: 'kcal', etiquetaMarked: 'al mes, si sumas [b]una al día[/b]' },
-          { icon: Scale, dato: '≈ 0,5', unidad: 'kg', etiquetaMarked: 'de grasa que [b]tu déficit no cuenta[/b]' },
+          { icon: Droplet, valor: 120, unidad: 'kcal', etiquetaMarked: 'en [b]una cucharada de aceite[/b] que la cámara no ve' },
+          { icon: CalendarDays, valor: 3600, unidad: 'kcal', etiquetaMarked: 'al mes, si sumas [b]una al día[/b]' },
+          { icon: Scale, valor: 0.5, decimales: 1, prefijo: '≈ ', unidad: 'kg', etiquetaMarked: 'de grasa que [b]tu déficit no cuenta[/b]' },
         ]}
         cierreMarked="Meses de gimnasio con [b]números incompletos[/b]."
         contraste={{
@@ -116,6 +120,7 @@ export default function Page() {
           descomposicionDia: 'menos de US$0.14 al día',
           ctaLabel: CTA_LABEL,
           ctaHref: '/onboarding?plan=anual',
+          notaCta: 'Aviso 1 día antes de cobrar · Reembolso de 7 días',
           features: [
             'Fotos con Chequeo de Grasas Ocultas (hasta 8 al día)',
             'Corrección por voz en 2 segundos',
@@ -128,18 +133,19 @@ export default function Page() {
           precioMes: 'US$7.99',
           ctaLabel: 'Probar con el plan mensual',
           ctaHref: '/onboarding?plan=mensual',
+          notaCta: 'Aviso 1 día antes de cobrar · Reembolso de 7 días',
           features: [
             'Todo lo del plan anual, mes a mes',
             'Cancelas cuando quieras, en 2 toques',
             'El escáner de códigos sigue gratis siempre',
-            'Garantía de Cero Sorpresas: reembolso de 7 días',
+            'Fotos con Chequeo de Grasas Ocultas (hasta 8 al día)',
           ],
         }}
       />
 
       <Garantia
         nombre="La Garantía de Cero Sorpresas"
-        condicionMarked="Te avisamos 1 día antes de cobrar. Si igual no te sirve, un correo y [b]te devolvemos todo[/b]: tienes 7 días de reembolso. Sin preguntas."
+        condicionMarked="Te avisamos 1 día antes de cobrar. Si no te sirve, un correo y [b]te devolvemos todo[/b]. 7 días, sin preguntas."
         pisoLegal="El reembolso se tramita a través de Hotmart"
       />
 
