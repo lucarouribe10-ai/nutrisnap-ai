@@ -41,6 +41,8 @@ export interface OfertaProps {
     badge?: string;
   };
   mensual: PlanOferta;
+  /** Línea honesta bajo el título (p. ej. acceso anticipado). */
+  aviso?: string;
   /** Stack de valor Hormozi opcional — total TACHADO del stack, jamás precio falso. */
   stack?: {
     lineas: { resultado: string; valor: string }[];
@@ -98,6 +100,7 @@ export function Oferta({
   anual,
   mensual,
   stack,
+  aviso,
   id = 'oferta',
 }: OfertaProps) {
   warnCopy('Oferta → título', tituloMarked, 8);
@@ -111,6 +114,9 @@ export function Oferta({
           <h2 className="text-balance text-[30px] font-bold leading-[1.15] text-[var(--text-primary)] [font-family:var(--font-display)] md:text-[40px]">
             <MarkedCopy text={tituloMarked} />
           </h2>
+          {aviso && (
+            <p className="mx-auto mt-4 max-w-[440px] rounded-full bg-[var(--chip-bg)] px-4 py-2 text-[13px] font-semibold text-[var(--accent)]">{aviso}</p>
+          )}
         </motion.div>
 
         {/* Stack de valor Hormozi — ARRIBA de los planes; el tachado es del TOTAL

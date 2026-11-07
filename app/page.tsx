@@ -3,7 +3,10 @@
 import { CreditCard, PenLine, ScanEye, Scale, Timer } from 'lucide-react';
 import { Hero } from '@/components/landing/Hero';
 import { Problema } from '@/components/landing/Problema';
-import { Agitacion } from '@/components/landing/Agitacion';
+import { AgitacionCifras } from '@/components/landing/AgitacionCifras';
+import { Droplet, CalendarDays } from 'lucide-react';
+import { CtaFila } from '@/components/landing/CtaFila';
+import { Isotipo } from '@/components/landing/Isotipo';
 import { Solucion } from '@/components/landing/Solucion';
 import { AppPorDentro } from '@/components/landing/AppPorDentro';
 import { Oferta } from '@/components/landing/Oferta';
@@ -23,6 +26,7 @@ export default function Page() {
     <div className="min-h-dvh bg-[var(--bg)] text-[var(--text-primary)] [font-family:var(--font-body)]">
       <Hero
         appName="NutriSnap AI"
+        logo={<Isotipo size={32} />}
         loginHref="/entrar"
         h1Marked="Tu foto no ve el [acento]aceite[/acento]. NutriSnap sí lo pregunta"
         subtitleMarked="El [b]Chequeo de Grasas Ocultas[/b] completa tu registro en segundos"
@@ -49,12 +53,13 @@ export default function Page() {
         ]}
       />
 
-      <Agitacion
-        frases={[
-          'Una cucharada de aceite suma [acento]120 kcal[/acento] que la cámara no puede ver.',
-          'Una al día son [b]3.600 kcal[/b] al mes: casi medio kilo de grasa que no cuentas.',
-          'Meses de gimnasio con [b]números incompletos[/b] y un déficit que no sabes si existe.',
+      <AgitacionCifras
+        cifras={[
+          { icon: Droplet, dato: '120', unidad: 'kcal', etiquetaMarked: 'en [b]una cucharada de aceite[/b] que la cámara no ve' },
+          { icon: CalendarDays, dato: '3.600', unidad: 'kcal', etiquetaMarked: 'al mes, si sumas [b]una al día[/b]' },
+          { icon: Scale, dato: '≈ 0,5', unidad: 'kg', etiquetaMarked: 'de grasa que [b]tu déficit no cuenta[/b]' },
         ]}
+        cierreMarked="Meses de gimnasio con [b]números incompletos[/b]."
         contraste={{
           labelHoy: 'Hoy',
           hoy: 'Tu app dice 1.900 kcal. Con el aceite y los aderezos, fueron más.',
@@ -74,11 +79,15 @@ export default function Page() {
         ]}
         antesDespues={{
           labelAntes: 'Antes',
-          antes: 'La foto dice 440 kcal y se olvida del aceite.',
+          antesDato: '440',
+          antes: 'La foto se olvida del aceite.',
           labelDespues: 'Después',
-          despues: '560 kcal con el aceite: el Chequeo atrapó 120 que no se veían.',
+          despuesDato: '560',
+          despues: 'El Chequeo atrapó 120 kcal que no se veían.',
         }}
       />
+
+      <CtaFila label={CTA_LABEL} href={CTA_HREF} nota="Sin tarjeta para tu primera foto · 3 días de prueba después" />
 
       <AppPorDentro
         tituloMarked="Tu día, [acento]claro de un vistazo[/acento]"
@@ -97,6 +106,7 @@ export default function Page() {
       <Oferta
         tituloMarked="Empieza gratis. Sigue por [acento]US$4.17 al mes[/acento]"
         trialDias={3}
+        aviso="Acceso anticipado: estamos terminando la app y estás entre los primeros en probarla."
         anual={{
           nombre: 'Anual',
           badge: 'MEJOR PRECIO',
@@ -133,6 +143,8 @@ export default function Page() {
         pisoLegal="El reembolso se tramita a través de Hotmart"
       />
 
+      <CtaFila label={CTA_LABEL} href={CTA_HREF} nota="Aviso 1 día antes de cobrar · Reembolso de 7 días" />
+
       <Faq
         items={[
           { pregunta: '¿La IA no me inventará las calorías?', respuestaMarked: 'Es una estimación y te lo decimos. Por eso el [b]Chequeo de Grasas Ocultas[/b] pregunta lo que la cámara no ve y tú ajustas en segundos.' },
@@ -155,6 +167,7 @@ export default function Page() {
 
       <FooterLegal
         appName="NutriSnap AI"
+        logo={<Isotipo size={20} />}
         anio={2026}
         enlaces={[
           { label: 'Privacidad', href: '/privacidad' },

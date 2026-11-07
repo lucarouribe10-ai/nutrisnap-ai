@@ -31,6 +31,9 @@ export interface SolucionProps {
   pasos: [PasoMecanismo, PasoMecanismo, PasoMecanismo];
   /** Antes/después opcional: split 2 columnas, el "después" con acento sutil. */
   antesDespues?: {
+    /** Cifra grande opcional de cada lado (comparación visual, no prosa). */
+    antesDato?: string;
+    despuesDato?: string;
     labelAntes: string;
     antes: string;
     labelDespues: string;
@@ -101,21 +104,28 @@ export function Solucion({
         </ol>
 
         {antesDespues && (
-          <motion.div variants={item} className="mt-10 grid grid-cols-1 gap-3 sm:grid-cols-2">
-            <div className="rounded-[var(--radius-card)] bg-[var(--surface-2)] p-5">
+          <motion.div variants={item} className="mt-10 grid grid-cols-2 gap-3">
+            <div className="rounded-[var(--radius-card)] bg-[var(--surface-2)] p-4">
               <p className="text-[12px] font-semibold uppercase tracking-[0.08em] text-[var(--text-tertiary)]">
                 {antesDespues.labelAntes}
               </p>
-              <p className="mt-2 text-[15px] leading-snug text-[var(--text-secondary)]">{antesDespues.antes}</p>
+              {antesDespues.antesDato && (
+                <p className="mt-2 text-[36px] font-extrabold leading-none tabular-nums text-[var(--text-secondary)] line-through decoration-2 [font-family:var(--font-display)]">
+                  {antesDespues.antesDato}
+                </p>
+              )}
+              <p className="mt-2 text-[14px] leading-snug text-[var(--text-secondary)]">{antesDespues.antes}</p>
             </div>
-            {/* El "después" con acento sutil de fondo (4-6%) */}
-            <div className="rounded-[var(--radius-card)] bg-[color-mix(in_oklab,var(--accent)_6%,transparent)] p-5">
+            <div className="rounded-[var(--radius-card)] bg-[color-mix(in_oklab,var(--accent)_8%,transparent)] p-4 ring-1 ring-[color-mix(in_oklab,var(--accent)_30%,transparent)]">
               <p className="text-[12px] font-semibold uppercase tracking-[0.08em] text-[var(--accent)]">
                 {antesDespues.labelDespues}
               </p>
-              <p className="mt-2 text-[15px] font-medium leading-snug text-[var(--text-primary)]">
-                {antesDespues.despues}
-              </p>
+              {antesDespues.despuesDato && (
+                <p className="mt-2 text-[36px] font-extrabold leading-none tabular-nums text-[var(--text-primary)] [font-family:var(--font-display)]">
+                  {antesDespues.despuesDato}
+                </p>
+              )}
+              <p className="mt-2 text-[14px] font-medium leading-snug text-[var(--text-primary)]">{antesDespues.despues}</p>
             </div>
           </motion.div>
         )}

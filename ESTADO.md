@@ -107,6 +107,8 @@ Registro de calorías y macros por FOTO con IA + corrección por VOZ + escáner 
 - Desviaciones del kit (documentadas): CtaButton.sobreOscuro, FooterLegal.soporteEmail opcional + separadores, Oferta total anual 15px, Hero sin doble marco. Falsos positivos de audit-conversion en el código del kit (strings/comentarios).
 - Nuevo 2026-11-04: scripts/screenshot.mjs (captura 375px completa) y scripts/captura-frames.mjs (frames del carrusel desde las maquetas).
 
+- 2026-11-07 elevación de la landing (pedida por el usuario, prompt /landing): AgitacionCifras (3 cifras con ícono), antes→después en 2 columnas, CtaFila tras mecanismo y tras garantía, tarjetas del problema sin look de botón, Isotipo propio, aviso 'Acceso anticipado' en la oferta. CTA = /onboarding (Modelo 2, ya decidido). Carrusel manual (el 19 prohíbe auto-avance). Scripts: scripts/screenshot-secciones.mjs. Evidencia por sección en docs/revisiones/landing-secciones/. Revisión independiente nº3 pendiente.
+
 ## Sesiones completadas ✅
 - Instalación del SO (v6.10.0) y punto de guardado git — 2026-11-03
 - Sesión 2 — identidad visual (A/B/C → combinación A+B, tour aprobado, FICHA-ARTE) — 2026-11-03
