@@ -1,9 +1,9 @@
 import type { Metadata, Viewport } from "next";
-import { Chivo, Hanken_Grotesk } from "next/font/google";
+import { Plus_Jakarta_Sans, Hanken_Grotesk } from "next/font/google";
 import "./globals.css";
 import { MotionProvider } from "@/components/MotionProvider";
 
-const chivo = Chivo({ variable: "--font-chivo", subsets: ["latin"], weight: ["600", "700", "800"], display: "swap" });
+const jakarta = Plus_Jakarta_Sans({ variable: "--font-jakarta", subsets: ["latin"], weight: ["500", "600", "700", "800"], display: "swap" });
 const hanken = Hanken_Grotesk({ variable: "--font-hanken", subsets: ["latin"], weight: ["400", "500", "600", "700"], display: "swap" });
 
 export const metadata: Metadata = {
@@ -14,7 +14,7 @@ export const viewport: Viewport = { themeColor: "#EFF2ED", width: "device-width"
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="es-CO" className={`${chivo.variable} ${hanken.variable}`}>
+    <html lang="es-CO" className={`${jakarta.variable} ${hanken.variable}`}>
       <body><MotionProvider>{children}</MotionProvider></body>
     </html>
   );
