@@ -51,6 +51,9 @@ export function OnboardingFlow() {
   const [intentoNombre, setIntentoNombre] = useState(false);
   const [aceite, setAceite] = useState<0 | 1 | 2 | null>(null);
   const [porVoz, setPorVoz] = useState(false);
+  const [escuchando, setEscuchando] = useState(false);
+  const [errorVoz, setErrorVoz] = useState('');
+  const recompensaRef = useRef<HTMLDivElement | null>(null);
   const bloqueado = useRef(false);
 
   useEffect(() => {
@@ -150,8 +153,12 @@ export function OnboardingFlow() {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const SR = (window as any).SpeechRecognition ?? (window as any).webkitSpeechRecognition;
     if (!SR) return;
+    setErrorVoz('');
     const rec = new SR();
     rec.lang = 'es-CO';
+    rec.onstart = () => setEscuchando(true);
+    rec.onend = () => setEscuchando(false);
+    rec.onerror = () => { setEscuchando(false); setErrorVoz('No pude escucharte. Toca una opción o intenta de nuevo.'); };
     rec.onresult = (ev: { results: ArrayLike<ArrayLike<{ transcript: string }>> }) => {
       const t = ev.results[0][0].transcript.toLowerCase();
       const n = /nada|sin aceite|no llev/.test(t) ? 0 : /\b(dos|2)\b/.test(t) ? 2 : 1;
@@ -209,6 +216,9 @@ export function OnboardingFlow() {
   const dolorFrase = perfil.dolor ? DOLORES[perfil.dolor] : null;
   const metaFecha = plan && perfilCompleto(perfil) ? fechaMeta(perfil, plan) : null;
   const cuota = plan && ia ? Math.round(((ia.kcal + extra) / plan.kcal) * 100) : null;
+  useEffect(() => {
+    if (aceite !== null) setTimeout(() => recompensaRef.current?.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'nearest' }), 450);
+  }, [aceite, reduce]);
   const retroceder = ATRAS[paso] ? () => setPaso(ATRAS[paso] as Paso) : undefined;
 
   return (
@@ -405,6 +415,9 @@ export function OnboardingFlow() {
                     </div>
                   </div>
                   <div className="tick-escala mt-3" aria-hidden="true" />
+                  {aceite !== null && cuota !== null && plan && (
+                    <p className="mt-3 text-[14px]"><strong className="font-bold">Ya es el {cuota}%</strong> de tus {plan.kcal.toLocaleString('es-CO')} kcal de hoy.</p>
+                  )}
                 </div>
                 <div className="mt-3 rounded-[var(--radius-card)] p-4 text-[#F4FAF5] [background:linear-gradient(160deg,#4B8062,#3D6B4F_60%,#2F5640)]">
                   <p className="text-[12px] font-bold uppercase tracking-[0.08em] opacity-90">Chequeo de Grasas Ocultas</p>
@@ -413,23 +426,21 @@ export function OnboardingFlow() {
                   <div className="mt-3 flex gap-2" role="group" aria-label="Cantidad de aceite">
                     {([0, 1, 2] as const).map((n) => (
                       <button key={n} type="button" aria-pressed={aceite === n} onClick={() => { setAceite(n); setPorVoz(false); }} className={`min-h-14 flex-1 rounded-[10px] px-1 py-1.5 text-[14px] font-bold leading-tight ${aceite === n ? 'bg-[#F4FAF5] text-[#2F5640]' : 'bg-[#10241A]/40'}`}>
-                        {n === 0 ? 'Nada' : <>{n} cda{n > 1 ? 's' : ''}<span className="block text-[13px] font-semibold opacity-90">+{ia.pregunta_aceite.una_cucharada_kcal * n} kcal</span></>}
+                        {n === 0 ? 'Nada' : <>{n} cucharada{n > 1 ? 's' : ''}<span className="block text-[13px] font-semibold opacity-90">+{ia.pregunta_aceite.una_cucharada_kcal * n} kcal</span></>}
                       </button>
                     ))}
                     {vozDisponible && (
-                      <button type="button" onClick={dictar} aria-label="Decirlo por voz" className="flex min-h-14 w-12 items-center justify-center rounded-[10px] bg-[#10241A]/40"><Mic size={18} aria-hidden="true" /></button>
+                      <button type="button" onClick={dictar} aria-label={escuchando ? 'Escuchando…' : 'Decirlo por voz'} aria-pressed={escuchando} className={`flex min-h-14 w-12 items-center justify-center rounded-[10px] ${escuchando ? 'animate-pulse bg-[#F4FAF5] text-[#2F5640]' : 'bg-[#10241A]/40'}`}><Mic size={18} aria-hidden="true" /></button>
                     )}
                   </div>
-                  {porVoz && <p className="mt-2 text-[13px] font-semibold">Entendí tu voz y lo sumé.</p>}
+                  {escuchando && <p className="mt-2 text-[14px] font-semibold">Escuchando… di, por ejemplo, «una cucharada».</p>}
+                  {errorVoz && <p role="alert" className="mt-2 text-[14px] font-semibold text-[#FFD2B0]">{errorVoz}</p>}
+                  {porVoz && !escuchando && <p className="mt-2 text-[14px] font-semibold">Entendí tu voz y lo sumé.</p>}
                 </div>
-                {aceite !== null && cuota !== null && plan && (
-                  <div className="mt-3 rounded-[var(--radius-card)] bg-[var(--surface)] p-3 shadow-[var(--shadow-1)]">
-                    <p className="text-[14px]"><strong className="font-bold">Esta comida ya es el {cuota}%</strong> de tus {plan.kcal.toLocaleString('es-CO')} kcal de hoy.</p>
-                    <div className="mt-2 h-2 overflow-hidden rounded-full bg-[color-mix(in_oklab,var(--text-primary)_10%,transparent)]"><motion.div initial={{ width: 0 }} animate={{ width: `${Math.min(100, cuota)}%` }} transition={{ duration: 0.8, ease: EASE }} className="h-full rounded-full bg-[var(--accent)]" /></div>
-                  </div>
-                )}
                 {aceite !== null && (
-                  <Recompensa xpGanado={15} xpTotal={15} titulo="tu racha empieza hoy" detalle={extra > 0 ? `Atrapaste ${extra} kcal que la foto no veía.` : 'Registrado sin grasas extra.'} logro={extra > 0 ? 'Primer hallazgo' : undefined} />
+                  <div ref={recompensaRef} className="scroll-mb-32">
+                  <Recompensa compacto xpGanado={15} xpTotal={15} titulo="tu racha empieza hoy" detalle={extra > 0 ? `Atrapaste ${extra} kcal que la foto no veía.` : 'Registrado sin grasas extra.'} logro={extra > 0 ? 'Primer hallazgo' : undefined} />
+                  </div>
                 )}
               </div>
               <PieFijo>

@@ -35,7 +35,7 @@
 
 ## Objeciones (con respuesta y destino)
 1. "¿Otra IA que inventa calorías?" → demo del chequeo: la app pregunta lo que no ve; rango, no falsa exactitud → hero + demo
-2. "¿Me van a cobrar por sorpresa?" (la queja #1 contra Fitia/MFP) → aviso 2 días antes del cobro, cancelar en 2 toques, garantía → microcopy bajo CTA + paywall + FAQ
+2. "¿Me van a cobrar por sorpresa?" (la queja #1 contra Fitia/MFP) → aviso 1 día antes del cobro, cancelar en 2 toques, garantía → microcopy bajo CTA + paywall + FAQ
 3. "¿El onboarding me va a hacer 15 minutos de preguntas para pedirme pagar?" → 3 preguntas y primer análisis gratis antes del pago → onboarding
 4. "Voy a usarla 3 días y borrarla" → racha + reporte semanal de "grasas atrapadas" → loop de retención
 5. Pago LATAM: "¿es seguro / puedo pagar en mi moneda?" → Hotmart (a definir medios por país) → microcopy + FAQ

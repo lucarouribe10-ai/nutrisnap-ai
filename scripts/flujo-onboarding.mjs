@@ -39,7 +39,7 @@ await p.getByText('¿Y el aceite?').waitFor({ timeout: 15000 });
 await shot('06-resultado-antes', true);
 // validación: intentar continuar sin datos no debe romper
 
-await p.getByRole('button', { name: /1 cda/ }).click();
+await p.getByRole('button', { name: /1 cucharada/ }).click();
 await p.waitForTimeout(900);
 await shot('07-resultado-despues', true);
 await p.getByRole('button', { name: 'Ver mi plan' }).click();

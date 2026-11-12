@@ -33,6 +33,7 @@ export function Paywall() {
   const [plan, setPlan] = useState<Plan | null>(null);
   const [elegido, setElegido] = useState<Elegido>(params.get('plan') === 'mensual' ? 'mensual' : 'anual');
   const [fechas, setFechas] = useState({ hoy: '', aviso: '', cobro: '' });
+  const [errorNav, setErrorNav] = useState(false);
 
   useEffect(() => {
     const e = leerEstado();
@@ -63,7 +64,14 @@ export function Paywall() {
   const freno = perfil.dolor ? DOLORES[perfil.dolor] : null;
   const entrada = (n: number) => (reduce ? {} : { initial: { opacity: 0, y: 12 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.35, delay: 0.06 * n, ease: EASE } });
   const cerrar = () => { track('paywall_cerrado'); router.push('/app?plan=gratis'); };
-  const empezar = () => { track('checkout_iniciado', { plan: elegido }); router.push(`/entrar?plan=${elegido}`); };
+  const empezar = () => {
+    try {
+      track('checkout_iniciado', { plan: elegido });
+      router.push(`/entrar?plan=${elegido}`);
+    } catch {
+      setErrorNav(true);
+    }
+  };
 
   const nodos: [string, string, boolean][] = [
     [`Hoy · ${fechas.hoy}`, 'Acceso completo, sin cobro.', true],
@@ -80,7 +88,7 @@ export function Paywall() {
           {perfil.nombre ? `${perfil.nombre}, tu` : 'Tu'} plan para <span className="text-[var(--accent)]">{ETIQUETA_OBJETIVO[perfil.objetivo!]}</span> está listo
         </h1>
         <p className="mt-2 text-[15px] text-[var(--text-secondary)]">Hecho con <strong className="font-semibold text-[var(--text-primary)]">tus respuestas</strong> y tu primera foto.</p>
-        {xp > 0 && <p className="mt-3 inline-flex items-center gap-2 rounded-full bg-[color-mix(in_oklab,var(--accent-2)_12%,var(--surface))] px-3 py-1.5 text-[14px] font-bold text-[var(--accent-2)]">{xp} XP ganados · racha de 1 día<span className="font-medium text-[var(--text-secondary)]"> · se guardan con tu cuenta</span></p>}
+        {xp > 0 && <p className="mt-3 text-[14px]"><strong className="font-bold text-[#A83D06]">{xp} XP · racha de 1 día.</strong> <span className="text-[var(--text-secondary)]">Se guardan con tu cuenta.</span></p>}
       </motion.div>
 
       <motion.section {...entrada(1)} aria-label="Tu plan" className="hairline-card mt-5 rounded-[var(--radius-card)] p-4 shadow-[var(--shadow-1)]">
@@ -92,6 +100,24 @@ export function Paywall() {
           {metaFecha && perfil.meta ? <>Llegarías a <strong className="text-[var(--text-primary)]">{perfil.meta} kg</strong> hacia el {new Intl.DateTimeFormat('es-CO', { day: 'numeric', month: 'long' }).format(metaFecha)} (estimado). </> : null}
           {freno ? <>Tu freno era «{freno.freno.toLowerCase()}»: {freno.solucion.charAt(0).toLowerCase() + freno.solucion.slice(1)}</> : 'Lo afinamos con tu registro de cada día.'}
         </p>
+      </motion.section>
+
+      <motion.section {...entrada(4)} aria-label="Elige tu plan" className="mt-7 flex flex-col gap-3" role="radiogroup">
+        {([
+          ['anual', 'Anual', 'US$49.99 al año', 'US$4.17', 'Mejor precio'],
+          ['mensual', 'Mensual', 'Cancelas cuando quieras', 'US$7.99', ''],
+        ] as const).map(([id, nombre, det, precio, badge]) => (
+          <motion.button key={id} type="button" whileTap={{ scale: 0.98 }} role="radio" aria-checked={elegido === id} onClick={() => setElegido(id)} className={`relative rounded-[var(--radius-card)] border p-4 text-left ${elegido === id ? 'border-2 border-[var(--accent)] bg-[color-mix(in_oklab,var(--accent)_8%,var(--surface))] shadow-[var(--shadow-2)]' : 'border-[color-mix(in_oklab,var(--text-secondary)_28%,transparent)] bg-[var(--surface)]'}`}>
+            {badge && <span className="absolute -top-3 left-4 rounded-full bg-[var(--accent)] px-3 py-1 text-[12px] font-bold uppercase tracking-[0.06em] text-[var(--bg)]">{badge}</span>}
+            <div className="flex items-center justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <span aria-hidden="true" className={`flex size-6 shrink-0 items-center justify-center rounded-full border-2 ${elegido === id ? 'border-[var(--accent)] bg-[var(--accent)] text-[var(--bg)]' : 'border-[color-mix(in_oklab,var(--text-secondary)_45%,transparent)]'}`}>{elegido === id && <Check size={14} strokeWidth={3.5} />}</span>
+                <div><p className="text-[17px] font-bold">{nombre}</p><p className="text-[14px] text-[var(--text-secondary)]">{det}</p></div>
+              </div>
+              <p className="text-right text-[26px] font-extrabold leading-none tabular-nums [font-family:var(--font-display)]">{precio}<span className="text-[14px] font-semibold text-[var(--text-secondary)]">/mes</span></p>
+            </div>
+          </motion.button>
+        ))}
       </motion.section>
 
       <motion.section {...entrada(2)} aria-label="Qué incluye" className="mt-5">
@@ -120,24 +146,6 @@ export function Paywall() {
         </ol>
       </motion.section>
 
-      <motion.section {...entrada(4)} aria-label="Elige tu plan" className="mt-6 flex flex-col gap-3" role="radiogroup">
-        {([
-          ['anual', 'Anual', 'Se cobra US$49.99 una vez al año', 'US$4.17', 'Mejor precio'],
-          ['mensual', 'Mensual', 'Cancelas cuando quieras', 'US$7.99', ''],
-        ] as const).map(([id, nombre, det, precio, badge]) => (
-          <motion.button key={id} type="button" whileTap={{ scale: 0.98 }} role="radio" aria-checked={elegido === id} onClick={() => setElegido(id)} className={`relative rounded-[var(--radius-card)] border p-4 text-left ${elegido === id ? 'border-2 border-[var(--accent)] bg-[color-mix(in_oklab,var(--accent)_8%,var(--surface))] shadow-[var(--shadow-2)]' : 'border-[color-mix(in_oklab,var(--text-secondary)_28%,transparent)] bg-[var(--surface)]'}`}>
-            {badge && <span className="absolute -top-3 left-4 rounded-full bg-[var(--accent)] px-3 py-1 text-[12px] font-bold uppercase tracking-[0.06em] text-[var(--bg)]">{badge}</span>}
-            <div className="flex items-center justify-between gap-3">
-              <div className="flex items-center gap-3">
-                <span aria-hidden="true" className={`flex size-6 shrink-0 items-center justify-center rounded-full border-2 ${elegido === id ? 'border-[var(--accent)] bg-[var(--accent)] text-[var(--bg)]' : 'border-[color-mix(in_oklab,var(--text-secondary)_45%,transparent)]'}`}>{elegido === id && <Check size={14} strokeWidth={3.5} />}</span>
-                <div><p className="text-[17px] font-bold">{nombre}</p><p className="text-[14px] text-[var(--text-secondary)]">{det}</p></div>
-              </div>
-              <p className="text-right text-[26px] font-extrabold leading-none tabular-nums [font-family:var(--font-display)]">{precio}<span className="text-[14px] font-semibold text-[var(--text-secondary)]">/mes</span></p>
-            </div>
-          </motion.button>
-        ))}
-      </motion.section>
-
       <motion.div {...entrada(5)} className="mt-5 space-y-3 text-[14px] text-[var(--text-secondary)]">
         <p className="flex items-start gap-2"><ShieldCheck size={18} className="mt-0.5 shrink-0 text-[var(--accent)]" aria-hidden="true" /><span><strong className="font-bold text-[var(--text-primary)]">Garantía de Cero Sorpresas:</strong> cancelas en 2 toques desde la app y tienes 7 días de reembolso, sin preguntas.</span></p>
         <p className="rounded-[var(--radius-card)] border border-dashed border-[color-mix(in_oklab,var(--text-secondary)_40%,transparent)] p-3 text-center">Vista previa: el pago de Hotmart y el aviso por correo se activan cuando conectemos tus cuentas.</p>
@@ -145,8 +153,10 @@ export function Paywall() {
       </motion.div>
 
       <PieFijo>
+        {errorNav && <p role="alert" className="mb-2 text-center text-[14px] font-semibold text-[#A83D06]">No pudimos continuar. Revisa tu conexión e intenta de nuevo.</p>}
         <BotonPrimario onClick={empezar}>Empezar mis 3 días gratis</BotonPrimario>
         <p className="mt-2 text-center text-[14px] text-[var(--text-secondary)]">Hoy US$0. Luego {monto}/{periodo} el {fechas.cobro}.</p>
+        <p className="mt-0.5 flex items-center justify-center gap-1.5 text-center text-[14px] font-semibold text-[var(--text-primary)]"><ShieldCheck size={15} className="text-[var(--accent)]" aria-hidden="true" /> Aviso 1 día antes · 7 días de reembolso</p>
         <button type="button" onClick={cerrar} className="mx-auto mt-1 flex min-h-11 items-center px-3 text-[14px] font-semibold text-[var(--text-secondary)] underline underline-offset-4">Ahora no, seguir con el escáner gratis</button>
       </PieFijo>
     </main>
