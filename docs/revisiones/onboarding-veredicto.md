@@ -1,0 +1,9 @@
+# VEREDICTO revisor-visual — onboarding
+Fecha: 2026-11-11 12:00
+Screenshot: docs/revisiones/onboarding-375.png
+Usabilidad: 29/40
+Craft: 12/20
+Copy (si vende): 14/20
+Fidelidad (si hubo referencia): N-A
+Veredicto: NO LISTA
+Top defectos: (1) CTA principal disabled por defecto al 50% en "datos" y en "resultado" (06-resultado-antes.png: pill muerto "Elige una opción para ver tu total"); en "datos" sin hint de qué falta, y los campos nacen vacíos sin placeholder ni ejemplo -> habilitar y validar al tocar con mensaje, preseleccionar sexo/pre-llenar placeholders. (2) Foto no-comida: la API devuelve "No veo comida" con kcal 0 y OnboardingFlow.tsx lo trata como éxito ("La foto dice 0 kcal. ¿Y el aceite?") -> detectar kcal===0/plato "No veo comida" y mostrar error con "tomar otra foto". (3) Encaje óptico en la pantalla del aha: chip "1 cda · +120" parte la línea dejando "1 cda ·" huérfano, y el botón "No tengo comida a la mano: usar una de ejemplo" (04-foto) envuelve a 2 líneas con el ícono pegado al borde izquierdo -> acortar copy ("Usar una foto de ejemplo") y chips en 2 líneas explícitas ("1 cda" / "+120 kcal"); además contraste del texto 13px blanco sobre chip translúcido ~3.6:1 (<AA). (4) Mecanismo sin nombrar: la etiqueta "Con el Chequeo" no dice "Chequeo de grasas ocultas" (mecanismo bautizado en ficha) y la foto "Ensalada con pollo" no muestra pollo -> nombrar el mecanismo completo y alinear plato/foto. (5) Movimiento incompleto (3 de 7 baseline): anillo de "Construyendo tu plan" salta 6->34->58->83% sin transición (Anillo en ui.tsx sin transition), sin stagger interno por pantalla, sin línea ni celebración; además pantallas 01/03/04 con ~50% de alto vacío y sin hairline degradé ni profundidad en base plana; sin salida/volver en 'analizando' (error sin retroceso) y 'plan' (5s forzados) -> animar strokeDashoffset 700ms, stagger 60ms, añadir "Volver" en estado de error.

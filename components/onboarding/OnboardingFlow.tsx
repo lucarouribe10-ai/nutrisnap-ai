@@ -3,15 +3,16 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { AnimatePresence, animate, motion, useReducedMotion } from 'motion/react';
-import { Camera, Check, Dumbbell, Droplet, Flag, ImageIcon, Loader2, Mic, Target, Zap } from 'lucide-react';
+import { Camera, Check, CreditCard, Dumbbell, Droplet, Flag, ImageIcon, Loader2, Mic, Repeat, ScanEye, Target, Timer } from 'lucide-react';
+import { Recompensa } from './Recompensa';
 import { Anillo, BarraProgreso, BotonPrimario, ChipOpcion, EASE, PieFijo, Pregunta } from './ui';
-import { calcularPlan, ETIQUETA_OBJETIVO, perfilCompleto, type Objetivo, type Perfil, type Sexo } from '@/lib/plan';
+import { calcularPlan, DOLORES, ETIQUETA_OBJETIVO, fechaMeta, perfilCompleto, type Dolor, type Objetivo, type Perfil, type Sexo } from '@/lib/plan';
 import { guardarEstado, leerEstado, type ResultadoFoto } from '@/lib/onboarding-store';
 import { track } from '@/lib/eventos';
 
-type Paso = 'objetivo' | 'datos' | 'actividad' | 'foto' | 'analizando' | 'resultado' | 'plan';
-const PCT: Record<Paso, number> = { objetivo: 12, datos: 30, actividad: 46, foto: 62, analizando: 72, resultado: 86, plan: 96 };
-const ATRAS: Partial<Record<Paso, Paso>> = { datos: 'objetivo', actividad: 'datos', foto: 'actividad', resultado: 'foto' };
+type Paso = 'nombre' | 'objetivo' | 'dolor' | 'datos' | 'actividad' | 'foto' | 'analizando' | 'resultado' | 'plan' | 'diagnostico';
+const PCT: Record<Paso, number> = { nombre: 6, objetivo: 15, dolor: 26, datos: 38, actividad: 50, foto: 62, analizando: 72, resultado: 84, plan: 94, diagnostico: 98 };
+const ATRAS: Partial<Record<Paso, Paso>> = { objetivo: 'nombre', dolor: 'objetivo', datos: 'dolor', actividad: 'datos', foto: 'actividad', resultado: 'foto' };
 
 interface RespuestaIA {
   demo: boolean;
@@ -38,19 +39,23 @@ const num = (s: string) => (s.trim() === '' ? undefined : Number(s.replace(',', 
 export function OnboardingFlow() {
   const router = useRouter();
   const reduce = useReducedMotion();
-  const [paso, setPaso] = useState<Paso>('objetivo');
+  const [paso, setPaso] = useState<Paso>('nombre');
   const [perfil, setPerfil] = useState<Perfil>({});
   const [campos, setCampos] = useState({ edad: '', estatura: '', peso: '', meta: '' });
   const [foto, setFoto] = useState<{ url: string; demo: boolean } | null>(null);
   const [ia, setIa] = useState<RespuestaIA | null>(null);
-  const [errorIA, setErrorIA] = useState(false);
+  const [errorIA, setErrorIA] = useState<false | 'ia' | 'nocomida'>(false);
+  const [intentado, setIntentado] = useState(false);
+  const [pideAceite, setPideAceite] = useState(false);
+  const [nombreTxt, setNombreTxt] = useState('');
+  const [intentoNombre, setIntentoNombre] = useState(false);
   const [aceite, setAceite] = useState<0 | 1 | 2 | null>(null);
   const [porVoz, setPorVoz] = useState(false);
   const bloqueado = useRef(false);
 
   useEffect(() => {
     const e = leerEstado();
-    if (e.perfil.objetivo) setPerfil(e.perfil);
+    if (e.perfil.objetivo) { setPerfil(e.perfil); setNombreTxt(e.perfil.nombre ?? ''); }
     track('onboarding_iniciado');
   }, []);
 
@@ -76,11 +81,13 @@ export function OnboardingFlow() {
   const peso = num(campos.peso);
   const meta = num(campos.meta);
   const pideMeta = perfil.objetivo !== 'mantener';
+  const falta = (v: number | undefined, msg: string, bad: (n: number) => boolean, msgBad: string) => (v === undefined ? (intentado ? msg : '') : bad(v) ? msgBad : '');
   const errores = {
-    edad: edad !== undefined && (edad < 18 ? 'NutriSnap es para mayores de 18 años.' : edad > 90 ? 'Revisa tu edad.' : ''),
-    estatura: estatura !== undefined && (estatura < 120 || estatura > 230 ? 'Escribe tu estatura en cm (120 a 230).' : ''),
-    peso: peso !== undefined && (peso < 35 || peso > 250 ? 'Escribe tu peso en kg (35 a 250).' : ''),
-    meta: meta !== undefined && (meta < 35 || meta > 250 ? 'Escribe tu meta en kg (35 a 250).' : ''),
+    edad: falta(edad, 'Escribe tu edad.', (n) => n < 18 || n > 90, edad !== undefined && edad < 18 ? 'NutriSnap es para mayores de 18 años.' : 'Revisa tu edad.'),
+    estatura: falta(estatura, 'Escribe tu estatura en cm.', (n) => n < 120 || n > 230, 'Escribe tu estatura en cm (120 a 230).'),
+    peso: falta(peso, 'Escribe tu peso en kg.', (n) => n < 35 || n > 250, 'Escribe tu peso en kg (35 a 250).'),
+    meta: meta !== undefined && (meta < 35 || meta > 250) ? 'Escribe tu meta en kg (35 a 250).' : '',
+    sexo: intentado && !perfil.sexo ? 'Elige una opción.' : '',
   };
   const datosValidos = Boolean(perfil.sexo && edad && estatura && peso) && !errores.edad && !errores.estatura && !errores.peso && !errores.meta;
 
@@ -94,15 +101,20 @@ export function OnboardingFlow() {
       const r = await fetch('/api/analizar', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ imagen, demo }) });
       if (!r.ok) throw new Error('ia');
       const data = (await r.json()) as RespuestaIA;
+      if (!data.kcal || data.kcal <= 0) {
+        setErrorIA('nocomida');
+        return;
+      }
       const resto = Math.max(0, 4200 - (Date.now() - inicio));
       await new Promise((res) => setTimeout(res, reduce ? 0 : resto));
       setIa(data);
       setAceite(null);
+      setPideAceite(false);
       setPorVoz(false);
       track('resultado_visto', { demo: data.demo });
       ir('resultado');
     } catch {
-      setErrorIA(true);
+      setErrorIA('ia');
     }
   }, [ir, reduce]);
 
@@ -113,7 +125,7 @@ export function OnboardingFlow() {
       setFoto({ url, demo: false });
       void analizar(url, false);
     } catch {
-      setErrorIA(true);
+      setErrorIA('ia');
       ir('analizando');
     }
   };
@@ -151,7 +163,11 @@ export function OnboardingFlow() {
   const vozDisponible = typeof window !== 'undefined' && ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window);
 
   const continuarAPlan = () => {
-    if (!ia || aceite === null) return;
+    if (!ia) return;
+    if (aceite === null) {
+      setPideAceite(true);
+      return;
+    }
     const res: ResultadoFoto = { plato: ia.plato, kcalBase: ia.kcal, proteina: ia.proteina_g, carbos: ia.carbos_g, grasas: ia.grasas_g, extraAceite: extra, demo: ia.demo };
     guardarEstado({ perfil, resultado: res, xp: 15 });
     track('chequeo_respondido', { aceite, voz: porVoz });
@@ -167,28 +183,37 @@ export function OnboardingFlow() {
     if (paso !== 'plan' || !plan) return;
     const hitos = [
       [0, 6, 0],
-      [1100, 34, 1],
-      [2300, 58, 2],
-      [3500, 83, 3],
-      [4600, 100, 4],
+      [1000, 28, 1],
+      [2000, 50, 2],
+      [3000, 72, 3],
+      [3900, 90, 4],
+      [4800, 100, 5],
     ] as const;
     const ts = hitos.map(([at, pct, l]) => setTimeout(() => { setPctPlan(pct); setLineaPlan(l); }, reduce ? 0 : at));
-    const fin = setTimeout(() => { track('plan_construido'); router.push('/paywall'); }, reduce ? 300 : 5200);
+    const fin = setTimeout(() => {
+      track('plan_construido');
+      guardarEstado({ perfil, resultado: leerEstado().resultado, xp: 25 });
+      ir('diagnostico');
+    }, reduce ? 300 : 5600);
     return () => { ts.forEach(clearTimeout); clearTimeout(fin); };
-  }, [paso, plan, reduce, router]);
+  }, [paso, plan, reduce, perfil, ir]);
 
   const lineasPlan = perfil.objetivo && plan ? [
     `Analizando tu objetivo: ${ETIQUETA_OBJETIVO[perfil.objetivo]}`,
     `Ajustando a tu estatura de ${perfil.estatura} cm y ${perfil.peso} kg`,
     `Calculando tus calorías: ${plan.kcal.toLocaleString('es-CO')} al día`,
     `Fijando tu meta de proteína: ${plan.proteina} g`,
+    perfil.dolor === 'aceite' ? 'Preparando tu Chequeo de Grasas Ocultas' : perfil.dolor === 'cobros' ? 'Programando tu aviso antes de cualquier cobro' : perfil.dolor === 'constancia' ? 'Armando tu racha, tus puntos y tus logros' : 'Preparando tu registro en segundos',
   ] : [];
 
+  const dolorFrase = perfil.dolor ? DOLORES[perfil.dolor] : null;
+  const metaFecha = plan && perfilCompleto(perfil) ? fechaMeta(perfil, plan) : null;
+  const cuota = plan && ia ? Math.round(((ia.kcal + extra) / plan.kcal) * 100) : null;
   const retroceder = ATRAS[paso] ? () => setPaso(ATRAS[paso] as Paso) : undefined;
 
   return (
     <main className="mx-auto min-h-dvh max-w-[480px] bg-[var(--bg)] pb-28 text-[var(--text-primary)] [font-family:var(--font-body)]">
-      {paso !== 'analizando' && paso !== 'plan' && <BarraProgreso pct={PCT[paso]} onAtras={retroceder} />}
+      {paso !== 'analizando' && paso !== 'plan' && paso !== 'diagnostico' && <BarraProgreso pct={PCT[paso]} onAtras={retroceder} />}
       <AnimatePresence mode="wait">
         <motion.div
           key={paso}
@@ -197,19 +222,64 @@ export function OnboardingFlow() {
           exit={reduce ? { opacity: 0 } : { opacity: 0, x: -24 }}
           transition={{ duration: 0.28, ease: EASE }}
         >
+          {paso === 'nombre' && (
+            <>
+              <Pregunta titulo={<>¿Cómo te <span className="text-[var(--accent)]">llamas</span>?</>} sub="Para hablarte por tu nombre. Solo tu primer nombre." />
+              <div className="mt-8 px-5">
+                <label className="block">
+                  <span className="sr-only">Tu nombre</span>
+                  <input
+                    autoFocus
+                    autoComplete="given-name"
+                    value={nombreTxt}
+                    maxLength={30}
+                    placeholder="Mateo"
+                    onChange={(e) => setNombreTxt(e.target.value)}
+                    onKeyDown={(e) => { if (e.key === 'Enter') (e.target as HTMLInputElement).blur(); }}
+                    aria-invalid={intentoNombre && nombreTxt.trim().length < 2}
+                    className="h-14 w-full rounded-[var(--radius-card)] border border-[color-mix(in_oklab,var(--text-secondary)_28%,transparent)] bg-[var(--surface)] px-4 text-[18px] font-semibold outline-none focus:border-[var(--accent)]"
+                  />
+                </label>
+                {intentoNombre && nombreTxt.trim().length < 2 && <p role="alert" className="mt-1 text-[13px] font-medium text-[var(--accent-2)]">Escribe tu nombre.</p>}
+              </div>
+              <p className="mt-6 px-5 text-center text-[14px] text-[var(--text-secondary)]">Primero ves tu primer resultado. Después decides.</p>
+              <PieFijo>
+                <BotonPrimario onClick={() => { const n = nombreTxt.trim(); if (n.length < 2) { setIntentoNombre(true); return; } setPerfil((p) => ({ ...p, nombre: n.charAt(0).toUpperCase() + n.slice(1) })); ir('objetivo'); }}>Continuar</BotonPrimario>
+              </PieFijo>
+            </>
+          )}
+
           {paso === 'objetivo' && (
             <>
-              <Pregunta titulo={<>¿Cuál es tu <span className="text-[var(--accent)]">objetivo</span>?</>} sub="Con esto calculo tus calorías y tu meta de proteína." />
+              <Pregunta titulo={<>{perfil.nombre ? `${perfil.nombre}, ¿cuál` : '¿Cuál'} es tu <span className="text-[var(--accent)]">objetivo</span>?</>} sub="Con esto calculo tus calorías y tu meta de proteína." />
               <div className="mt-8 flex flex-col gap-3 px-5">
                 {([
                   ['definir', Target, 'Definir (bajar grasa)', 'Déficit sin perder músculo'],
                   ['ganar', Dumbbell, 'Ganar músculo', 'Superávit con proteína alta'],
                   ['mantener', Flag, 'Mantener mi peso', 'Comer parejo y constante'],
                 ] as const).map(([id, icon, t, d]) => (
-                  <ChipOpcion key={id} icon={icon} titulo={t} detalle={d} seleccionado={perfil.objetivo === id} onClick={() => elegir(() => setPerfil((p) => ({ ...p, objetivo: id as Objetivo })), 'datos')} />
+                  <ChipOpcion key={id} indice={['definir', 'ganar', 'mantener'].indexOf(id)} icon={icon} titulo={t} detalle={d} seleccionado={perfil.objetivo === id} onClick={() => elegir(() => setPerfil((p) => ({ ...p, objetivo: id as Objetivo })), 'dolor')} />
                 ))}
               </div>
-              <p className="mt-6 px-5 text-center text-[13px] text-[var(--text-secondary)]">Primero ves tu primer resultado. Después decides.</p>
+              <div className="hairline-card mx-5 mt-8 rounded-[var(--radius-card)] p-4">
+                <p className="text-[12px] font-bold uppercase tracking-[0.08em] text-[var(--text-secondary)]">Al final verás</p>
+                <ul className="mt-2 flex flex-col gap-1.5 text-[15px]">
+                  <li className="flex items-center gap-2"><Check size={16} strokeWidth={3} className="text-[var(--accent)]" aria-hidden="true" /> Tus calorías y tu meta de proteína</li>
+                  <li className="flex items-center gap-2"><Check size={16} strokeWidth={3} className="text-[var(--accent)]" aria-hidden="true" /> El aceite que tu foto no ve</li>
+                </ul>
+              </div>
+              <p className="mt-5 px-5 text-center text-[14px] text-[var(--text-secondary)]">Primero ves tu primer resultado. Después decides.</p>
+            </>
+          )}
+
+          {paso === 'dolor' && (
+            <>
+              <Pregunta titulo={<>¿Qué ha sido lo <span className="text-[var(--accent)]">más difícil</span> al contar calorías?</>} sub="Elige lo que más te pasa." />
+              <div className="mt-8 flex flex-col gap-3 px-5">
+                {([['tiempo', Timer], ['aceite', ScanEye], ['cobros', CreditCard], ['constancia', Repeat]] as [Dolor, typeof Timer][]).map(([id, icon], i) => (
+                  <ChipOpcion key={id} indice={i} icon={icon} titulo={DOLORES[id].opcion} seleccionado={perfil.dolor === id} onClick={() => elegir(() => setPerfil((p) => ({ ...p, dolor: id })), 'datos')} />
+                ))}
+              </div>
             </>
           )}
 
@@ -222,6 +292,7 @@ export function OnboardingFlow() {
                     <ChipOpcion key={s} titulo={s === 'hombre' ? 'Hombre' : 'Mujer'} seleccionado={perfil.sexo === s} onClick={() => setPerfil((p) => ({ ...p, sexo: s }))} />
                   ))}
                 </div>
+                {errores.sexo && <p role="alert" className="-mt-2 text-[13px] font-medium text-[var(--accent-2)]">{errores.sexo}</p>}
                 {([
                   ['edad', 'Edad', 'años', campos.edad, errores.edad],
                   ['estatura', 'Estatura', 'cm', campos.estatura, errores.estatura],
@@ -233,6 +304,7 @@ export function OnboardingFlow() {
                     <span className={`mt-1 flex h-14 items-center rounded-[var(--radius-card)] border bg-[var(--surface)] px-4 ${err ? 'border-[var(--accent-2)]' : 'border-[color-mix(in_oklab,var(--text-secondary)_28%,transparent)] focus-within:border-[var(--accent)]'}`}>
                       <input
                         inputMode="decimal"
+                        placeholder={({ edad: '28', estatura: '178', peso: '80', meta: '75' } as Record<string, string>)[k]}
                         value={valor}
                         onChange={(e) => setCampos((c) => ({ ...c, [k]: e.target.value.replace(/[^0-9.,]/g, '') }))}
                         className="min-w-0 flex-1 bg-transparent text-[18px] font-semibold tabular-nums outline-none"
@@ -245,7 +317,7 @@ export function OnboardingFlow() {
                 ))}
               </div>
               <PieFijo>
-                <BotonPrimario disabled={!datosValidos} onClick={() => { setPerfil((p) => ({ ...p, edad, estatura, peso, meta: pideMeta ? meta : undefined })); ir('actividad'); }}>Continuar</BotonPrimario>
+                <BotonPrimario onClick={() => { if (!datosValidos) { setIntentado(true); return; } setPerfil((p) => ({ ...p, edad, estatura, peso, meta: pideMeta ? meta : undefined })); ir('actividad'); }}>Continuar</BotonPrimario>
               </PieFijo>
             </>
           )}
@@ -255,7 +327,7 @@ export function OnboardingFlow() {
               <Pregunta titulo={<>¿Cuántos días <span className="text-[var(--accent)]">entrenas</span>?</>} sub="Por semana, en promedio." />
               <div className="mt-8 flex flex-col gap-3 px-5">
                 {([[2, '1 a 2 días', 'Estoy empezando'], [4, '3 a 4 días', 'Constante'], [6, '5 a 6 días', 'Le doy duro'], [7, 'Todos los días', 'Es parte de mi vida']] as const).map(([d, t, det]) => (
-                  <ChipOpcion key={d} titulo={t} detalle={det} seleccionado={perfil.dias === d} onClick={() => elegir(() => setPerfil((p) => ({ ...p, dias: d })), 'foto')} />
+                  <ChipOpcion key={d} indice={[2, 4, 6, 7].indexOf(d)} titulo={t} detalle={det} seleccionado={perfil.dias === d} onClick={() => elegir(() => setPerfil((p) => ({ ...p, dias: d })), 'foto')} />
                 ))}
               </div>
             </>
@@ -264,16 +336,23 @@ export function OnboardingFlow() {
           {paso === 'foto' && (
             <>
               <Pregunta titulo={<>Ahora tu <span className="text-[var(--accent)]">primera foto</span></>} sub="Toma una foto de tu comida. Te muestro lo que la cámara no ve." />
-              <div className="mt-8 flex flex-col gap-3 px-5">
+              <div className="mx-5 mt-6 flex h-44 items-center justify-center rounded-[var(--radius-card)] border-2 border-dashed border-[color-mix(in_oklab,var(--accent)_45%,transparent)] bg-[var(--surface)]" aria-hidden="true">
+                <div className="relative flex size-24 items-center justify-center rounded-[18px] text-[var(--accent)]">
+                  <span className="absolute left-0 top-0 size-5 rounded-tl-lg border-l-[3px] border-t-[3px] border-current" /><span className="absolute right-0 top-0 size-5 rounded-tr-lg border-r-[3px] border-t-[3px] border-current" />
+                  <span className="absolute bottom-0 left-0 size-5 rounded-bl-lg border-b-[3px] border-l-[3px] border-current" /><span className="absolute bottom-0 right-0 size-5 rounded-br-lg border-b-[3px] border-r-[3px] border-current" />
+                  <Droplet size={34} strokeWidth={2.2} className="text-[var(--accent-2)]" />
+                </div>
+              </div>
+              <div className="mt-6 flex flex-col gap-3 px-5">
                 <label className="flex h-14 w-full cursor-pointer items-center justify-center gap-2 rounded-[var(--radius-button)] bg-[var(--accent)] text-[17px] font-semibold text-[var(--bg)] shadow-[0_8px_30px_color-mix(in_oklab,var(--accent)_25%,transparent)]">
                   <Camera size={20} aria-hidden="true" /> Tomar o elegir una foto
                   <input type="file" accept="image/*" capture="environment" className="sr-only" onChange={(e) => alElegirArchivo(e.target.files?.[0])} />
                 </label>
                 <button type="button" onClick={usarEjemplo} className="flex h-14 w-full items-center justify-center gap-2 rounded-[var(--radius-button)] border border-[color-mix(in_oklab,var(--accent)_45%,transparent)] text-[16px] font-semibold text-[var(--accent)]">
-                  <ImageIcon size={18} aria-hidden="true" /> No tengo comida a la mano: usar una de ejemplo
+                  <ImageIcon size={18} aria-hidden="true" /> Usar una foto de ejemplo
                 </button>
               </div>
-              <p className="mt-6 px-5 text-center text-[13px] text-[var(--text-secondary)]">Tu foto se analiza y no se guarda; solo conservamos una miniatura.</p>
+              <p className="mt-6 px-5 text-center text-[13px] text-[var(--text-secondary)]">Tu foto se analiza y no se guarda.</p>
             </>
           )}
 
@@ -283,11 +362,16 @@ export function OnboardingFlow() {
                 <AnalisisEnCurso foto={foto?.url} />
               ) : (
                 <div>
-                  <p className="text-[22px] font-extrabold [font-family:var(--font-display)]">No pudimos analizar tu foto</p>
-                  <p className="mx-auto mt-2 max-w-[320px] text-[15px] text-[var(--text-secondary)]">Tus respuestas están guardadas. Puedes reintentar o usar la foto de ejemplo.</p>
+                  <p className="text-[24px] font-extrabold leading-tight [font-family:var(--font-display)]">{errorIA === 'nocomida' ? 'No veo comida en esa foto' : 'No pudimos analizar tu foto'}</p>
+                  <p className="mx-auto mt-2 max-w-[320px] text-[15px] text-[var(--text-secondary)]">{errorIA === 'nocomida' ? 'Prueba con otra foto donde se vea el plato completo y con buena luz.' : 'Tus respuestas están guardadas. Puedes reintentar o usar la foto de ejemplo.'}</p>
                   <div className="mt-8 flex flex-col gap-3">
-                    <BotonPrimario onClick={() => (foto && !foto.demo ? analizar(foto.url, false) : usarEjemplo())}>Reintentar</BotonPrimario>
-                    <button type="button" onClick={usarEjemplo} className="h-12 text-[15px] font-semibold text-[var(--accent)] underline underline-offset-4">Usar la foto de ejemplo</button>
+                    {errorIA === 'nocomida' ? (
+                      <BotonPrimario onClick={() => { setErrorIA(false); setPaso('foto'); }}>Tomar otra foto</BotonPrimario>
+                    ) : (
+                      <BotonPrimario onClick={() => (foto && !foto.demo ? analizar(foto.url, false) : usarEjemplo())}>Reintentar</BotonPrimario>
+                    )}
+                    <button type="button" onClick={usarEjemplo} className="min-h-12 text-[15px] font-semibold text-[var(--accent)] underline underline-offset-4">Usar la foto de ejemplo</button>
+                    <button type="button" onClick={() => { setErrorIA(false); setPaso('foto'); }} className="min-h-12 text-[15px] font-semibold text-[var(--text-secondary)]">Volver</button>
                   </div>
                 </div>
               )}
@@ -301,7 +385,7 @@ export function OnboardingFlow() {
                 <h1 className="mt-1 text-balance text-[28px] font-extrabold leading-[1.1] tracking-[-0.02em] [font-family:var(--font-display)]">
                   {aceite === null ? <>La foto dice <span className="text-[var(--accent)]">{ia.kcal} kcal</span>. ¿Y el aceite?</> : <>{totalMostrado} kcal, con el <span className="text-[var(--accent)]">aceite incluido</span></>}
                 </h1>
-                <div className="mt-4 flex items-center gap-3 rounded-[var(--radius-card)] bg-[var(--surface)] p-3 shadow-[var(--shadow-1)]">
+                <div className="hairline-card mt-4 flex items-center gap-3 rounded-[var(--radius-card)] p-3 shadow-[var(--shadow-1)]">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   {foto && <img src={foto.url} alt={ia.plato} width={56} height={56} className="size-14 rounded-[12px] object-cover" />}
                   <div>
@@ -323,36 +407,64 @@ export function OnboardingFlow() {
                   <div className="tick-escala mt-3" aria-hidden="true" />
                 </div>
                 <div className="mt-3 rounded-[var(--radius-card)] p-4 text-[#F4FAF5] [background:linear-gradient(160deg,#4B8062,#3D6B4F_60%,#2F5640)]">
-                  <p className="flex items-center gap-2 text-[15px] font-bold"><Droplet size={16} aria-hidden="true" /> {ia.pregunta_aceite.texto || '¿Cuánto aceite llevó?'}</p>
-                  <p className="mt-1 text-[13px] opacity-90">La cámara no lo ve. Tócalo o dilo por voz.</p>
+                  <p className="text-[12px] font-bold uppercase tracking-[0.08em] opacity-90">Chequeo de Grasas Ocultas</p>
+                  <p className="mt-1 flex items-center gap-2 text-[17px] font-bold"><Droplet size={18} aria-hidden="true" /> {ia.pregunta_aceite.texto || '¿Cuánto aceite llevó?'}</p>
+                  <p className={`mt-1 text-[14px] ${pideAceite && aceite === null ? 'font-bold text-[#FFD2B0]' : 'opacity-90'}`}>{pideAceite && aceite === null ? 'Elige una opción para ver tu total.' : 'La cámara no lo ve. Tócalo o dilo por voz.'}</p>
                   <div className="mt-3 flex gap-2" role="group" aria-label="Cantidad de aceite">
                     {([0, 1, 2] as const).map((n) => (
-                      <button key={n} type="button" aria-pressed={aceite === n} onClick={() => { setAceite(n); setPorVoz(false); }} className={`min-h-12 flex-1 rounded-[10px] px-1 text-[13px] font-bold ${aceite === n ? 'bg-[#F4FAF5] text-[#2F5640]' : 'bg-white/15'}`}>
-                        {n === 0 ? 'Nada' : `${n} cda${n > 1 ? 's' : ''} · +${ia.pregunta_aceite.una_cucharada_kcal * n}`}
+                      <button key={n} type="button" aria-pressed={aceite === n} onClick={() => { setAceite(n); setPorVoz(false); }} className={`min-h-14 flex-1 rounded-[10px] px-1 py-1.5 text-[14px] font-bold leading-tight ${aceite === n ? 'bg-[#F4FAF5] text-[#2F5640]' : 'bg-[#10241A]/40'}`}>
+                        {n === 0 ? 'Nada' : <>{n} cda{n > 1 ? 's' : ''}<span className="block text-[13px] font-semibold opacity-90">+{ia.pregunta_aceite.una_cucharada_kcal * n} kcal</span></>}
                       </button>
                     ))}
                     {vozDisponible && (
-                      <button type="button" onClick={dictar} aria-label="Decirlo por voz" className="flex min-h-12 w-12 items-center justify-center rounded-[10px] bg-white/15"><Mic size={18} aria-hidden="true" /></button>
+                      <button type="button" onClick={dictar} aria-label="Decirlo por voz" className="flex min-h-14 w-12 items-center justify-center rounded-[10px] bg-[#10241A]/40"><Mic size={18} aria-hidden="true" /></button>
                     )}
                   </div>
                   {porVoz && <p className="mt-2 text-[13px] font-semibold">Entendí tu voz y lo sumé.</p>}
                 </div>
-                <AnimatePresence>
-                  {aceite !== null && (
-                    <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="mt-3 flex items-center gap-3 rounded-[var(--radius-card)] border border-[color-mix(in_oklab,var(--accent-2)_30%,transparent)] bg-[color-mix(in_oklab,var(--accent-2)_10%,var(--surface))] p-3">
-                      <span className="flex size-10 items-center justify-center rounded-[12px] bg-[var(--surface)] text-[var(--accent-2)]"><Zap size={18} aria-hidden="true" /></span>
-                      <div>
-                        <p className="text-[14px] font-bold">+15 XP · tu racha empieza hoy</p>
-                        <p className="text-[12px] text-[var(--text-secondary)]">{extra > 0 ? `Atrapaste ${extra} kcal que la foto no veía.` : 'Registrado sin grasas extra.'}</p>
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                {aceite !== null && cuota !== null && plan && (
+                  <div className="mt-3 rounded-[var(--radius-card)] bg-[var(--surface)] p-3 shadow-[var(--shadow-1)]">
+                    <p className="text-[14px]"><strong className="font-bold">Esta comida ya es el {cuota}%</strong> de tus {plan.kcal.toLocaleString('es-CO')} kcal de hoy.</p>
+                    <div className="mt-2 h-2 overflow-hidden rounded-full bg-[color-mix(in_oklab,var(--text-primary)_10%,transparent)]"><motion.div initial={{ width: 0 }} animate={{ width: `${Math.min(100, cuota)}%` }} transition={{ duration: 0.8, ease: EASE }} className="h-full rounded-full bg-[var(--accent)]" /></div>
+                  </div>
+                )}
+                {aceite !== null && (
+                  <Recompensa xpGanado={15} xpTotal={15} titulo="tu racha empieza hoy" detalle={extra > 0 ? `Atrapaste ${extra} kcal que la foto no veía.` : 'Registrado sin grasas extra.'} logro={extra > 0 ? 'Primer hallazgo' : undefined} />
+                )}
               </div>
               <PieFijo>
-                <BotonPrimario disabled={aceite === null} onClick={continuarAPlan}>{aceite === null ? 'Elige una opción para ver tu total' : 'Ver mi plan'}</BotonPrimario>
+                <BotonPrimario onClick={continuarAPlan}>Ver mi plan</BotonPrimario>
               </PieFijo>
             </>
+          )}
+
+          {paso === 'diagnostico' && plan && perfil.objetivo && (
+            <div className="px-5 pb-32 pt-10">
+              <h1 className="text-balance text-[30px] font-extrabold leading-[1.1] tracking-[-0.02em] [font-family:var(--font-display)]">
+                {perfil.nombre ? `${perfil.nombre}, tu` : 'Tu'} plan de <span className="text-[var(--accent)]">{ETIQUETA_OBJETIVO[perfil.objetivo]}</span> está listo
+              </h1>
+              <div className="hairline-card mt-6 rounded-[var(--radius-card)] p-4 shadow-[var(--shadow-1)]">
+                <div className="panel-campo grid grid-cols-2 gap-3 rounded-[12px] p-3 text-center">
+                  <div><p className="text-[32px] font-extrabold leading-none tabular-nums [font-family:var(--font-display)]">{plan.kcal.toLocaleString('es-CO')}</p><p className="mt-1 text-[13px] font-semibold text-[var(--text-secondary)]">kcal al día</p></div>
+                  <div><p className="text-[32px] font-extrabold leading-none tabular-nums text-[var(--accent)] [font-family:var(--font-display)]">{plan.proteina} g</p><p className="mt-1 text-[13px] font-semibold text-[var(--text-secondary)]">de proteína</p></div>
+                </div>
+                {metaFecha && perfil.meta && (
+                  <p className="mt-3 text-[15px] leading-snug">A este ritmo llegarías a <strong>{perfil.meta} kg</strong> hacia el <strong>{new Intl.DateTimeFormat('es-CO', { day: 'numeric', month: 'long', year: 'numeric' }).format(metaFecha)}</strong>. <span className="text-[var(--text-secondary)]">Es un estimado: depende de tu constancia.</span></p>
+                )}
+                {plan.avisoMeta && <p role="note" className="mt-3 rounded-[12px] bg-[var(--surface-2)] p-3 text-[14px] text-[var(--text-secondary)]">{plan.avisoMeta}</p>}
+              </div>
+              {dolorFrase && (
+                <div className="mt-3 rounded-[var(--radius-card)] border-l-4 border-[var(--accent)] bg-[var(--surface)] p-4">
+                  <p className="text-[12px] font-bold uppercase tracking-[0.08em] text-[var(--text-secondary)]">Tu freno principal</p>
+                  <p className="mt-1 text-[16px] font-bold">{dolorFrase.freno}</p>
+                  <p className="mt-1 text-[15px] text-[var(--text-secondary)]">{dolorFrase.solucion}</p>
+                </div>
+              )}
+              <Recompensa xpGanado={10} xpTotal={25} titulo="perfil completo" detalle="Tu progreso se guarda al crear tu cuenta." />
+              <PieFijo>
+                <BotonPrimario onClick={() => router.push('/paywall')}>Ver mi plan y empezar la prueba</BotonPrimario>
+              </PieFijo>
+            </div>
           )}
 
           {paso === 'plan' && plan && (

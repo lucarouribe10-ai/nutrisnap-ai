@@ -36,9 +36,9 @@ export function ChequeoDemo() {
       <div className="hairline-card rounded-[var(--radius-card)] p-4 shadow-[var(--shadow-2)]">
         <div className="flex items-center gap-3">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/fotos/ensalada.jpg" alt="Ensalada con pollo" width={52} height={52} className="size-[52px] rounded-[12px] object-cover" />
+          <img src="/fotos/ensalada.jpg" alt="Ensalada fresca" width={52} height={52} className="size-[52px] rounded-[12px] object-cover" />
           <div>
-            <p className="text-[14px] font-bold text-[var(--text-primary)]">Ensalada con pollo</p>
+            <p className="text-[14px] font-bold text-[var(--text-primary)]">Ensalada fresca</p>
             <p className="text-[12px] font-semibold text-[var(--text-secondary)]">Almuerzo · 13:05 · foto</p>
           </div>
         </div>

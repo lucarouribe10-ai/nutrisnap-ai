@@ -2,7 +2,11 @@
 export type Objetivo = 'definir' | 'ganar' | 'mantener';
 export type Sexo = 'hombre' | 'mujer';
 
+export type Dolor = 'tiempo' | 'aceite' | 'cobros' | 'constancia';
+
 export interface Perfil {
+  nombre?: string;
+  dolor?: Dolor;
   objetivo?: Objetivo;
   sexo?: Sexo;
   edad?: number;
@@ -57,3 +61,23 @@ export const ETIQUETA_OBJETIVO: Record<Objetivo, string> = {
   ganar: 'ganar músculo',
   mantener: 'mantener tu peso',
 };
+
+/** Lo más difícil al contar calorías (VoC real de reseñas) y cómo lo resuelve NutriSnap. */
+export const DOLORES: Record<Dolor, { opcion: string; freno: string; solucion: string }> = {
+  tiempo: { opcion: 'Pierdo mucho tiempo registrando', freno: 'Perder tiempo registrando a mano', solucion: 'Foto, y el Chequeo completa tu registro en segundos, sin buscar ingredientes.' },
+  aceite: { opcion: 'La foto no ve el aceite ni las salsas', freno: 'La foto no ve el aceite', solucion: 'El Chequeo de Grasas Ocultas pregunta lo que la cámara no ve.' },
+  cobros: { opcion: 'Me cobraron sin avisar', freno: 'Cobros por sorpresa', solucion: 'Te avisamos 1 día antes de cobrar y tienes 7 días de reembolso.' },
+  constancia: { opcion: 'Lo dejo a los pocos días', freno: 'Dejarlo a los pocos días', solucion: 'Racha, puntos y logros te muestran tu avance, sin culpa si un día falta.' },
+};
+
+/** Fecha estimada para llegar a la meta de peso al ritmo del plan (null si no aplica o es > 2 años). */
+export function fechaMeta(p: Perfil, plan: Plan): Date | null {
+  if (!p.meta || !p.peso || plan.ritmoKgSemana === 0) return null;
+  const falta = p.meta - p.peso; // negativo = bajar
+  if (falta * plan.ritmoKgSemana <= 0) return null;
+  const semanas = Math.abs(falta / plan.ritmoKgSemana);
+  if (!isFinite(semanas) || semanas > 104) return null;
+  const d = new Date();
+  d.setDate(d.getDate() + Math.round(semanas * 7));
+  return d;
+}

@@ -43,7 +43,9 @@ export function ChipOpcion({
   seleccionado,
   onClick,
   disabled,
+  indice = 0,
 }: {
+  indice?: number;
   icon?: LucideIcon;
   titulo: string;
   detalle?: string;
@@ -54,6 +56,9 @@ export function ChipOpcion({
   return (
     <motion.button
       type="button"
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3, delay: 0.06 * indice, ease: EASE }}
       whileTap={{ scale: 0.98 }}
       onClick={onClick}
       disabled={disabled}
@@ -106,7 +111,7 @@ export function Anillo({ pct, size = 112 }: { pct: number; size?: number }) {
   return (
     <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} role="img" aria-label={`${Math.round(pct)} por ciento`}>
       <circle cx={size / 2} cy={size / 2} r={r} fill="none" strokeWidth={9} stroke="color-mix(in oklab, var(--text-primary) 12%, transparent)" />
-      <circle cx={size / 2} cy={size / 2} r={r} fill="none" strokeWidth={9} stroke="var(--accent)" strokeLinecap="round" strokeDasharray={c} strokeDashoffset={c * (1 - pct / 100)} transform={`rotate(-90 ${size / 2} ${size / 2})`} />
+      <motion.circle cx={size / 2} cy={size / 2} r={r} fill="none" strokeWidth={9} stroke="var(--accent)" strokeLinecap="round" strokeDasharray={c} initial={false} animate={{ strokeDashoffset: c * (1 - pct / 100) }} transition={{ duration: 0.7, ease: EASE }} transform={`rotate(-90 ${size / 2} ${size / 2})`} />
     </svg>
   );
 }

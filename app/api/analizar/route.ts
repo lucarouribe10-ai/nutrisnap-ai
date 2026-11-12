@@ -15,7 +15,7 @@ const Salida = z.object({
 
 const DEMO = {
   demo: true as const,
-  plato: 'Ensalada con pollo',
+  plato: 'Ensalada fresca',
   kcal: 440,
   proteina_g: 38,
   carbos_g: 41,
