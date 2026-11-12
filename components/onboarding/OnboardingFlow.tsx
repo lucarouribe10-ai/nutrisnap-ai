@@ -222,7 +222,7 @@ export function OnboardingFlow() {
   const retroceder = ATRAS[paso] ? () => setPaso(ATRAS[paso] as Paso) : undefined;
 
   return (
-    <main className="mx-auto min-h-dvh max-w-[480px] bg-[var(--bg)] pb-28 text-[var(--text-primary)] [font-family:var(--font-body)]">
+    <main className="mx-auto min-h-dvh max-w-[480px] bg-[var(--bg)] [background:linear-gradient(180deg,var(--tint),var(--bg)_300px)] pb-28 text-[var(--text-primary)] [font-family:var(--font-body)]">
       {paso !== 'analizando' && paso !== 'plan' && paso !== 'diagnostico' && <BarraProgreso pct={PCT[paso]} onAtras={retroceder} />}
       <AnimatePresence mode="wait">
         <motion.div
@@ -397,7 +397,7 @@ export function OnboardingFlow() {
                 </h1>
                 <div className="hairline-card mt-4 flex items-center gap-3 rounded-[var(--radius-card)] p-3 shadow-[var(--shadow-1)]">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  {foto && <img src={foto.url} alt={ia.plato} width={56} height={56} className="size-14 rounded-[12px] object-cover" />}
+                  {foto && <img src={foto.url} alt={ia.plato} width={72} height={72} className="size-[72px] rounded-full border-[3px] border-white object-cover shadow-[0_4px_10px_-4px_rgb(36_43_36/.35)]" />}
                   <div>
                     <p className="text-[16px] font-bold">{ia.plato}</p>
                     <p className="text-[13px] text-[var(--text-secondary)]">{ia.demo ? 'Ejemplo ilustrativo (estimado)' : 'Estimado con margen de error'}</p>
@@ -410,8 +410,8 @@ export function OnboardingFlow() {
                       <p className={`text-[24px] font-extrabold tabular-nums [font-family:var(--font-display)] ${aceite !== null ? 'text-[var(--text-secondary)] line-through decoration-2' : ''}`}>{ia.kcal}</p>
                     </div>
                     <div className="text-right">
-                      <p className="text-[12px] font-semibold text-[var(--accent)]">Con el Chequeo</p>
-                      <p aria-live="polite" className="text-[44px] font-extrabold leading-none tabular-nums [font-family:var(--font-display)]">{aceite === null ? '—' : totalMostrado}<span className="ml-1 text-[14px] font-semibold text-[var(--text-secondary)]">kcal</span></p>
+                      <p className="text-[12px] font-bold text-[var(--accent)]">Con el Chequeo</p>
+                      <p aria-live="polite" className="text-[44px] font-extrabold leading-none tabular-nums [font-family:var(--font-display)]">{aceite === null ? <span className="text-[var(--text-secondary)]">?</span> : totalMostrado}<span className="ml-1 text-[14px] font-semibold text-[var(--text-secondary)]">kcal</span></p>
                     </div>
                   </div>
                   <div className="tick-escala mt-3" aria-hidden="true" />
@@ -419,22 +419,22 @@ export function OnboardingFlow() {
                     <p className="mt-3 text-[14px]"><strong className="font-bold">Ya es el {cuota}%</strong> de tus {plan.kcal.toLocaleString('es-CO')} kcal de hoy.</p>
                   )}
                 </div>
-                <div className="mt-3 rounded-[var(--radius-card)] p-4 text-[#F4FAF5] [background:linear-gradient(160deg,#4B8062,#3D6B4F_60%,#2F5640)]">
-                  <p className="text-[12px] font-bold uppercase tracking-[0.08em] opacity-90">Chequeo de Grasas Ocultas</p>
-                  <p className="mt-1 flex items-center gap-2 text-[17px] font-bold"><Droplet size={18} aria-hidden="true" /> {ia.pregunta_aceite.texto || '¿Cuánto aceite llevó?'}</p>
-                  <p className={`mt-1 text-[14px] ${pideAceite && aceite === null ? 'font-bold text-[#FFD2B0]' : 'opacity-90'}`}>{pideAceite && aceite === null ? 'Elige una opción para ver tu total.' : 'La cámara no lo ve. Tócalo o dilo por voz.'}</p>
-                  <div className="mt-3 flex gap-2" role="group" aria-label="Cantidad de aceite">
+                <div className="hairline-card mt-3 rounded-[var(--radius-card)] bg-[var(--surface)] p-4 shadow-[var(--shadow-1)]">
+                  <p className="inline-flex items-center gap-1.5 rounded-full bg-[#FFF3E6] px-2.5 py-1 text-[12px] font-bold uppercase tracking-[0.06em] text-[#A83D06]"><Droplet size={13} aria-hidden="true" /> Chequeo de Grasas Ocultas</p>
+                  <p className="mt-2 text-[18px] font-extrabold leading-snug [font-family:var(--font-display)]">{ia.pregunta_aceite.texto || '¿Cuánto aceite llevó?'}</p>
+                  <p className={`mt-1 text-[14px] ${pideAceite && aceite === null ? 'font-bold text-[#A83D06]' : 'text-[var(--text-secondary)]'}`}>{pideAceite && aceite === null ? 'Elige una opción para ver tu total.' : 'La cámara no lo ve. Tócalo o dilo por voz.'}</p>
+                  <div className="mt-3 grid grid-cols-3 gap-2" role="group" aria-label="Cantidad de aceite">
                     {([0, 1, 2] as const).map((n) => (
-                      <button key={n} type="button" aria-pressed={aceite === n} onClick={() => { setAceite(n); setPorVoz(false); }} className={`min-h-14 flex-1 rounded-[10px] px-1 py-1.5 text-[14px] font-bold leading-tight ${aceite === n ? 'bg-[#F4FAF5] text-[#2F5640]' : 'bg-[#10241A]/40'}`}>
-                        {n === 0 ? 'Nada' : <>{n} cucharada{n > 1 ? 's' : ''}<span className="block text-[13px] font-semibold opacity-90">+{ia.pregunta_aceite.una_cucharada_kcal * n} kcal</span></>}
+                      <button key={n} type="button" aria-label={n === 0 ? 'Nada de aceite' : `${n} cucharada${n > 1 ? 's' : ''}, más ${ia.pregunta_aceite.una_cucharada_kcal * n} kcal`} aria-pressed={aceite === n} onClick={() => { setAceite(n); setPorVoz(false); }} className={`flex min-h-14 flex-col items-center justify-center rounded-full px-2 py-1.5 text-[15px] font-bold leading-tight ${aceite === n ? 'bg-[#C2490A] text-white shadow-[0_8px_14px_-8px_rgb(194_73_10/.8)]' : 'bg-[var(--surface-2)] text-[var(--text-primary)]'}`}>
+                        {n === 0 ? 'Nada' : <>{n} cda.<span className="block text-[13px] font-semibold opacity-90">+{ia.pregunta_aceite.una_cucharada_kcal * n} kcal</span></>}
                       </button>
                     ))}
-                    {vozDisponible && (
-                      <button type="button" onClick={dictar} aria-label={escuchando ? 'Escuchando…' : 'Decirlo por voz'} aria-pressed={escuchando} className={`flex min-h-14 w-12 items-center justify-center rounded-[10px] ${escuchando ? 'animate-pulse bg-[#F4FAF5] text-[#2F5640]' : 'bg-[#10241A]/40'}`}><Mic size={18} aria-hidden="true" /></button>
-                    )}
                   </div>
+                  {vozDisponible && (
+                    <button type="button" onClick={dictar} aria-pressed={escuchando} className={`mt-2 flex min-h-12 w-full items-center justify-center gap-2 rounded-full text-[15px] font-semibold ${escuchando ? 'animate-pulse bg-[#C2490A] text-white' : 'border border-[color-mix(in_oklab,var(--text-secondary)_30%,transparent)] text-[var(--text-primary)]'}`}><Mic size={18} aria-hidden="true" /> {escuchando ? 'Escuchando…' : 'Decirlo por voz'}</button>
+                  )}
                   {escuchando && <p className="mt-2 text-[14px] font-semibold">Escuchando… di, por ejemplo, «una cucharada».</p>}
-                  {errorVoz && <p role="alert" className="mt-2 text-[14px] font-semibold text-[#FFD2B0]">{errorVoz}</p>}
+                  {errorVoz && <p role="alert" className="mt-2 text-[14px] font-semibold text-[#A83D06]">{errorVoz}</p>}
                   {porVoz && !escuchando && <p className="mt-2 text-[14px] font-semibold">Entendí tu voz y lo sumé.</p>}
                 </div>
                 {aceite !== null && (

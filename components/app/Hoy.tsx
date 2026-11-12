@@ -15,8 +15,6 @@ const fechaLarga = () => {
   return t.charAt(0).toUpperCase() + t.slice(1);
 };
 
-const LETRAS = ['D', 'L', 'M', 'M', 'J', 'V', 'S'];
-
 /** Anillo grande de calorías: degradé ámbar→naranja sobre pista clara, número de kcal restantes al centro. */
 function AnilloGrande({ pct, size = 188 }: { pct: number; size?: number }) {
   const sw = 16;
@@ -51,6 +49,7 @@ export function Hoy() {
   const [abierta, setAbierta] = useState<Comida | null>(null);
   const [editando, setEditando] = useState(false);
   const [form, setForm] = useState({ titulo: '', kcal: '' });
+  const [errorForm, setErrorForm] = useState('');
   const [deshacer, setDeshacer] = useState<Comida | null>(null);
   if (!d) return <Esqueleto />;
   const t = totalesHoy(d);
@@ -59,8 +58,6 @@ export function Hoy() {
   const pesoActual = d.pesos[d.pesos.length - 1].kg;
   const nivel = nivelDe(d.xp);
   const fotoHero = [...d.comidasHoy].filter((c) => c.foto).sort((a, b) => b.kcal - a.kcal)[0]?.foto;
-  const hoyF = new Date();
-  const semana = Array.from({ length: 7 }, (_, k) => { const f = new Date(hoyF.getTime() - (6 - k) * 86_400_000); return { letra: LETRAS[f.getDay()], dia: f.getDate(), hecho: d.kcalSemana[k] > 0, esHoy: k === 6 }; });
   const macros = [
     { n: 'Proteína', v: t.proteina, m: d.metaProteina, c: 'var(--accent)' },
     { n: 'Grasas', v: t.grasas, m: Math.round((d.metaKcal * 0.25) / 9), c: '#E8590C' },
@@ -72,12 +69,12 @@ export function Hoy() {
         <section aria-label="Tu día" className="relative -mx-5 h-[268px] overflow-hidden text-white">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={fotoHero} alt="" className="absolute inset-0 size-full object-cover" />
-          <div aria-hidden="true" className="absolute inset-0 [background:linear-gradient(180deg,rgb(30_40_32/.6),rgb(30_40_32/.05)_46%,rgb(30_40_32/.82))]" />
+          <div aria-hidden="true" className="absolute inset-0 [background:linear-gradient(180deg,rgb(30_40_32/.62),rgb(30_40_32/.22)_38%,rgb(30_40_32/.78)_68%,rgb(30_40_32/.9))]" />
           <div className="relative flex h-full flex-col justify-between px-5 pb-8 pt-5">
             <header className="flex items-center gap-3">
               <div className="min-w-0 flex-1">
                 <h1 className="truncate text-[20px] font-extrabold leading-tight tracking-[-0.02em] [font-family:var(--font-display)]">Hola, {d.nombre}</h1>
-                <p className="text-[14px] opacity-90">{fechaLarga()}</p>
+                <p className="text-[14px] opacity-90">{fechaLarga()}{d.demo ? ' · datos de ejemplo' : ''}</p>
               </div>
               <Link href="/app/logros" aria-label={`Nivel ${nivel.actual.n}, ${d.xp} XP. Ver logros`} className="inline-flex min-h-11 items-center gap-1 rounded-full bg-white px-3 text-[13px] font-extrabold text-[#A83D06]"><Zap size={14} aria-hidden="true" />{d.xp} XP</Link>
             </header>
@@ -127,17 +124,7 @@ export function Hoy() {
       <div className={`relative -mx-5 bg-[var(--bg)] px-5 pt-4 ${fotoHero ? '-mt-5 rounded-t-[26px]' : ''}`}>
         {d.aviso === 'escudo' && <p role="status" className="rounded-[var(--radius-card)] bg-[var(--chip-bg)] p-3 text-[14px] font-semibold text-[var(--accent)]">Ayer faltó un día, pero tu escudo protegió tu racha. Hoy sigue.</p>}
         {d.aviso === 'pausa' && <p role="status" className="rounded-[var(--radius-card)] bg-[var(--surface-2)] p-3 text-[14px] text-[var(--text-primary)]"><strong>Tu racha se pausó.</strong> Pasa, no se pierde lo que lograste. Registra una comida hoy y empieza una nueva.</p>}
-        {fotoHero && d.demo && <p className="mb-3 inline-block rounded-full bg-[var(--surface-2)] px-3 py-1 text-[13px] font-semibold text-[var(--text-secondary)]">Vista previa con datos de ejemplo</p>}
-        <RachaCard d={d} compacta />
-        <ol aria-label="Últimos 7 días" className="mt-4 grid grid-cols-7 gap-1.5">
-          {semana.map((x, i) => (
-            <li key={i} className={`flex flex-col items-center rounded-[16px] py-1.5 ${x.esHoy ? 'bg-[var(--text-primary)] text-[var(--bg)]' : ''}`}>
-              <span className={`text-[12px] font-semibold ${x.esHoy ? 'opacity-80' : 'text-[var(--text-secondary)]'}`}>{x.letra}</span>
-              <span className="text-[16px] font-extrabold tabular-nums [font-family:var(--font-display)]">{x.dia}</span>
-              <span className={`mt-0.5 flex size-4 items-center justify-center rounded-full ${x.hecho ? 'bg-[var(--accent)] text-white' : x.esHoy ? 'border border-dashed border-white/60' : 'border border-[var(--text-secondary)]/35'}`}>{x.hecho && <Check size={10} strokeWidth={4} aria-label="Registraste" />}</span>
-            </li>
-          ))}
-        </ol>
+                <RachaCard d={d} compacta />
         <div className="mt-3 grid grid-cols-3 gap-2" aria-label="Tus macros de hoy" role="group">
           {macros.map((m) => (
             <div key={m.n} className="rounded-[16px] bg-[var(--surface)] p-3 shadow-[0_6px_14px_-8px_rgb(36_43_36/.3)]">
@@ -205,7 +192,7 @@ export function Hoy() {
 
       {abierta && (
         <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/40" onClick={() => setAbierta(null)}>
-          <motion.div initial={{ y: 40, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.28, ease: EASE }} role="dialog" aria-modal="true" aria-label={abierta.titulo} onClick={(e) => e.stopPropagation()} className="w-full max-w-[480px] rounded-t-[24px] bg-[var(--bg)] px-5 pb-[max(20px,env(safe-area-inset-bottom))] pt-4 shadow-[0_-12px_30px_-10px_rgb(0_0_0/.25)]">
+          <motion.div initial={{ y: 40, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.28, ease: EASE }} role="dialog" aria-modal="true" aria-label={abierta.titulo} onKeyDown={(e) => { if (e.key === 'Escape') setAbierta(null); }} onClick={(e) => e.stopPropagation()} className="w-full max-w-[480px] rounded-t-[24px] bg-[var(--bg)] px-5 pb-[max(20px,env(safe-area-inset-bottom))] pt-4 shadow-[0_-12px_30px_-10px_rgb(0_0_0/.25)]">
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0"><h2 className="text-[20px] font-extrabold leading-tight [font-family:var(--font-display)]">{abierta.titulo}</h2><p className="text-[14px] text-[var(--text-secondary)]">{abierta.hora} · {abierta.nota ?? 'Registrado'}</p></div>
               <button type="button" autoFocus onClick={() => setAbierta(null)} aria-label="Cerrar" className="flex size-11 shrink-0 items-center justify-center rounded-full text-[var(--text-secondary)]"><X size={20} aria-hidden="true" /></button>
@@ -219,14 +206,16 @@ export function Hoy() {
                 </div>
                 {abierta.aceite ? <p className="mt-3 flex items-center gap-2 text-[14px] font-semibold text-[#A83D06]"><Droplet size={16} aria-hidden="true" /> El Chequeo atrapó {abierta.aceite} kcal de aceite.</p> : null}
                 <div className="mt-4 grid grid-cols-2 gap-2">
-                  <button type="button" onClick={() => { setForm({ titulo: abierta.titulo, kcal: String(abierta.kcal) }); setEditando(true); }} className="flex min-h-12 items-center justify-center gap-2 rounded-[var(--radius-button)] border border-[color-mix(in_oklab,var(--text-secondary)_30%,transparent)] text-[15px] font-semibold"><Pencil size={16} aria-hidden="true" /> Editar</button>
+                  <button type="button" onClick={() => { setForm({ titulo: abierta.titulo, kcal: String(abierta.kcal) }); setErrorForm(''); setEditando(true); }} className="flex min-h-12 items-center justify-center gap-2 rounded-[var(--radius-button)] border border-[color-mix(in_oklab,var(--text-secondary)_30%,transparent)] text-[15px] font-semibold"><Pencil size={16} aria-hidden="true" /> Editar</button>
                   <button type="button" onClick={() => { const c = abierta; actualizar((x) => eliminarComida(x, c.id)); setDeshacer(c); setAbierta(null); setTimeout(() => setDeshacer((cur) => (cur?.id === c.id ? null : cur)), 6000); }} className="flex min-h-12 items-center justify-center gap-2 rounded-[var(--radius-button)] border border-[#A83D06]/40 text-[15px] font-semibold text-[#A83D06]"><Trash2 size={16} aria-hidden="true" /> Eliminar</button>
                 </div>
               </>
             ) : (
-              <form className="mt-3 flex flex-col gap-3" onSubmit={(e) => { e.preventDefault(); const k = Number(form.kcal.replace(',', '.')); if (form.titulo.trim().length < 2 || !(k > 0 && k <= 3000)) return; actualizar((x) => editarComida(x, abierta.id, { titulo: form.titulo.trim(), kcal: Math.round(k) })); setAbierta(null); }}>
+              <form className="mt-3 flex flex-col gap-3" onSubmit={(e) => { e.preventDefault(); const k = Number(form.kcal.replace(',', '.')); if (form.titulo.trim().length < 2 || !(k > 0 && k <= 3000)) { setErrorForm('Pon un nombre y calorías entre 1 y 3.000.'); return; }
+              setErrorForm(''); actualizar((x) => editarComida(x, abierta.id, { titulo: form.titulo.trim(), kcal: Math.round(k) })); setAbierta(null); }}>
                 <label className="block"><span className="text-[14px] font-semibold text-[var(--text-secondary)]">Nombre</span><input value={form.titulo} onChange={(e) => setForm((f) => ({ ...f, titulo: e.target.value }))} maxLength={60} className="mt-1 h-12 w-full rounded-[var(--radius-card)] border border-[color-mix(in_oklab,var(--text-secondary)_28%,transparent)] bg-[var(--surface)] px-4 text-[16px] outline-none focus:border-[var(--accent)]" /></label>
                 <label className="block"><span className="text-[14px] font-semibold text-[var(--text-secondary)]">Calorías (kcal)</span><input inputMode="decimal" value={form.kcal} onChange={(e) => setForm((f) => ({ ...f, kcal: e.target.value.replace(/[^0-9.,]/g, '') }))} className="mt-1 h-12 w-full rounded-[var(--radius-card)] border border-[color-mix(in_oklab,var(--text-secondary)_28%,transparent)] bg-[var(--surface)] px-4 text-[16px] tabular-nums outline-none focus:border-[var(--accent)]" /></label>
+                {errorForm && <p role="alert" className="text-[14px] font-semibold text-[#C0392B]">{errorForm}</p>}
                 <div className="grid grid-cols-2 gap-2"><button type="button" onClick={() => setEditando(false)} className="min-h-12 rounded-[var(--radius-button)] border border-[color-mix(in_oklab,var(--text-secondary)_30%,transparent)] text-[15px] font-semibold">Cancelar</button><button type="submit" className="min-h-12 rounded-[var(--radius-button)] bg-[var(--accent)] text-[15px] font-semibold text-[var(--bg)]">Guardar</button></div>
               </form>
             )}

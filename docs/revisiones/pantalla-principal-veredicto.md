@@ -1,9 +1,14 @@
 # VEREDICTO revisor-visual — pantalla-principal (Hoy)
-Fecha: 2026-11-11 12:00
-Screenshot: docs/revisiones/pantalla-principal-375.png
+Fecha: 2026-11-12 10:00
+Screenshot: docs/revisiones/hoy-375.png
 Usabilidad: 26/40
-Craft: 13/20
+Craft: 15/20
 Copy (si vende): N-A
-Fidelidad (si hubo referencia): N-A
+Fidelidad (si hubo referencia): FIEL
 Veredicto: NO LISTA
-Top defectos: 1) Campana de avisos (Hoy.tsx L48) es un <button> sin onClick ni destino: elemento tapable que no hace nada; igual las filas de comida (li sin Link/button) y la pastilla de racha "12" parecen tapables y no responden. 2) No hay forma de editar, borrar ni deshacer una comida desde Hoy (control y libertad = 0 en código; una comida mal detectada queda para siempre). 3) Tarjeta de macros: las etiquetas "Proteína de 164 / Grasas de 69 / Carbos de 301" se parten en dos líneas y dejan el número meta huérfano ("164" solo abajo); en el tour aprobado eran etiquetas cortas de una línea. 4) Dos números héroe de 28px compiten (79,4 kg y 1.370 kcal) y la tarjeta verde mezcla dos métricas distintas (peso + nivel/XP); >3 tamaños de texto (28/20/18/17/15/14/13/12); el ritual diario (kcal de hoy) queda en 2º lugar. 5) Movimiento incompleto y sin estados de error/offline: filas, campana, banner y pastilla sin whileTap; sin transición entre pestañas; barras de macros/XP estáticas; sin celebración; lectura de datos solo con catch silencioso en app-store, sin mensaje de error ni estado offline. Además regresiones vs tour aprobado: racha sin etiqueta ("12" vs "12 DÍAS"), XP sin tope ("340 XP" vs "340/500 XP"), "Foto · segundos" ambiguo.
+Top defectos:
+1. Sobrecarga en la primera vista (gate cognitivo: 7 bloques en total, 5 antes del primer scroll; racha y semana duplican el mismo dato) -> fusionar la RachaCard y la tira de 7 días en un solo bloque, mover Misiones y "Camino a tu meta" a otra sección o bajarlos.
+2. Editar comida (Hoy.tsx, submit del formulario del sheet): si el nombre o las kcal son inválidos el formulario no hace nada y no dice nada -> mostrar el error inline ("Pon un nombre y calorías entre 1 y 3.000") y marcar el campo.
+3. Tarjeta de racha (zona media): el texto cae a 2 líneas con "días." huérfano y mete "1 escudo" y "Premio en 2 días" sin explicar -> una sola línea ("Hoy ya cuenta · 1 escudo") y el premio en otra línea o con nombre.
+4. Cabecera con foto: el número 1.110 y "Te quedan hoy" van en blanco sobre pollo y arroz claros, y el degradé de oscurecido es casi nulo a esa altura (0.05 al 46%) -> subir la opacidad del degradé en la franja 50-100% y medir el contraste (>=4.5:1).
+5. Movimiento y tokens: sin transición entre pestañas, sin stagger en racha, semana y macros, el sheet de detalle no tiene animación de salida, y hay muchos hex sueltos en componentes (#A83D06, #5A2D05, #7A4A1C, #E8590C) -> añadir AnimatePresence y stagger de 60ms, y pasarlos a tokens.

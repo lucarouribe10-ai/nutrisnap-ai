@@ -58,7 +58,7 @@ export function Hero({
       {/* Fondo con profundidad: mesh/radial sutil del acento — nunca fill plano */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 -z-10"
+        className="pointer-events-none absolute inset-0 -z-10 rounded-b-[32px]"
         style={{
           background:
             'radial-gradient(640px 420px at 100% 0%, color-mix(in oklab, var(--accent-2) 8%, transparent) 0%, transparent 55%), ' +

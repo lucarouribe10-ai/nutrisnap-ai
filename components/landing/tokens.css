@@ -33,11 +33,13 @@
                                  si no hay 2ª nota, repetir aquí el valor de --accent */
 
   /* ── FORMA (radios del brand kit — UNO por rol, toda la página) ── */
+  --racha-tinta: #5A2D05;     /* tinta marrón de la tarjeta de racha */
+  --racha-suave: #7A4A1C;
   --tint: #E4F2C9;            /* FICHA-ARTE v2: bloque de cabecera lima suave */
   --tint-deep: #D2E8AE;
   --accent-on-dark: #9AD0AE;  /* acento claro para secciones invertidas (contraste ≥4.5:1 sobre --text-primary) */
   --radius-card: 16px;        /* ← reemplazar con FICHA-ARTE — cards, frames, secciones */
-  --radius-button: 12px;      /* ← reemplazar con FICHA-ARTE — botones y chips de ícono */
+  --radius-button: 999px;      /* ← reemplazar con FICHA-ARTE — botones y chips de ícono */
 
   /* ── TIPOGRAFÍA (2 familias de la ficha — jamás Inter/Roboto/system-ui de marca) ── */
   --font-display: var(--font-figtree), 'Figtree', 'Helvetica Neue', sans-serif;   /* FICHA-ARTE v2: una sola familia (Figtree 400-800) */

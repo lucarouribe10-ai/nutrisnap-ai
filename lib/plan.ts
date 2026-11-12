@@ -57,7 +57,7 @@ export function calcularPlan(p: Required<Omit<Perfil, 'meta'>> & { meta?: number
 }
 
 export const ETIQUETA_OBJETIVO: Record<Objetivo, string> = {
-  definir: 'definir',
+  definir: 'bajar grasa',
   ganar: 'ganar músculo',
   mantener: 'mantener tu peso',
 };

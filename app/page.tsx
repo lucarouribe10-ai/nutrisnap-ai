@@ -102,7 +102,7 @@ export default function Page() {
           { src: '/app-preview/escaner.jpg', alt: 'Vista previa del diseño: escáner con modos foto, código, etiqueta y voz', label: 'Escanea códigos sin pagar' },
           { src: '/app-preview/logros.jpg', alt: 'Vista previa del diseño: logros y tu semana', label: 'Tus logros y tu semana' },
         ]}
-        kicker="VISTA PREVIA DEL DISEÑO · LA APP ESTÁ EN CONSTRUCCIÓN"
+        kicker="ASÍ SE VE POR DENTRO · DATOS DE EJEMPLO"
         ctaLabel={CTA_LABEL}
         ctaHref={CTA_HREF}
       />
@@ -131,7 +131,7 @@ export default function Page() {
         mensual={{
           nombre: 'Mensual',
           precioMes: 'US$7.99',
-          ctaLabel: 'Probar con el plan mensual',
+          ctaLabel: 'Probar mi primera foto gratis',
           ctaHref: '/onboarding?plan=mensual',
           notaCta: 'Aviso 1 día antes de cobrar · Reembolso de 7 días',
           features: [

@@ -18,16 +18,26 @@ export function RachaCard({ d, compacta = false }: { d: AppData; compacta?: bool
   const faltan = siguiente ? siguiente.progreso(d).meta - d.racha : 0;
   const registradoHoy = d.kcalSemana[6] > 0;
   if (compacta) {
+    const semana = Array.from({ length: 7 }, (_, k) => { const f = new Date(hoy.getTime() - (6 - k) * 86_400_000); return { letra: LETRAS[f.getDay()], dia: f.getDate(), hecho: d.kcalSemana[k] > 0, esHoy: k === 6 }; });
     return (
       <motion.section initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, ease: EASE }} aria-label="Tu racha" className="mt-4 rounded-[22px] border border-[rgb(232_89_12/.25)] bg-[linear-gradient(135deg,#FFF3E6,#FBE6CF)] p-3">
         <Link href="/app/racha" aria-label={`Racha de ${d.racha} días. Ver tu calendario de racha`} className="flex items-center gap-3">
           <Llama size={44} encendida={registradoHoy} />
           <span className="min-w-0 flex-1">
-            <span className="block text-[22px] font-extrabold leading-none tabular-nums text-[#5A2D05] [font-family:var(--font-display)]">{d.racha} <span className="text-[14px] font-bold">{d.racha === 1 ? 'día seguido' : 'días seguidos'}</span></span>
-            <span className="mt-0.5 block text-[13px] text-[#7A4A1C]">{registradoHoy ? 'Hoy ya cuenta.' : 'Registra una comida hoy para sumar.'} {d.escudos} escudo{d.escudos === 1 ? '' : 's'}.{siguiente && faltan > 0 ? ` Premio en ${faltan} ${faltan === 1 ? 'día' : 'días'}.` : ''}</span>
+            <span className="block text-[22px] font-extrabold leading-none tabular-nums text-[var(--racha-tinta)] [font-family:var(--font-display)]">{d.racha} <span className="text-[14px] font-bold">{d.racha === 1 ? 'día seguido' : 'días seguidos'}</span></span>
+            <span className="mt-0.5 block truncate text-[13px] text-[var(--racha-suave)]">{registradoHoy ? 'Hoy ya cuenta' : 'Registra una comida hoy'} · {d.escudos} escudo{d.escudos === 1 ? '' : 's'}</span>
           </span>
-          <ChevronRight size={20} className="shrink-0 text-[#7A4A1C]" aria-hidden="true" />
+          <ChevronRight size={20} className="shrink-0 text-[var(--racha-suave)]" aria-hidden="true" />
         </Link>
+        <ol aria-label="Últimos 7 días" className="mt-2 grid grid-cols-7 gap-1">
+          {semana.map((x, i) => (
+            <motion.li key={i} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.25, delay: 0.06 * i, ease: EASE }} className={`flex flex-col items-center rounded-[14px] py-1 ${x.esHoy ? 'bg-[var(--text-primary)] text-[var(--bg)]' : ''}`}>
+              <span className={`text-[12px] font-semibold ${x.esHoy ? 'opacity-80' : 'text-[var(--racha-suave)]'}`}>{x.letra}</span>
+              <span className="text-[15px] font-extrabold tabular-nums [font-family:var(--font-display)]">{x.dia}</span>
+              <span className={`mt-0.5 flex size-4 items-center justify-center rounded-full ${x.hecho ? 'bg-[var(--accent)] text-white' : x.esHoy ? 'border border-dashed border-white/60' : 'border border-[var(--racha-suave)]/40'}`}>{x.hecho && <Check size={10} strokeWidth={4} aria-label="Registraste" />}</span>
+            </motion.li>
+          ))}
+        </ol>
       </motion.section>
     );
   }

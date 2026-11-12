@@ -45,7 +45,7 @@ await shot('07-resultado-despues', true);
 await p.getByRole('button', { name: 'Ver mi plan' }).click();
 await p.waitForTimeout(2600);
 await shot('08-plan');
-await p.getByText(/tu plan de definir está listo/).waitFor({ timeout: 15000 });
+await p.getByText(/tu plan de bajar grasa está listo/).waitFor({ timeout: 15000 });
 await p.waitForTimeout(1200);
 await shot('08b-diagnostico', true);
 await p.getByRole('button', { name: /Ver mi plan y empezar la prueba/ }).click();
