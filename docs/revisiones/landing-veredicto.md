@@ -1,26 +1,24 @@
-# VEREDICTO revisor-visual — landing (cuarta revisión, estilo v2 Lima fresca)
+# VEREDICTO revisor-visual — landing
 Fecha: 2026-11-12 10:00
-Screenshot: docs/revisiones/landing-375.png
-Usabilidad: 28/40
-Craft: 13/20
-Copy (si vende): 16/20
+Screenshot: docs/revisiones/landing-375.png (puntuado sobre las 12 capturas por sección: docs/revisiones/landing-secciones/01-hero.png a 12-footer.png)
+Usabilidad: 31/40
+Craft: 15/20
+Copy: 17/20
+Copy (si vende): 17/20
 Fidelidad (si hubo referencia): FIEL
 Veredicto: NO LISTA
-Top defectos:
-1. [Screenshot completo, de ~y=250 a y=2000 en la vista reducida] Evidencia inválida: Problema, Agitación, Solución, App por dentro, Oferta, Garantía, FAQ y el cuerpo del CTA final salen EN BLANCO (el bloque oscuro final es un degradé vacío). Los reveals whileInView (useReveal en ui.tsx, once, amount 0.2) no se dispararon en la captura de página completa, así que ~75% de la página no está verificada visualmente (la propia regla: sin screenshot que muestre la sección, no cuenta). Fix: recapturar haciendo scroll por toda la página antes del full-page (o forzar estado visible con MotionConfig reducedMotion / ?capture=1) y volver a pasar al revisor.
-2. [Hero, mockup del Chequeo y CTA] La 2ª nota naranja de la ficha (#E8590C, "grasas atrapadas") no aparece en nada visible de la landing, mientras la referencia (abc-ab.png) la usa en chip "+120 de aceite atrapadas", barra y botón; además tokens.css define --accent-2 como #C2490A (no el de la ficha) y ChequeoDemo hardcodea hex (#4B8062, #2F5640, #F4FAF5, #12261A en ui.tsx) en vez de tokens. Resultado: la landing se lee casi monocroma verde y menos "de la misma familia" que la app. Fix: chip naranja degradé #F5A524→#E8590C con "+120 kcal de aceite atrapadas" junto al 560, corregir --accent-2 a #E8590C y tokenizar los hex.
-3. [Hero, fondo y composición] La firma v2 (cabecera lima con hoja redondeada radio 26 y foto de comida protagonista) no está: el hero es un degradé lineal tint→bg con miniatura de 52px; ni la hoja redondeada ni la foto grande aparecen. El dispositivo ownable queda reducido a rejilla+ticks (una vez) e isotipo. Fix: hero con bloque lima de borde inferior redondeado 26 y foto de la ensalada grande con las kcal encima, el demo subiendo como hoja.
-4. [Hero, demo y leyendas] Textos de 11px ("Solo la foto", "Con el Chequeo", "Ejemplo ilustrativo...") y fila de confianza de 14px/13px tirando a pequeño; el 440 tachado en #4F5B51 sobre panel-campo pierde jerarquía; el mensaje de garantía compite con 3 líneas de iconos sobre un CTA ya fuerte. Fix: mínimo 12px en labels, 2 líneas de garantía máx.
-5. [AppPorDentro y FAQ, copy] El kicker "VISTA PREVIA DEL DISEÑO · LA APP ESTÁ EN CONSTRUCCIÓN" más "Acceso anticipado" socavan la confianza justo antes de pedir pago, y las FAQ afirman funciones aún inexistentes (fotos no se guardan, escudo de racha, 8 fotos/día). Además el CTA del plan Mensual rompe el verbo único ("Probar con el plan mensual"). Fix: mover el aviso de preview a letra pequeña, unificar el verbo del CTA, y marcar en FAQ solo lo que ya existe.
 
-Detalle de puntaje
-Usabilidad: h1:3 h2:3 h3:3 h4:2 h5:3 h6:3 h7:3 h8:2 h9:3 h10:3
-(h4 y h8 bajan por inconsistencia de tokens/naranja ausente y por no poder verificar el equilibrio visual de las secciones en blanco; h3/h7 verificados en código: sticky CTA con 2 estados y ocultación frente a CTAs inline, FAQ con aria-expanded, dots tocables, enlaces Entrar y legales, demo tocable con default razonable; h9 neutro en landing.)
-Craft: jerarquía:3 profundidad:2 identidad:2 movimiento:3 encaje:3
-(profundidad: hero con tint→bg y sombras tintadas, pero 3 niveles no verificables en el resto por blancos; identidad: Figtree + lima/verde no coincide con los clones vetados Capítulo/Umbral, pero sin hoja lima, sin foto héroe, sin naranja; movimiento verificado en código: reveal escalonado + reduced-motion, conteo 440→560 y cifras, whileTap 0.97 en CtaButton/sticky/Oferta, acordeón; faltan anillos/barras dibujados.)
-Copy: idea:4 especificidad:3 emoción:3 oferta:3 acción:3
-(trazado a FICHA-AVATAR: hero dolor 1/2 + deseo 1, objeción cobros sorpresa en hero/Oferta/Garantía/FAQ, mecanismo "Chequeo de Grasas Ocultas" bautizado en hero, solución, oferta y FAQ; Garantía de Cero Sorpresas con nombre y plazo de 7 días tras la oferta; precio US$49.99/US$4.17/US$0.14 día; sin claims de ingresos/salud; sin prueba social real; message-match N/A.)
-Gate de carga cognitiva: 0-1 fallas (Problema con 5 ítems en el límite). Una acción primaria repetida.
-CTA héroe vivo: contraste #F6F8F1 sobre #3D6B4F ≈ 5.9:1 OK; whileTap 0.97 OK; nunca disabled OK; alto 52px y ancho completo OK.
-Fidelidad vs abc-ab.png: modo claro, hue verde, Figtree, radios 12-16 y sombras tintadas coinciden; un desvío visible (ausencia del naranja y de la hoja/foto) = 1 de 6 fallos, por debajo del umbral de 2, FIEL con reserva.
-Umbral: LISTA exige >=36/40 usabilidad, >=16/20 craft y >=16/20 copy sin eje <=2. Copy cumple (16); usabilidad 28 y craft 13 no.
+Detalle usabilidad: h1:3 h2:3 h3:3 h4:3 h5:3 h6:4 h7:3 h8:3 h9:3 h10:3
+Detalle craft: jerarquía:3 profundidad:3 identidad:3 movimiento:3 encaje:3
+Detalle copy: idea:4 especificidad:3 emoción:3 oferta:3 acción:4
+Fidelidad: 1 de 6 desvíos leves (la landing no usa la cabecera lima ni la barra oscura de la referencia; el resto coincide: modo claro, verde/naranja, Figtree, radios 16-22/píldora, sombras tintadas). No llega a 2 fallos.
+Gate cognitivo: 0-1 fallas (5 ítems de dolor en el límite; 5-6 CTAs repetidos de la MISMA acción, aceptable). No hay sobrecarga crítica.
+Verificado en código: aria-expanded/aria-controls en FAQ, aria-live en el demo, aria-pressed en chips, whileTap 0.97 en CTAs, useReducedMotion en reveal/contadores/FAQ/sticky, stagger de entrada, conteo animado de cifras y del 560, CTA >=52px ancho completo, contraste blanco sobre #3D6B4F ~6:1. Rutas destino existen (/onboarding, /entrar, /privacidad, /terminos, /reembolsos, /aviso-ia). No verificable en estático: celebración, anillos/barras (no aplican a landing). Sticky con dos estados (ver precios / CTA comercial).
+Sub-checks: Message-match N/A (sin dato de anuncio). Garantía nombrada con plazo cerca del CTA: PASA (sección Garantía + CtaFila contiguos; en la tarjeta de oferta solo dice "Reembolso de 7 días" sin el nombre).
+
+Top defectos:
+1. [Hero, tarjeta del demo del Chequeo] El título "Ensalada fresca / Almuerzo · 13:05" queda centrado (hereda text-center del hero) y flota desalineado respecto a la foto; los chips "1 cda · +120" y "2 cdas · +240" parten en dos líneas con el punto colgando al final de la primera. Además usa hex sueltos (#C2490A, #FFF3E6, #A83D06) en vez de tokens. -> text-left en el bloque, etiqueta en dos líneas explícitas ("1 cda" / "+120 kcal") sin el "·" y pasar los hex a tokens.
+2. [Fondos de las secciones 02, 03, 04, 06] La alternancia base/elevado es casi invisible (#F6F8F1 vs #FDFEFB, y tarjetas #F6F8F1 sobre blanco): problema, cifras y mecanismo se funden en un solo plano; la firma de la ficha (bloque lima #E4F2C9, naranja de dato) casi no aparece fuera del hero y de las capturas del carrusel, así que la página parece "verde + blanco + Figtree" intercambiable. -> pintar una sección entera (cifras o mecanismo) con --tint lima/hundido #E8EEDF y llevar el naranja a los números de costo (120 / 3.600).
+3. [Sección 03 "Lo que tu foto no cuenta"] Tres tarjetas idénticas del mismo peso: no hay número héroe; el 0,5 kg (el golpe emocional) pesa igual que el 120. Además el formato numérico es incoherente (3.600 y 0,5 con formato español vs US$4.17 y US$0.14 con punto). -> dar a "3.600 kcal → ≈0,5 kg" tamaño display ~56px como héroe, 120 como apoyo, y unificar decimales (US$4,17).
+4. [Oferta, título y tarjetas] "Empieza gratis. Sigue por US$4.17 al mes" anuncia un precio que es el anual prorrateado (se cobran US$49.99 de golpe) y el mensual cuesta US$7.99; además conviven dos "gratis" distintos (primera foto sin tarjeta vs 3 días de prueba) y ambos planes llevan el mismo CTA "Probar mi primera foto gratis": el usuario relee para entender qué paga y cuándo. La nota bajo el CTA anual no nombra "Garantía de Cero Sorpresas". -> título "US$4.17 al mes con plan anual", CTA del plan "Empezar 3 días gratis · Anual/Mensual" o nota que diga qué es gratis y cuándo se cobra, y nombrar la garantía en la nota.
+5. [Viudas tipográficas] "días" suelto en "Aviso 1 día antes de cobrar · Reembolso de 7 / días" (tarjeta Anual), "después" suelto bajo el CTA de la sección 05, y los enlaces del footer rompen con "Aviso de IA" huérfano en segunda fila. -> text-balance + whitespace-nowrap en "7 días", acortar a "3 días de prueba" y footer en grilla 2x2.
