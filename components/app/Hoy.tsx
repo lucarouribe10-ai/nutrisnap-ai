@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { motion } from 'motion/react';
 import { useState } from 'react';
-import { Droplet, Flame, Pencil, Plus, Trash2, X, Zap } from 'lucide-react';
+import { Check, Droplet, Flame, Pencil, Plus, Trash2, X, Zap } from 'lucide-react';
 import { Cuenta, Esqueleto, useAppData } from './uso';
 import { editarComida, eliminarComida, nivelDe, restaurarComida, totalesHoy, type Comida } from '@/lib/app-store';
 import { EASE } from '@/components/onboarding/ui';
@@ -15,15 +15,35 @@ const fechaLarga = () => {
   return t.charAt(0).toUpperCase() + t.slice(1);
 };
 
-function Anillo({ pct, size = 76 }: { pct: number; size?: number }) {
-  const r = (size - 12) / 2;
+const LETRAS = ['D', 'L', 'M', 'M', 'J', 'V', 'S'];
+
+/** Anillo grande de calorías: degradé ámbar→naranja sobre pista clara, número de kcal restantes al centro. */
+function AnilloGrande({ pct, size = 188 }: { pct: number; size?: number }) {
+  const sw = 16;
+  const r = (size - sw) / 2;
   const c = 2 * Math.PI * r;
   return (
-    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} aria-hidden="true">
-      <circle cx={size / 2} cy={size / 2} r={r} fill="none" strokeWidth={8} stroke="rgb(232 89 12 / .15)" />
-      <motion.circle cx={size / 2} cy={size / 2} r={r} fill="none" strokeWidth={8} stroke="#E8590C" strokeLinecap="round" strokeDasharray={c} initial={{ strokeDashoffset: c }} animate={{ strokeDashoffset: c * (1 - Math.min(1, pct)) }} transition={{ duration: 0.9, ease: EASE }} transform={`rotate(-90 ${size / 2} ${size / 2})`} />
+    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} aria-hidden="true" className="absolute inset-0">
+      <defs>
+        <linearGradient id="anillo-hoy" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor="#F5A524" />
+          <stop offset="100%" stopColor="#E8590C" />
+        </linearGradient>
+      </defs>
+      <circle cx={size / 2} cy={size / 2} r={r} fill="none" strokeWidth={sw} stroke="rgb(255 255 255 / .75)" />
+      <motion.circle cx={size / 2} cy={size / 2} r={r} fill="none" strokeWidth={sw} stroke="url(#anillo-hoy)" strokeLinecap="round" strokeDasharray={c} initial={{ strokeDashoffset: c }} animate={{ strokeDashoffset: c * (1 - Math.min(1, Math.max(0.02, pct))) }} transition={{ duration: 1, ease: EASE }} transform={`rotate(-90 ${size / 2} ${size / 2})`} />
     </svg>
   );
+}
+
+/** La comida se clasifica por la hora real a la que se registró (nada inventado). */
+function momento(hora: string) {
+  const h = parseInt(hora, 10);
+  if (h < 5) return { n: 'Madrugada', bg: '#DCE8F5' };
+  if (h < 11) return { n: 'Desayuno', bg: '#E4F2C9' };
+  if (h < 15) return { n: 'Almuerzo', bg: '#FFE6CC' };
+  if (h < 18) return { n: 'Merienda', bg: '#FFF1B8' };
+  return { n: 'Cena', bg: '#DCE8F5' };
 }
 
 export function Hoy() {
@@ -38,61 +58,96 @@ export function Hoy() {
   const progresoPeso = Math.max(0, Math.min(1, (d.pesoInicial - d.pesos[d.pesos.length - 1].kg) / (d.pesoInicial - d.pesoMeta)));
   const pesoActual = d.pesos[d.pesos.length - 1].kg;
   const nivel = nivelDe(d.xp);
+  const fotoHero = [...d.comidasHoy].filter((c) => c.foto).sort((a, b) => b.kcal - a.kcal)[0]?.foto;
+  const hoyF = new Date();
+  const semana = Array.from({ length: 7 }, (_, k) => { const f = new Date(hoyF.getTime() - (6 - k) * 86_400_000); return { letra: LETRAS[f.getDay()], dia: f.getDate(), hecho: d.kcalSemana[k] > 0, esHoy: k === 6 }; });
   const macros = [
     { n: 'Proteína', v: t.proteina, m: d.metaProteina, c: 'var(--accent)' },
     { n: 'Grasas', v: t.grasas, m: Math.round((d.metaKcal * 0.25) / 9), c: '#E8590C' },
     { n: 'Carbos', v: t.carbos, m: Math.round((d.metaKcal - d.metaProteina * 4 - d.metaKcal * 0.25) / 4), c: '#C9A227' },
   ];
   return (
-    <main className="px-5 pt-5">
-      <header className="flex items-center gap-3">
-        <span className="flex size-10 items-center justify-center rounded-full bg-[color-mix(in_oklab,var(--accent)_20%,var(--surface))] text-[14px] font-extrabold text-[var(--accent)] [font-family:var(--font-display)]" aria-hidden="true">{d.nombre.slice(0, 2).toUpperCase()}</span>
-        <div className="min-w-0 flex-1">
-          <h1 className="truncate text-[20px] font-extrabold leading-tight tracking-[-0.02em] [font-family:var(--font-display)]">Hola, {d.nombre}</h1>
-          <p className="text-[14px] text-[var(--text-secondary)]">{fechaLarga()}</p>
-        </div>
-        <Link href="/app/logros" aria-label={`Nivel ${nivel.actual.n}, ${d.xp} XP. Ver logros`} className="inline-flex min-h-11 items-center gap-1 rounded-full bg-[color-mix(in_oklab,#E8590C_14%,var(--surface))] px-3 text-[13px] font-extrabold text-[#A83D06]"><Zap size={14} aria-hidden="true" />{d.xp} XP</Link>
-      </header>
-      {d.demo && <p className="mt-3 inline-block rounded-full bg-[var(--surface-2)] px-3 py-1 text-[13px] font-semibold text-[var(--text-secondary)]">Vista previa con datos de ejemplo</p>}
-      {d.aviso === 'escudo' && <p role="status" className="mt-3 rounded-[var(--radius-card)] bg-[var(--chip-bg)] p-3 text-[14px] font-semibold text-[var(--accent)]">Ayer faltó un día, pero tu escudo protegió tu racha. Hoy sigue.</p>}
-      {d.aviso === 'pausa' && <p role="status" className="mt-3 rounded-[var(--radius-card)] bg-[var(--surface-2)] p-3 text-[14px] text-[var(--text-primary)]"><strong>Tu racha se pausó.</strong> Pasa, no se pierde lo que lograste. Registra una comida hoy y empieza una nueva.</p>}
-      <RachaCard d={d} />
-
-
-      <motion.section initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, delay: 0.06, ease: EASE }} aria-label="Calorías de hoy" className="hairline-card mt-3 flex items-center gap-4 rounded-[var(--radius-card)] p-4 shadow-[var(--shadow-2)]">
-        <div className="relative shrink-0">
-          <Anillo pct={t.kcal / d.metaKcal} />
-          <Flame size={22} className="absolute inset-0 m-auto text-[#E8590C]" aria-hidden="true" />
-        </div>
-        <div className="min-w-0 flex-1">
-          <p className="text-[40px] font-extrabold leading-none tabular-nums tracking-[-0.03em] [font-family:var(--font-display)]"><Cuenta valor={t.kcal} /></p>
-          <p className="mt-1 text-[14px] font-semibold text-[var(--text-secondary)]">de {d.metaKcal.toLocaleString('es-CO')} kcal</p>
-          <p className="mt-1 text-[14px] text-[var(--text-secondary)]">{restantes > 0 ? `Te quedan ${restantes.toLocaleString('es-CO')} kcal` : 'Llegaste a tu meta de hoy'}</p>
-          <div className="mt-2 grid grid-cols-3 gap-2">
-            {macros.map((m) => (
-              <div key={m.n}>
-                <p className="whitespace-nowrap text-[15px] font-bold tabular-nums">{m.v}<span className="text-[13px] font-medium text-[var(--text-secondary)]"> /{m.m} g</span></p>
-                <p className="text-[12px] text-[var(--text-secondary)]">{m.n}</p>
-                <span className="mt-1 block h-1 overflow-hidden rounded-full bg-[color-mix(in_oklab,var(--text-primary)_10%,transparent)]"><motion.span initial={{ width: 0 }} animate={{ width: `${Math.min(100, (m.v / m.m) * 100)}%` }} transition={{ duration: 0.8, delay: 0.2, ease: EASE }} className="block h-full rounded-full" style={{ background: m.c }} /></span>
+    <main className="px-5">
+      {fotoHero ? (
+        <section aria-label="Tu día" className="relative -mx-5 h-[268px] overflow-hidden text-white">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={fotoHero} alt="" className="absolute inset-0 size-full object-cover" />
+          <div aria-hidden="true" className="absolute inset-0 [background:linear-gradient(180deg,rgb(30_40_32/.6),rgb(30_40_32/.05)_46%,rgb(30_40_32/.82))]" />
+          <div className="relative flex h-full flex-col justify-between px-5 pb-8 pt-5">
+            <header className="flex items-center gap-3">
+              <div className="min-w-0 flex-1">
+                <h1 className="truncate text-[20px] font-extrabold leading-tight tracking-[-0.02em] [font-family:var(--font-display)]">Hola, {d.nombre}</h1>
+                <p className="text-[14px] opacity-90">{fechaLarga()}</p>
               </div>
-            ))}
+              <Link href="/app/logros" aria-label={`Nivel ${nivel.actual.n}, ${d.xp} XP. Ver logros`} className="inline-flex min-h-11 items-center gap-1 rounded-full bg-white px-3 text-[13px] font-extrabold text-[#A83D06]"><Zap size={14} aria-hidden="true" />{d.xp} XP</Link>
+            </header>
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, ease: EASE }} role="group" aria-label={`Calorías de hoy: ${t.kcal} de ${d.metaKcal}`}>
+              <p className="text-[14px] font-semibold opacity-95">{restantes > 0 ? 'Te quedan hoy' : 'Meta cumplida'}</p>
+              <p className="text-[52px] font-extrabold leading-none tabular-nums tracking-[-0.05em] [font-family:var(--font-display)]"><Cuenta valor={restantes} /> <span className="text-[18px] font-bold tracking-normal">kcal</span></p>
+              <div className="mt-2 h-[7px] overflow-hidden rounded-full bg-white/30"><motion.div initial={{ width: 0 }} animate={{ width: `${Math.min(100, (t.kcal / d.metaKcal) * 100)}%` }} transition={{ duration: 0.9, ease: EASE }} className="h-full rounded-full [background:linear-gradient(90deg,#F5A524,#E8590C)]" /></div>
+              <p className="mt-1.5 text-[14px] font-semibold opacity-95">Comiste {t.kcal.toLocaleString('es-CO')} de {d.metaKcal.toLocaleString('es-CO')} kcal</p>
+            </motion.div>
           </div>
-        </div>
-      </motion.section>
+        </section>
+      ) : (
+        <section aria-label="Tu día" className="-mx-5 rounded-b-[32px] bg-[var(--tint)] px-5 pb-5 pt-5 [background:radial-gradient(260px_180px_at_85%_0%,rgb(255_255_255/.55),transparent_70%),var(--tint)]">
+          <header className="flex items-center gap-3">
+            <span className="flex size-11 items-center justify-center rounded-full bg-[var(--surface)] text-[14px] font-extrabold text-[var(--accent)] shadow-[0_2px_8px_-2px_rgb(36_43_36/.25)] [font-family:var(--font-display)]" aria-hidden="true">{d.nombre.slice(0, 2).toUpperCase()}</span>
+            <div className="min-w-0 flex-1">
+              <h1 className="truncate text-[20px] font-extrabold leading-tight tracking-[-0.02em] [font-family:var(--font-display)]">Hola, {d.nombre}</h1>
+              <p className="text-[14px] text-[var(--text-secondary)]">{fechaLarga()}</p>
+            </div>
+            <Link href="/app/logros" aria-label={`Nivel ${nivel.actual.n}, ${d.xp} XP. Ver logros`} className="inline-flex min-h-11 items-center gap-1 rounded-full bg-[var(--surface)] px-3 text-[13px] font-extrabold text-[#A83D06] shadow-[0_2px_8px_-2px_rgb(36_43_36/.2)]"><Zap size={14} aria-hidden="true" />{d.xp} XP</Link>
+          </header>
+          {d.demo && <p className="mt-3 inline-block rounded-full bg-white/70 px-3 py-1 text-[13px] font-semibold text-[var(--text-secondary)]">Vista previa con datos de ejemplo</p>}
 
-      <Misiones d={d} actualizar={actualizar} />
 
-      <motion.section initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, ease: EASE }} aria-label="Camino a tu meta" className="mt-4 rounded-[var(--radius-card)] p-4 text-[#F4FAF5] shadow-[0_14px_26px_-12px_rgb(61_107_79/.65)] [background:radial-gradient(120px_80px_at_100%_0%,rgb(255_255_255/.16),transparent_70%),linear-gradient(160deg,#4B8062,#3D6B4F_55%,#2F5640)]">
-        <p className="text-[12px] font-bold uppercase tracking-[0.08em] opacity-85">Camino a tu meta</p>
-        <p className="mt-1 text-[24px] font-extrabold leading-none tabular-nums tracking-[-0.03em] [font-family:var(--font-display)]"><Cuenta valor={pesoActual} decimales={1} /> kg <span className="text-[14px] font-semibold opacity-80">→ meta {d.pesoMeta} kg</span></p>
-        <div className="relative mt-3 h-2 rounded-full bg-white/20" role="progressbar" aria-valuenow={Math.round(progresoPeso * 100)} aria-valuemin={0} aria-valuemax={100} aria-label="Avance hacia tu meta">
-          <motion.div initial={{ width: 0 }} animate={{ width: `${progresoPeso * 100}%` }} transition={{ duration: 0.9, ease: EASE }} className="h-full rounded-full bg-[#F4FAF5]" />
-          {[25, 50, 75].map((p) => <span key={p} className="absolute -top-[3px] h-[14px] w-[2px] rounded bg-white/55" style={{ left: `${p}%` }} />)}
+
+          <motion.div initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.4, ease: EASE }} role="group" aria-label={`Calorías de hoy: ${t.kcal} de ${d.metaKcal}`} className="mt-4 flex items-center justify-between gap-2">
+            <div className="w-[68px] text-center">
+              <p className="text-[18px] font-extrabold tabular-nums [font-family:var(--font-display)]"><Cuenta valor={t.kcal} /></p>
+              <p className="text-[12px] font-semibold text-[var(--text-secondary)]">Comido</p>
+            </div>
+            <div className="relative size-[188px] shrink-0">
+              <AnilloGrande pct={t.kcal / d.metaKcal} />
+              <div className="absolute inset-0 flex flex-col items-center justify-center">
+                <Flame size={20} className="text-[#E8590C]" aria-hidden="true" />
+                <p className="text-[44px] font-extrabold leading-none tabular-nums tracking-[-0.04em] [font-family:var(--font-display)]"><Cuenta valor={restantes} /></p>
+                <p className="mt-1 text-[13px] font-semibold text-[var(--text-secondary)]">{restantes > 0 ? 'kcal restantes' : 'Meta cumplida'}</p>
+              </div>
+            </div>
+            <div className="w-[68px] text-center">
+              <p className="text-[18px] font-extrabold tabular-nums [font-family:var(--font-display)]">{d.metaKcal.toLocaleString('es-CO')}</p>
+              <p className="text-[12px] font-semibold text-[var(--text-secondary)]">Tu meta</p>
+            </div>
+          </motion.div>
+
+        </section>
+      )}
+      <div className={`relative -mx-5 bg-[var(--bg)] px-5 pt-4 ${fotoHero ? '-mt-5 rounded-t-[26px]' : ''}`}>
+        {d.aviso === 'escudo' && <p role="status" className="rounded-[var(--radius-card)] bg-[var(--chip-bg)] p-3 text-[14px] font-semibold text-[var(--accent)]">Ayer faltó un día, pero tu escudo protegió tu racha. Hoy sigue.</p>}
+        {d.aviso === 'pausa' && <p role="status" className="rounded-[var(--radius-card)] bg-[var(--surface-2)] p-3 text-[14px] text-[var(--text-primary)]"><strong>Tu racha se pausó.</strong> Pasa, no se pierde lo que lograste. Registra una comida hoy y empieza una nueva.</p>}
+        {fotoHero && d.demo && <p className="mb-3 inline-block rounded-full bg-[var(--surface-2)] px-3 py-1 text-[13px] font-semibold text-[var(--text-secondary)]">Vista previa con datos de ejemplo</p>}
+        <RachaCard d={d} compacta />
+        <ol aria-label="Últimos 7 días" className="mt-4 grid grid-cols-7 gap-1.5">
+          {semana.map((x, i) => (
+            <li key={i} className={`flex flex-col items-center rounded-[16px] py-1.5 ${x.esHoy ? 'bg-[var(--text-primary)] text-[var(--bg)]' : ''}`}>
+              <span className={`text-[12px] font-semibold ${x.esHoy ? 'opacity-80' : 'text-[var(--text-secondary)]'}`}>{x.letra}</span>
+              <span className="text-[16px] font-extrabold tabular-nums [font-family:var(--font-display)]">{x.dia}</span>
+              <span className={`mt-0.5 flex size-4 items-center justify-center rounded-full ${x.hecho ? 'bg-[var(--accent)] text-white' : x.esHoy ? 'border border-dashed border-white/60' : 'border border-[var(--text-secondary)]/35'}`}>{x.hecho && <Check size={10} strokeWidth={4} aria-label="Registraste" />}</span>
+            </li>
+          ))}
+        </ol>
+        <div className="mt-3 grid grid-cols-3 gap-2" aria-label="Tus macros de hoy" role="group">
+          {macros.map((m) => (
+            <div key={m.n} className="rounded-[16px] bg-[var(--surface)] p-3 shadow-[0_6px_14px_-8px_rgb(36_43_36/.3)]">
+              <p className="whitespace-nowrap text-[16px] font-extrabold tabular-nums [font-family:var(--font-display)]">{m.v}<span className="text-[12px] font-medium text-[var(--text-secondary)]"> /{m.m} g</span></p>
+              <p className="text-[12px] font-semibold text-[var(--text-secondary)]">{m.n}</p>
+              <span className="mt-1.5 block h-1.5 overflow-hidden rounded-full bg-[color-mix(in_oklab,var(--text-primary)_10%,transparent)]"><motion.span initial={{ width: 0 }} animate={{ width: `${Math.min(100, (m.v / m.m) * 100)}%` }} transition={{ duration: 0.8, delay: 0.2, ease: EASE }} className="block h-full rounded-full" style={{ background: m.c }} /></span>
+            </div>
+          ))}
         </div>
-        <div className="mt-1.5 flex justify-between text-[12px] font-bold opacity-90">
-          {[25, 50, 75].map((p) => <span key={p}>{p}%{progresoPeso * 100 >= p ? ' ✓' : ''}</span>)}<span>Meta</span>
-        </div>
-      </motion.section>
+      </div>
 
       <section aria-label="Tus comidas de hoy" className="mt-5">
         <div className="flex items-center justify-between">
@@ -106,23 +161,46 @@ export function Hoy() {
             <Link href="/app/registrar" className="mt-4 inline-flex min-h-11 items-center gap-2 rounded-[var(--radius-button)] bg-[var(--accent)] px-5 text-[16px] font-semibold text-[var(--bg)]"><Plus size={18} aria-hidden="true" /> Registrar comida</Link>
           </div>
         ) : (
-          <ul className="mt-3 flex flex-col gap-2">
-            {d.comidasHoy.map((c, i) => (
-              <motion.li key={c.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, delay: 0.1 + 0.06 * i, ease: EASE }}>
-                <motion.button type="button" whileTap={{ scale: 0.98 }} onClick={() => { setAbierta(c); setEditando(false); }} aria-label={`${c.titulo}, ${c.kcal} kcal. Ver detalle`} className="flex w-full items-center gap-3 rounded-[var(--radius-card)] border border-[color-mix(in_oklab,var(--text-secondary)_16%,transparent)] bg-[var(--surface)] p-2 pr-4 text-left">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  {c.foto ? <img src={c.foto} alt="" width={52} height={52} className="size-[52px] shrink-0 rounded-[12px] object-cover" /> : <span className="flex size-[52px] shrink-0 items-center justify-center rounded-[12px] bg-[var(--chip-bg)] text-[var(--accent)]"><Plus size={20} aria-hidden="true" /></span>}
-                  <span className="min-w-0 flex-1">
-                    <span className="block truncate text-[15px] font-bold">{c.titulo}</span>
-                    <span className="block truncate text-[13px] text-[var(--text-secondary)]">{c.hora} · {c.aceite ? <span className="font-semibold text-[#A83D06]">+{c.aceite} kcal de aceite</span> : c.nota ?? 'Registrado'}</span>
-                  </span>
-                  <span className="text-right text-[17px] font-extrabold tabular-nums [font-family:var(--font-display)]">{c.kcal}<span className="block text-[12px] font-medium text-[var(--text-secondary)]">kcal</span></span>
-                </motion.button>
-              </motion.li>
-            ))}
+          <ul className="mt-2 flex flex-col">
+            {d.comidasHoy.map((c, i) => {
+              const m = momento(c.hora);
+              return (
+                <motion.li key={c.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, delay: 0.1 + 0.06 * i, ease: EASE }}>
+                  <motion.button type="button" whileTap={{ scale: 0.98 }} onClick={() => { setAbierta(c); setEditando(false); }} aria-label={`${m.n}: ${c.titulo}, ${c.kcal} kcal. Ver detalle`} className="flex w-full items-center gap-3 border-b border-[color-mix(in_oklab,var(--text-secondary)_18%,transparent)] py-2.5 text-left">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    {c.foto ? <img src={c.foto} alt="" width={52} height={52} className="size-[52px] shrink-0 rounded-full border-[3px] border-white object-cover shadow-[0_4px_10px_-4px_rgb(36_43_36/.35)]" /> : <span className="flex size-[52px] shrink-0 items-center justify-center rounded-full bg-[var(--chip-bg)] text-[var(--accent)]"><Plus size={22} aria-hidden="true" /></span>}
+                    <span className="min-w-0 flex-1">
+                      <span className="block text-[12px] font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)]">{m.n} · {c.hora}</span>
+                      <span className="block truncate text-[16px] font-bold leading-snug">{c.titulo}</span>
+                      <span className="block truncate text-[13px] text-[var(--text-secondary)]">{c.aceite ? <span className="font-bold text-[#A83D06]">+{c.aceite} kcal de aceite atrapadas</span> : c.nota ?? 'Registrado'}</span>
+                    </span>
+                    <span className="text-right text-[20px] font-extrabold leading-none tabular-nums [font-family:var(--font-display)]">{c.kcal}<span className="mt-0.5 block text-[12px] font-semibold text-[var(--text-secondary)]">kcal</span></span>
+                  </motion.button>
+                </motion.li>
+              );
+            })}
+            <li>
+              <Link href="/app/registrar" className="flex min-h-14 items-center justify-center gap-2 rounded-[22px] border-2 border-dashed border-[color-mix(in_oklab,var(--accent)_40%,transparent)] text-[15px] font-bold text-[var(--accent)]"><Plus size={18} aria-hidden="true" /> Añadir otra comida</Link>
+            </li>
           </ul>
         )}
       </section>
+
+      <Misiones d={d} actualizar={actualizar} />
+
+      <motion.section initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, ease: EASE }} aria-label="Camino a tu meta" className="mt-4 rounded-[var(--radius-card)] p-4 text-[#F4FAF5] shadow-[0_14px_26px_-12px_rgb(61_107_79/.65)] [background:radial-gradient(120px_80px_at_100%_0%,rgb(255_255_255/.16),transparent_70%),linear-gradient(160deg,#4B8062,#3D6B4F_55%,#2F5640)]">
+        <p className="text-[12px] font-bold uppercase tracking-[0.08em] opacity-85">Camino a tu meta</p>
+        <p className="mt-1 text-[24px] font-extrabold leading-none tabular-nums tracking-[-0.03em] [font-family:var(--font-display)]"><Cuenta valor={pesoActual} decimales={1} /> kg <span className="text-[14px] font-semibold tracking-normal opacity-80">→ meta {d.pesoMeta} kg</span></p>
+        <div className="relative mt-3 h-2 rounded-full bg-white/20" role="progressbar" aria-valuenow={Math.round(progresoPeso * 100)} aria-valuemin={0} aria-valuemax={100} aria-label="Avance hacia tu meta">
+          <motion.div initial={{ width: 0 }} animate={{ width: `${progresoPeso * 100}%` }} transition={{ duration: 0.9, ease: EASE }} className="h-full rounded-full bg-[#F4FAF5]" />
+          {[25, 50, 75].map((p) => <span key={p} className="absolute -top-[3px] h-[14px] w-[2px] rounded bg-white/55" style={{ left: `${p}%` }} />)}
+        </div>
+        <div className="mt-1.5 flex justify-between text-[12px] font-bold opacity-90">
+          {[25, 50, 75].map((p) => <span key={p}>{p}%{progresoPeso * 100 >= p ? ' ✓' : ''}</span>)}<span>Meta</span>
+        </div>
+      </motion.section>
+
+
 
 
       {abierta && (

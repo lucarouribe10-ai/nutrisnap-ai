@@ -11,12 +11,26 @@ import type { AppData } from '@/lib/app-store';
 const LETRAS = ['D', 'L', 'M', 'M', 'J', 'V', 'S'];
 
 /** La racha, clara: llama encendida o apagada, días seguidos, los últimos 7 días y el próximo premio. */
-export function RachaCard({ d }: { d: AppData }) {
+export function RachaCard({ d, compacta = false }: { d: AppData; compacta?: boolean }) {
   const hoy = new Date();
   const dias = Array.from({ length: 7 }, (_, i) => ({ letra: LETRAS[new Date(hoy.getTime() - (6 - i) * 86_400_000).getDay()], hecho: d.kcalSemana[i] > 0, esHoy: i === 6 }));
   const siguiente = LOGROS.filter((l) => l.icono === 'flame' && !d.logros.includes(l.id))[0];
   const faltan = siguiente ? siguiente.progreso(d).meta - d.racha : 0;
   const registradoHoy = d.kcalSemana[6] > 0;
+  if (compacta) {
+    return (
+      <motion.section initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, ease: EASE }} aria-label="Tu racha" className="mt-4 rounded-[22px] border border-[rgb(232_89_12/.25)] bg-[linear-gradient(135deg,#FFF3E6,#FBE6CF)] p-3">
+        <Link href="/app/racha" aria-label={`Racha de ${d.racha} días. Ver tu calendario de racha`} className="flex items-center gap-3">
+          <Llama size={44} encendida={registradoHoy} />
+          <span className="min-w-0 flex-1">
+            <span className="block text-[22px] font-extrabold leading-none tabular-nums text-[#5A2D05] [font-family:var(--font-display)]">{d.racha} <span className="text-[14px] font-bold">{d.racha === 1 ? 'día seguido' : 'días seguidos'}</span></span>
+            <span className="mt-0.5 block text-[13px] text-[#7A4A1C]">{registradoHoy ? 'Hoy ya cuenta.' : 'Registra una comida hoy para sumar.'} {d.escudos} escudo{d.escudos === 1 ? '' : 's'}.{siguiente && faltan > 0 ? ` Premio en ${faltan} ${faltan === 1 ? 'día' : 'días'}.` : ''}</span>
+          </span>
+          <ChevronRight size={20} className="shrink-0 text-[#7A4A1C]" aria-hidden="true" />
+        </Link>
+      </motion.section>
+    );
+  }
   return (
     <motion.section initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, ease: EASE }} aria-label="Tu racha" className="mt-4 rounded-[var(--radius-card)] border border-[rgb(232_89_12/.25)] bg-[linear-gradient(135deg,#FFF3E6,#FBE6CF)] p-4">
       <Link href="/app/racha" aria-label={`Racha de ${d.racha} días. Ver tu calendario de racha`} className="flex items-center gap-3">

@@ -1,5 +1,6 @@
 'use client';
 
+import { CabeceraLima } from './Cabecera';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -21,8 +22,8 @@ export function Perfil() {
     { href: '/aviso-ia', t: 'Aviso sobre la inteligencia artificial', i: FileText },
   ];
   return (
-    <main className="px-5 pt-5">
-      <h1 className="text-[26px] font-extrabold tracking-[-0.02em] [font-family:var(--font-display)]">Perfil</h1>
+    <main className="px-5">
+      <CabeceraLima titulo="Perfil" sub="Tu cuenta, tu plan y tus datos." />
       <section aria-label="Tu cuenta" className="hairline-card mt-4 rounded-[var(--radius-card)] p-4">
         <div className="flex items-center gap-3">
           <span className="flex size-12 items-center justify-center rounded-full bg-[color-mix(in_oklab,var(--accent)_20%,var(--surface))] text-[16px] font-extrabold text-[var(--accent)] [font-family:var(--font-display)]" aria-hidden="true">{d.nombre.slice(0, 2).toUpperCase()}</span>

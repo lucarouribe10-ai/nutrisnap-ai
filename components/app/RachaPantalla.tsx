@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
 import { Check, ChevronLeft, ChevronRight, Shield } from 'lucide-react';
 import { Esqueleto, useAppData } from './uso';
+import { BloqueLima } from './Cabecera';
 import { Llama } from './Llama';
 import { isoDe } from '@/lib/app-store';
 import { EASE } from '@/components/onboarding/ui';
@@ -35,7 +36,8 @@ export function RachaPantalla() {
   const registradoHoy = d.historial.includes(hoyIso);
   const hechosMes = celdas.filter((x) => x && d.historial.includes(iso(x))).length;
   return (
-    <main className="px-5 pt-3">
+    <main className="px-5">
+      <BloqueLima>
       <Link href="/app" className="inline-flex min-h-11 items-center gap-1 text-[15px] font-semibold text-[var(--accent)]"><ChevronLeft size={18} aria-hidden="true" /> Hoy</Link>
       <section className="mt-1 flex flex-col items-center text-center" aria-label="Tu racha">
         <Llama size={120} encendida={registradoHoy} />
@@ -43,6 +45,7 @@ export function RachaPantalla() {
         <p className="text-[20px] font-extrabold [font-family:var(--font-display)]">{d.racha === 1 ? 'día seguido' : 'días seguidos'}</p>
         <p className="mt-1 max-w-[300px] text-[15px] text-[var(--text-secondary)]">{registradoHoy ? 'Hoy ya cuenta. Vuelve mañana para sumar otro.' : 'Registra una comida hoy para sumar un día.'}</p>
       </section>
+      </BloqueLima>
       <dl className="mt-4 grid grid-cols-3 gap-2 text-center">
         {[[String(d.mejorRacha), 'mejor racha'], [String(d.escudos), d.escudos === 1 ? 'escudo' : 'escudos'], [String(d.historial.length), 'días registrados']].map(([v, l]) => (
           <div key={l} className="rounded-[14px] bg-[var(--surface-2)] p-3"><dd className="text-[24px] font-extrabold tabular-nums [font-family:var(--font-display)]">{v}</dd><dt className="text-[13px] text-[var(--text-secondary)]">{l}</dt></div>

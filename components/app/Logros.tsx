@@ -8,6 +8,7 @@ import { NIVELES, nivelDe } from '@/lib/app-store';
 import { LOGROS, QUE_DA_SUBIR, REGLAS_XP, type IconoLogro } from '@/lib/logros';
 import { EASE } from '@/components/onboarding/ui';
 import { CaminoLogros } from './CaminoLogros';
+import { CabeceraLima } from './Cabecera';
 
 const DIAS = ['L', 'M', 'M', 'J', 'V', 'S', 'D'];
 const ICONOS: Record<IconoLogro, typeof Flame> = { flame: Flame, drop: Droplet, flag: Flag, star: Star };
@@ -27,15 +28,10 @@ export function Logros() {
   const c = 2 * Math.PI * r;
   const Hero = siguiente ? ICONOS[siguiente.l.icono] : Star;
   return (
-    <main className="px-5 pt-5">
-      <header className="flex items-center justify-between gap-2">
-        <h1 className="text-[26px] font-extrabold tracking-[-0.02em] [font-family:var(--font-display)]">Logros</h1>
-        <span className="inline-flex items-center gap-1 rounded-full bg-[#A83D06] px-3 py-1 text-[13px] font-extrabold text-white"><Zap size={13} aria-hidden="true" /> Nivel {nivel.actual.n} · {d.xp} XP</span>
-      </header>
-      <div className="mt-1 flex items-center justify-between gap-2">
-        <p className="text-[14px] text-[var(--text-secondary)]">Constancia, no kilos a lo bruto.</p>
-        <button type="button" onClick={() => setAyuda(true)} className="inline-flex min-h-11 items-center gap-1 text-[14px] font-bold text-[var(--accent)] underline underline-offset-4"><CircleHelp size={16} aria-hidden="true" /> ¿Cómo funciona?</button>
-      </div>
+    <main className="px-5">
+      <CabeceraLima titulo="Logros" sub="Constancia, no kilos a lo bruto." derecha={<span className="inline-flex items-center gap-1 rounded-full bg-[#A83D06] px-3 py-1.5 text-[13px] font-extrabold text-white"><Zap size={13} aria-hidden="true" /> Nivel {nivel.actual.n} · {d.xp} XP</span>}>
+        <button type="button" onClick={() => setAyuda(true)} className="mt-1 inline-flex min-h-11 items-center gap-1 text-[14px] font-bold text-[var(--accent)] underline underline-offset-4"><CircleHelp size={16} aria-hidden="true" /> ¿Cómo funciona?</button>
+      </CabeceraLima>
 
       {siguiente && (
         <motion.section initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, ease: EASE }} aria-label="Tu siguiente logro" className="relative mt-3 overflow-hidden rounded-[18px] p-4 text-[#F4FAF5] shadow-[0_16px_28px_-12px_rgb(47_86_64/.8)] [background:radial-gradient(150px_110px_at_85%_10%,rgb(255_138_61/.55),transparent_70%),linear-gradient(160deg,#3F7358,#2F5640_60%,#24432F)]">

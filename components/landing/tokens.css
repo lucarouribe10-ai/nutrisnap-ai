@@ -18,9 +18,9 @@
 
 :root {
   /* ── SUPERFICIES (3 niveles: base / elevada / hundida) ── */
-  --bg: #EFF2ED;              /* ← reemplazar con FICHA-ARTE — fondo base (jamás #FFF/#000 puros) */
-  --surface: #F9FBF7;         /* ← reemplazar con FICHA-ARTE — secciones elevadas y cards */
-  --surface-2: #E4E9E1;       /* ← reemplazar con FICHA-ARTE — hundido: wells, frames placeholder */
+  --bg: #F6F8F1;              /* ← reemplazar con FICHA-ARTE — fondo base (jamás #FFF/#000 puros) */
+  --surface: #FDFEFB;         /* ← reemplazar con FICHA-ARTE — secciones elevadas y cards */
+  --surface-2: #E8EEDF;       /* ← reemplazar con FICHA-ARTE — hundido: wells, frames placeholder */
 
   /* ── TEXTO (casi-negro CON tinte, familia única de neutros) ── */
   --text-primary: #242B24;    /* ← reemplazar con FICHA-ARTE */
@@ -33,13 +33,15 @@
                                  si no hay 2ª nota, repetir aquí el valor de --accent */
 
   /* ── FORMA (radios del brand kit — UNO por rol, toda la página) ── */
+  --tint: #E4F2C9;            /* FICHA-ARTE v2: bloque de cabecera lima suave */
+  --tint-deep: #D2E8AE;
   --accent-on-dark: #9AD0AE;  /* acento claro para secciones invertidas (contraste ≥4.5:1 sobre --text-primary) */
   --radius-card: 16px;        /* ← reemplazar con FICHA-ARTE — cards, frames, secciones */
   --radius-button: 12px;      /* ← reemplazar con FICHA-ARTE — botones y chips de ícono */
 
   /* ── TIPOGRAFÍA (2 familias de la ficha — jamás Inter/Roboto/system-ui de marca) ── */
-  --font-display: var(--font-chivo), 'Chivo', 'Helvetica Neue', sans-serif;      /* ← reemplazar con FICHA-ARTE (display) */
-  --font-body: var(--font-hanken), 'Hanken Grotesk', 'Segoe UI', sans-serif;    /* ← reemplazar con FICHA-ARTE (body) */
+  --font-display: var(--font-figtree), 'Figtree', 'Helvetica Neue', sans-serif;   /* FICHA-ARTE v2: una sola familia (Figtree 400-800) */
+  --font-body: var(--font-figtree), 'Figtree', 'Segoe UI', sans-serif;
 
   /* ── SOMBRAS con el TINTE del neutro de marca (49 Parte 2c — nunca negro puro) ── */
   --shadow-1: 0 1px 2px rgb(36 43 36 / 0.07);          /* ← reemplazar el tinte RGB con FICHA-ARTE */

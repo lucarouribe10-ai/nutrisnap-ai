@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { motion } from 'motion/react';
 import { Check, Droplet, TrendingDown } from 'lucide-react';
+import { CabeceraLima } from './Cabecera';
 import { Cuenta, Esqueleto, useAppData } from './uso';
 import { registrarPeso } from '@/lib/app-store';
 import { EASE } from '@/components/onboarding/ui';
@@ -29,9 +30,8 @@ export function Progreso() {
   const semanas = hayTendencia ? Math.max(1, Math.round((new Date(d.pesos[d.pesos.length - 1].fecha).getTime() - new Date(d.pesos[0].fecha).getTime()) / (7 * 86_400_000))) : 0;
   const guardarKg = () => { const k = Number(kgTxt.replace(',', '.')); if (!(k >= 35 && k <= 250)) { setErrKg(true); return; } setErrKg(false); setKgTxt(''); actualizar((x) => registrarPeso(x, Math.round(k * 10) / 10)); };
   return (
-    <main className="px-5 pt-5">
-      <h1 className="text-[26px] font-extrabold tracking-[-0.02em] [font-family:var(--font-display)]">Progreso</h1>
-      <p className="text-[14px] text-[var(--text-secondary)]">Tu tendencia, no el número de un día.</p>
+    <main className="px-5">
+      <CabeceraLima titulo="Progreso" sub="Tu tendencia, no el número de un día." />
 
       <motion.section initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, ease: EASE }} aria-label="Tu peso" className="hairline-card mt-4 rounded-[var(--radius-card)] p-4 shadow-[var(--shadow-2)]">
         <div className="flex items-end justify-between gap-2">
