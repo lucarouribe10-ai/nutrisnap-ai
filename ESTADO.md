@@ -119,6 +119,12 @@ Registro de calorías y macros por FOTO con IA + corrección por VOZ + escáner 
 
 - Análisis de la propuesta de Gemini sobre paywall (2026-11-11): YA TENÍAMOS ubicación tras el quiz, timeline de prueba, anual como $/mes, titular con nombre+meta, CTA de prueba gratis. ADOPTADO: prueba personal (tu primera foto 440→560) en vez de reseña. RECHAZADO: precios US$39.99/6.99 (no pasan margen), reseña 5★ inventada, cancelar 'en 1 toque desde la App Store/Play Store' (somos web + Hotmart), RevenueCat/Superwall/Adapty (SDK de apps de tienda: el equivalente web son feature flags/experimentos, archivo 37, Sesión 8), estadísticas sin fuente (5x, +30% LATAM). RIESGO ANOTADO: la promesa 'cancela cuando quieras' debe verificarse con el flujo REAL de cancelación de Hotmart (18) antes de lanzar; se retiró '2 toques' de los textos hasta confirmarlo.
 
+## Sesión 5 — app interna (en curso, 2026-11-11)
+- Secciones (4 + registrar): Hoy (protagonista: camino a la meta + calorías del día + comidas con foto) · Progreso (tendencia de peso vs meta, calorías de la semana, proteína 5/7) · Logros (siguiente logro, casi lo logras, medallas, semana de grasas atrapadas) · Perfil (plan, enlaces legales, borrar mis datos) · Registrar (hoja de pantalla completa: foto + Chequeo de Grasas Ocultas, foto de ejemplo, registro rápido; código de barras y etiqueta marcados 'Pronto').
+- Datos: lib/app-store.ts (localStorage, SIN servidor) con semilla realista del mundo de Mateo (comidas con foto, 8 semanas de peso, racha 12, 340 XP); marcado 'Vista previa con datos de ejemplo'. Registrar una comida actualiza kcal, macros, XP y 'grasas atrapadas'; guarda SOLO una miniatura (160px) de la foto. Borrar datos del dispositivo funciona.
+- Verificado: tsc ✓ build ✓ · flujo Playwright (scripts/flujo-app.mjs) a 375px: navegación, registro de una comida y actualización de Hoy · sin desborde horizontal a 375 y 360px · sin errores de consola · capturas en docs/revisiones/app/. Veredicto del revisor visual de la pantalla principal (Hoy): pendiente.
+- NO construido aún (Sesión 6): servidor/base de datos, auth real, IA real (clave rechazada), Hotmart, escáner de código y de etiqueta.
+
 ## Sesiones completadas ✅
 - Instalación del SO (v6.10.0) y punto de guardado git — 2026-11-03
 - Sesión 2 — identidad visual (A/B/C → combinación A+B, tour aprobado, FICHA-ARTE) — 2026-11-03
