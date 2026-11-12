@@ -3,11 +3,12 @@
 import Link from 'next/link';
 import { motion } from 'motion/react';
 import { useState } from 'react';
-import { Droplet, Flame, Pencil, Plus, Trash2, X } from 'lucide-react';
+import { Droplet, Flame, Pencil, Plus, Trash2, X, Zap } from 'lucide-react';
 import { Cuenta, Esqueleto, useAppData } from './uso';
 import { editarComida, eliminarComida, nivelDe, restaurarComida, totalesHoy, type Comida } from '@/lib/app-store';
 import { EASE } from '@/components/onboarding/ui';
 import { RachaCard } from './RachaCard';
+import { Misiones } from './Misiones';
 
 const fechaLarga = () => {
   const t = new Intl.DateTimeFormat('es-CO', { weekday: 'long', day: 'numeric', month: 'short' }).format(new Date());
@@ -50,28 +51,13 @@ export function Hoy() {
           <h1 className="truncate text-[20px] font-extrabold leading-tight tracking-[-0.02em] [font-family:var(--font-display)]">Hola, {d.nombre}</h1>
           <p className="text-[14px] text-[var(--text-secondary)]">{fechaLarga()}</p>
         </div>
+        <Link href="/app/logros" aria-label={`Nivel ${nivel.actual.n}, ${d.xp} XP. Ver logros`} className="inline-flex min-h-11 items-center gap-1 rounded-full bg-[color-mix(in_oklab,#E8590C_14%,var(--surface))] px-3 text-[13px] font-extrabold text-[#A83D06]"><Zap size={14} aria-hidden="true" />{d.xp} XP</Link>
       </header>
       {d.demo && <p className="mt-3 inline-block rounded-full bg-[var(--surface-2)] px-3 py-1 text-[13px] font-semibold text-[var(--text-secondary)]">Vista previa con datos de ejemplo</p>}
       {d.aviso === 'escudo' && <p role="status" className="mt-3 rounded-[var(--radius-card)] bg-[var(--chip-bg)] p-3 text-[14px] font-semibold text-[var(--accent)]">Ayer faltó un día, pero tu escudo protegió tu racha. Hoy sigue.</p>}
       {d.aviso === 'pausa' && <p role="status" className="mt-3 rounded-[var(--radius-card)] bg-[var(--surface-2)] p-3 text-[14px] text-[var(--text-primary)]"><strong>Tu racha se pausó.</strong> Pasa, no se pierde lo que lograste. Registra una comida hoy y empieza una nueva.</p>}
       <RachaCard d={d} />
 
-      <motion.section initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, ease: EASE }} aria-label="Camino a tu meta" className="mt-4 rounded-[var(--radius-card)] p-4 text-[#F4FAF5] shadow-[0_14px_26px_-12px_rgb(61_107_79/.65)] [background:radial-gradient(120px_80px_at_100%_0%,rgb(255_255_255/.16),transparent_70%),linear-gradient(160deg,#4B8062,#3D6B4F_55%,#2F5640)]">
-        <p className="text-[12px] font-bold uppercase tracking-[0.08em] opacity-85">Camino a tu meta</p>
-        <p className="mt-1 text-[24px] font-extrabold leading-none tabular-nums tracking-[-0.03em] [font-family:var(--font-display)]"><Cuenta valor={pesoActual} decimales={1} /> kg <span className="text-[14px] font-semibold opacity-80">→ meta {d.pesoMeta} kg</span></p>
-        <div className="relative mt-3 h-2 rounded-full bg-white/20" role="progressbar" aria-valuenow={Math.round(progresoPeso * 100)} aria-valuemin={0} aria-valuemax={100} aria-label="Avance hacia tu meta">
-          <motion.div initial={{ width: 0 }} animate={{ width: `${progresoPeso * 100}%` }} transition={{ duration: 0.9, ease: EASE }} className="h-full rounded-full bg-[#F4FAF5]" />
-          {[25, 50, 75].map((p) => <span key={p} className="absolute -top-[3px] h-[14px] w-[2px] rounded bg-white/55" style={{ left: `${p}%` }} />)}
-        </div>
-        <div className="mt-1.5 flex justify-between text-[12px] font-bold opacity-90">
-          {[25, 50, 75].map((p) => <span key={p}>{p}%{progresoPeso * 100 >= p ? ' ✓' : ''}</span>)}<span>Meta</span>
-        </div>
-        <div className="mt-3 flex items-center gap-2 text-[12px] font-bold uppercase tracking-[0.04em]">
-          <span>Nivel {nivel.actual.n} · {nivel.actual.nombre}</span>
-          <span className="h-1.5 flex-1 overflow-hidden rounded-full bg-white/20"><motion.span initial={{ width: 0 }} animate={{ width: `${nivel.progreso * 100}%` }} transition={{ duration: 0.9, delay: 0.3, ease: EASE }} className="block h-full rounded-full [background:linear-gradient(90deg,#FF8A3D,#E8590C)]" /></span>
-          <span className="tabular-nums">{d.xp} / {nivel.sig ? nivel.sig.desde : d.xp} XP</span>
-        </div>
-      </motion.section>
 
       <motion.section initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, delay: 0.06, ease: EASE }} aria-label="Calorías de hoy" className="hairline-card mt-3 flex items-center gap-4 rounded-[var(--radius-card)] p-4 shadow-[var(--shadow-2)]">
         <div className="relative shrink-0">
@@ -91,6 +77,20 @@ export function Hoy() {
               </div>
             ))}
           </div>
+        </div>
+      </motion.section>
+
+      <Misiones d={d} actualizar={actualizar} />
+
+      <motion.section initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, ease: EASE }} aria-label="Camino a tu meta" className="mt-4 rounded-[var(--radius-card)] p-4 text-[#F4FAF5] shadow-[0_14px_26px_-12px_rgb(61_107_79/.65)] [background:radial-gradient(120px_80px_at_100%_0%,rgb(255_255_255/.16),transparent_70%),linear-gradient(160deg,#4B8062,#3D6B4F_55%,#2F5640)]">
+        <p className="text-[12px] font-bold uppercase tracking-[0.08em] opacity-85">Camino a tu meta</p>
+        <p className="mt-1 text-[24px] font-extrabold leading-none tabular-nums tracking-[-0.03em] [font-family:var(--font-display)]"><Cuenta valor={pesoActual} decimales={1} /> kg <span className="text-[14px] font-semibold opacity-80">→ meta {d.pesoMeta} kg</span></p>
+        <div className="relative mt-3 h-2 rounded-full bg-white/20" role="progressbar" aria-valuenow={Math.round(progresoPeso * 100)} aria-valuemin={0} aria-valuemax={100} aria-label="Avance hacia tu meta">
+          <motion.div initial={{ width: 0 }} animate={{ width: `${progresoPeso * 100}%` }} transition={{ duration: 0.9, ease: EASE }} className="h-full rounded-full bg-[#F4FAF5]" />
+          {[25, 50, 75].map((p) => <span key={p} className="absolute -top-[3px] h-[14px] w-[2px] rounded bg-white/55" style={{ left: `${p}%` }} />)}
+        </div>
+        <div className="mt-1.5 flex justify-between text-[12px] font-bold opacity-90">
+          {[25, 50, 75].map((p) => <span key={p}>{p}%{progresoPeso * 100 >= p ? ' ✓' : ''}</span>)}<span>Meta</span>
         </div>
       </motion.section>
 

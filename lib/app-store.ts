@@ -19,7 +19,7 @@ export interface Comida {
   aceite?: number;
 }
 export interface AppData {
-  version: 2;
+  version: 3;
   demo: boolean;
   nombre: string;
   metaKcal: number;
@@ -41,6 +41,9 @@ export interface AppData {
   logros: string[];
   comidasHoy: Comida[];
   fecha: string;
+  historial: string[]; // días con al menos una comida (para el calendario de racha)
+  escudoDias: string[]; // días protegidos por un escudo
+  cofre: string | null; // día en que se abrió el cofre diario
 }
 export interface Hito {
   tipo: 'racha' | 'nivel' | 'logro';
@@ -49,7 +52,7 @@ export interface Hito {
   xp?: number;
 }
 
-const KEY = 'ns_app_v2';
+const KEY = 'ns_app_v3';
 const DIA = 86_400_000;
 export const isoDe = (d: Date) => new Date(d.getTime() - d.getTimezoneOffset() * 60_000).toISOString().slice(0, 10);
 const hoyISO = () => isoDe(new Date());
@@ -81,7 +84,7 @@ export function semilla(perfil?: Perfil): AppData {
   const inicial = Math.round((peso + 2.6) * 10) / 10;
   const hoy = hoyISO();
   const d: AppData = {
-    version: 2, demo: true, nombre: perfil?.nombre ?? 'Mateo',
+    version: 3, demo: true, nombre: perfil?.nombre ?? 'Mateo',
     metaKcal: plan?.kcal ?? 2480, metaProteina: plan?.proteina ?? 164,
     pesoInicial: inicial, pesoMeta: perfil?.meta ?? 76,
     pesos: [0, 1, 2, 3, 4, 5, 6, 7, 8].map((s) => ({ fecha: haceDias((8 - s) * 7), kg: s === 8 ? peso : Math.round((inicial - (2.6 / 8) * s + (s % 2 === 0 ? 0.15 : -0.1)) * 10) / 10 })),
@@ -91,7 +94,9 @@ export function semilla(perfil?: Perfil): AppData {
     racha: 12, mejorRacha: 12, escudos: 1, ultimoRegistro: haceDias(1),
     xp: 340, registros: 120, aceiteTotal: 640,
     logros: ['primer_registro', 'primer_hallazgo', 'racha_3', 'racha_7', 'cazador_500', 'camino_25'],
-    fecha: hoy,
+    fecha: hoy, cofre: null,
+    historial: [...Array.from({ length: 12 }, (_, i) => haceDias(i)), ...Array.from({ length: 30 }, (_, i) => i + 14).filter((i) => i % 5 !== 0).map((i) => haceDias(i))],
+    escudoDias: [haceDias(26)],
     comidasHoy: [
       { id: 's1', hora: '08:10', titulo: 'Avena con huevos', nota: 'Foto', kcal: 520, proteina: 28, carbos: 58, grasas: 18, foto: '/fotos/desayuno.jpg' },
       { id: 's2', hora: '13:05', titulo: 'Pollo con arroz y frijoles', nota: 'Foto + voz', kcal: 640, proteina: 52, carbos: 62, grasas: 18, foto: '/fotos/pollo.jpg', aceite: 120 },
@@ -114,11 +119,11 @@ export function iniciarReal(e: EstadoOnboarding): AppData | null {
   const r = e.resultado;
   const comidas: Comida[] = r ? [{ id: 'primera', hora: new Date().toTimeString().slice(0, 5), titulo: r.plato, nota: 'Tu primera foto', kcal: Math.round(r.kcalBase + r.extraAceite), proteina: Math.round(r.proteina), carbos: Math.round(r.carbos), grasas: Math.round(r.grasas), foto: r.demo ? '/fotos/ensalada.jpg' : undefined, aceite: r.extraAceite || undefined }] : [];
   const d: AppData = {
-    version: 2, demo: false, nombre: p.nombre ?? 'Tú', metaKcal: plan.kcal, metaProteina: plan.proteina,
+    version: 3, demo: false, nombre: p.nombre ?? 'Tú', metaKcal: plan.kcal, metaProteina: plan.proteina,
     pesoInicial: p.peso, pesoMeta: p.meta ?? p.peso, pesos: [{ fecha: hoy, kg: p.peso }],
     kcalSemana: [0, 0, 0, 0, 0, 0, 0], proteinaDias: Array(7).fill(false), grasasSemana: Array(7).fill(0),
     racha: comidas.length ? 1 : 0, mejorRacha: comidas.length ? 1 : 0, escudos: 1, ultimoRegistro: comidas.length ? hoy : null,
-    xp: e.xp ?? 0, registros: comidas.length, aceiteTotal: r?.extraAceite ?? 0, logros: [], comidasHoy: comidas, fecha: hoy,
+    xp: e.xp ?? 0, registros: comidas.length, aceiteTotal: r?.extraAceite ?? 0, logros: [], comidasHoy: comidas, fecha: hoy, cofre: null, historial: comidas.length ? [hoy] : [], escudoDias: [],
   };
   const t = totalesHoy(d);
   d.kcalSemana[6] = t.kcal; d.proteinaDias[6] = t.proteina >= d.metaProteina; d.grasasSemana[6] = t.aceite;
@@ -131,7 +136,7 @@ export function leerApp(): AppData {
     const raw = localStorage.getItem(KEY);
     if (raw) {
       const d = JSON.parse(raw) as AppData;
-      if (d.version === 2) return pasarElTiempo(d);
+      if (d.version === 3) return pasarElTiempo(d);
     }
   } catch {
     /* sigue con datos nuevos */
@@ -150,7 +155,7 @@ export function guardarApp(d: AppData) {
 }
 export function borrarTodo() {
   try {
-    ['ns_app_v2', 'ns_app_v1', 'ns_onb_v1'].forEach((k) => localStorage.removeItem(k));
+    ['ns_app_v3', 'ns_app_v2', 'ns_app_v1', 'ns_onb_v1'].forEach((k) => localStorage.removeItem(k));
     sessionStorage.clear();
   } catch {
     /* ignorar */
@@ -168,7 +173,7 @@ function pasarElTiempo(d: AppData): AppData {
   };
   if (d.ultimoRegistro && d.racha > 0) {
     const faltan = diasEntre(d.ultimoRegistro, hoy) - 1; // días completos sin registrar
-    if (faltan === 1 && d.escudos > 0) { n.escudos = d.escudos - 1; n.aviso = 'escudo'; }
+    if (faltan === 1 && d.escudos > 0) { n.escudos = d.escudos - 1; n.aviso = 'escudo'; n.escudoDias = [...d.escudoDias, haceDias(1)]; }
     else if (faltan >= 1) { n.racha = 0; n.aviso = 'pausa'; }
   }
   guardarApp(n);
@@ -195,15 +200,17 @@ export function registrarPeso(d: AppData, kg: number): AppData {
 }
 
 /** Agrega una comida y devuelve los HITOS reales que provocó (racha, nivel, logros) para celebrarlos. */
-export function agregarComida(d: AppData, c: Omit<Comida, 'id' | 'hora'>): { data: AppData; hitos: Hito[] } {
+export function agregarComida(d: AppData, c: Omit<Comida, 'id' | 'hora'>): { data: AppData; hitos: Hito[]; rachaExtendida: boolean; rachaAnterior: number } {
   const hitos: Hito[] = [];
+  let rachaExtendida = false;
   const ahora = new Date();
   const hora = `${String(ahora.getHours()).padStart(2, '0')}:${String(ahora.getMinutes()).padStart(2, '0')}`;
   const hoy = hoyISO();
   let s: AppData = recalcular({ ...d, comidasHoy: [...d.comidasHoy, { ...c, id: `c${Date.now()}`, hora }], registros: d.registros + 1, aceiteTotal: d.aceiteTotal + (c.aceite ?? 0), xp: d.xp + 10 + (c.aceite ? 5 : 0), aviso: undefined });
   if (d.ultimoRegistro !== hoy) {
     const racha = d.racha > 0 ? d.racha + 1 : 1;
-    s = { ...s, racha, mejorRacha: Math.max(s.mejorRacha, racha), ultimoRegistro: hoy };
+    rachaExtendida = true;
+    s = { ...s, racha, mejorRacha: Math.max(s.mejorRacha, racha), ultimoRegistro: hoy, historial: s.historial.includes(hoy) ? s.historial : [...s.historial, hoy] };
     if ([3, 7, 14, 30, 60, 100].includes(racha)) hitos.push({ tipo: 'racha', titulo: `${racha} días seguidos`, detalle: 'Tu constancia ya es un hábito.' });
   }
   // Logros nuevos (cada uno paga XP una sola vez)
@@ -222,5 +229,28 @@ export function agregarComida(d: AppData, c: Omit<Comida, 'id' | 'hora'>): { dat
     s = { ...s, escudos: Math.min(2, s.escudos + 1) };
     hitos.push({ tipo: 'nivel', titulo: `Nivel ${despues.n} · ${despues.nombre}`, detalle: 'Ganaste un Escudo de racha.' });
   }
-  return { data: s, hitos };
+  return { data: s, hitos, rachaExtendida, rachaAnterior: d.racha };
+}
+
+/** Misiones del día (como las metas diarias de Duolingo): pequeñas, medibles y de comida. */
+export function misiones(d: AppData) {
+  const t = totalesHoy(d);
+  return [
+    { id: 'tres', titulo: 'Registra 3 comidas', actual: Math.min(3, d.comidasHoy.length), meta: 3, icono: 'cubiertos' as const },
+    { id: 'proteina', titulo: 'Llega a tu meta de proteína', actual: Math.min(d.metaProteina, t.proteina), meta: d.metaProteina, icono: 'musculo' as const, unidad: 'g' },
+    { id: 'chequeo', titulo: 'Atrapa grasa con el Chequeo', actual: t.aceite > 0 ? 1 : 0, meta: 1, icono: 'gota' as const },
+  ];
+}
+export const XP_COFRE = 30;
+export function cofreListo(d: AppData) {
+  return misiones(d).every((m) => m.actual >= m.meta);
+}
+export function abrirCofre(d: AppData): { data: AppData; subioNivel: boolean } {
+  const hoy = hoyISO();
+  if (d.cofre === hoy || !cofreListo(d)) return { data: d, subioNivel: false };
+  const antes = nivelDe(d.xp).actual.n;
+  let s: AppData = { ...d, cofre: hoy, xp: d.xp + XP_COFRE };
+  const subio = nivelDe(s.xp).actual.n > antes;
+  if (subio) s = { ...s, escudos: Math.min(2, s.escudos + 1) };
+  return { data: s, subioNivel: subio };
 }

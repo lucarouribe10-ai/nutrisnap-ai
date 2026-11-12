@@ -2,14 +2,15 @@
 
 import Link from 'next/link';
 import { motion } from 'motion/react';
-import { Check, ChevronRight, Flame, Shield } from 'lucide-react';
+import { Check, ChevronRight, Shield } from 'lucide-react';
+import { Llama } from './Llama';
 import { LOGROS } from '@/lib/logros';
 import { EASE } from '@/components/onboarding/ui';
 import type { AppData } from '@/lib/app-store';
 
 const LETRAS = ['D', 'L', 'M', 'M', 'J', 'V', 'S'];
 
-/** La racha, clara: cuántos días llevas, cuáles de los últimos 7 contaron, la regla y el siguiente premio. */
+/** La racha, clara: llama encendida o apagada, días seguidos, los últimos 7 días y el próximo premio. */
 export function RachaCard({ d }: { d: AppData }) {
   const hoy = new Date();
   const dias = Array.from({ length: 7 }, (_, i) => ({ letra: LETRAS[new Date(hoy.getTime() - (6 - i) * 86_400_000).getDay()], hecho: d.kcalSemana[i] > 0, esHoy: i === 6 }));
@@ -18,16 +19,14 @@ export function RachaCard({ d }: { d: AppData }) {
   const registradoHoy = d.kcalSemana[6] > 0;
   return (
     <motion.section initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, ease: EASE }} aria-label="Tu racha" className="mt-4 rounded-[var(--radius-card)] border border-[rgb(232_89_12/.25)] bg-[linear-gradient(135deg,#FFF3E6,#FBE6CF)] p-4">
-      <div className="flex items-center justify-between gap-3">
-        <div className="flex items-center gap-3">
-          <span className="flex size-11 items-center justify-center rounded-[14px] bg-[#A83D06] text-white" aria-hidden="true"><Flame size={22} /></span>
-          <div>
-            <p className="text-[26px] font-extrabold leading-none tabular-nums text-[#5A2D05] [font-family:var(--font-display)]">{d.racha} <span className="text-[15px] font-bold">{d.racha === 1 ? 'día seguido' : 'días seguidos'}</span></p>
-            <p className="mt-0.5 text-[14px] text-[#7A4A1C]">{registradoHoy ? 'Hoy ya cuenta.' : 'Registra una comida hoy para sumar.'}</p>
-          </div>
-        </div>
-        <Link href="/app/logros" aria-label="Ver cómo funcionan los puntos y premios" className="flex size-11 items-center justify-center rounded-full text-[#7A4A1C]"><ChevronRight size={20} aria-hidden="true" /></Link>
-      </div>
+      <Link href="/app/racha" aria-label={`Racha de ${d.racha} días. Ver tu calendario de racha`} className="flex items-center gap-3">
+        <Llama size={52} encendida={registradoHoy} />
+        <span className="min-w-0 flex-1">
+          <span className="block text-[28px] font-extrabold leading-none tabular-nums text-[#5A2D05] [font-family:var(--font-display)]">{d.racha} <span className="text-[15px] font-bold">{d.racha === 1 ? 'día seguido' : 'días seguidos'}</span></span>
+          <span className="mt-0.5 block text-[14px] text-[#7A4A1C]">{registradoHoy ? 'Hoy ya cuenta.' : 'Registra una comida hoy para sumar.'}</span>
+        </span>
+        <ChevronRight size={20} className="shrink-0 text-[#7A4A1C]" aria-hidden="true" />
+      </Link>
       <ol className="mt-3 grid grid-cols-7 gap-1.5" aria-label="Últimos 7 días">
         {dias.map((x, i) => (
           <li key={i} className="text-center">
@@ -36,10 +35,7 @@ export function RachaCard({ d }: { d: AppData }) {
           </li>
         ))}
       </ol>
-      <div className="mt-3 flex items-start gap-2 text-[14px] text-[#5A2D05]">
-        <Shield size={16} className="mt-0.5 shrink-0" aria-hidden="true" />
-        <p><strong>{d.escudos > 0 ? `${d.escudos} escudo${d.escudos > 1 ? 's' : ''} de racha.` : 'Sin escudo ahora.'}</strong> Si falta un día, un escudo protege tu racha.{siguiente && faltan > 0 ? <> Próximo premio: <strong>{siguiente.nombre}</strong> en {faltan} {faltan === 1 ? 'día' : 'días'} (+{siguiente.xp} XP).</> : null}</p>
-      </div>
+      <p className="mt-3 flex items-start gap-2 text-[14px] text-[#5A2D05]"><Shield size={16} className="mt-0.5 shrink-0" aria-hidden="true" /><span><strong>{d.escudos} escudo{d.escudos === 1 ? '' : 's'}.</strong>{siguiente && faltan > 0 ? <> Próximo premio: <strong>{siguiente.nombre}</strong> en {faltan} {faltan === 1 ? 'día' : 'días'}.</> : null}</span></p>
     </motion.section>
   );
 }

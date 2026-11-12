@@ -130,6 +130,8 @@ Registro de calorías y macros por FOTO con IA + corrección por VOZ + escáner 
 - ANTES DE LANZAR (promesas que dependen de servicios, ver auditoría): aviso 1 día antes de cobrar (Resend), cancelar cuando quiera y reembolso 7 días (Hotmart), escáner de códigos gratis (no existe aún). Sin conectarlas y probarlas, se retiran de los textos.
 - SIGUIENTE (Etapa 6, requiere cuentas del usuario): Supabase (datos+auth+RLS), Hotmart (cobro+webhook), Resend, dominio, IA real.
 
+- 2026-11-11 referente de rachas/premios = Duolingo (solo PATRONES, nada de marca/mascota/colores; paleta y fuentes de FICHA-ARTE intactas). Adoptado: pantalla 'Racha ampliada' tras la primera comida del día (llama grande animada, número que sube, semana) + resumen de 3 tarjetas + premios, botones 'gruesos' en momentos de premio, calendario de racha mensual con escudos, misiones del día con cofre (+30 XP), insignias por niveles (Bronce/Plata/Oro/Diamante), llama que se apaga si hoy no cuenta, vibración corta en premios. NO adoptado a propósito: ligas/ranking, gemas/tienda, vidas (castigan; la constitución dice sin culpa, sin comunidad). Evidencia: scripts/flujo-racha.mjs, docs/revisiones/racha/.
+
 ## Sesiones completadas ✅
 - Instalación del SO (v6.10.0) y punto de guardado git — 2026-11-03
 - Sesión 2 — identidad visual (A/B/C → combinación A+B, tour aprobado, FICHA-ARTE) — 2026-11-03

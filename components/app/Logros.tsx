@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { motion } from 'motion/react';
-import { Check, CircleHelp, Droplet, Flag, Flame, Lock, Shield, Star, X, Zap } from 'lucide-react';
+import { CircleHelp, Droplet, Flag, Flame, Shield, Star, X, Zap } from 'lucide-react';
 import { Cuenta, Esqueleto, useAppData } from './uso';
 import { NIVELES, nivelDe } from '@/lib/app-store';
 import { LOGROS, QUE_DA_SUBIR, REGLAS_XP, type IconoLogro } from '@/lib/logros';
@@ -10,6 +10,18 @@ import { EASE } from '@/components/onboarding/ui';
 
 const DIAS = ['L', 'M', 'M', 'J', 'V', 'S', 'D'];
 const ICONOS: Record<IconoLogro, typeof Flame> = { flame: Flame, drop: Droplet, flag: Flag, star: Star };
+const FAMILIAS: { nombre: string; icono: IconoLogro; ids: string[] }[] = [
+  { nombre: 'Constancia', icono: 'flame', ids: ['racha_3', 'racha_7', 'racha_14', 'racha_30'] },
+  { nombre: 'Cazador de grasas', icono: 'drop', ids: ['cazador_500', 'cazador_1000'] },
+  { nombre: 'Camino a tu meta', icono: 'flag', ids: ['camino_25', 'camino_50', 'camino_75', 'camino_100'] },
+  { nombre: 'Primeros pasos', icono: 'star', ids: ['primer_registro', 'primer_hallazgo'] },
+];
+const TIER = [
+  { nombre: 'Bronce', fondo: 'linear-gradient(145deg,#E0A06A,#B8692F)' },
+  { nombre: 'Plata', fondo: 'linear-gradient(145deg,#C9D2CE,#8E9B96)' },
+  { nombre: 'Oro', fondo: 'linear-gradient(145deg,#FFD25A,#E0A21B)' },
+  { nombre: 'Diamante', fondo: 'linear-gradient(145deg,#8FD9E8,#3FA7C9)' },
+];
 
 export function Logros() {
   const [d] = useAppData();
@@ -21,7 +33,6 @@ export function Logros() {
   const proteinaDias = d.proteinaDias.filter(Boolean).length;
   const pendientes = LOGROS.filter((l) => !d.logros.includes(l.id)).map((l) => ({ l, p: l.progreso(d) })).sort((a, b) => b.p.actual / b.p.meta - a.p.actual / a.p.meta);
   const siguiente = pendientes[0];
-  const casi = pendientes.slice(1, 3);
   const ganados = LOGROS.filter((l) => d.logros.includes(l.id));
   const r = 32;
   const c = 2 * Math.PI * r;
@@ -58,50 +69,36 @@ export function Logros() {
         </motion.section>
       )}
 
-      {casi.length > 0 && (
-        <section aria-label="Casi lo logras" className="mt-5">
-          <h2 className="text-[13px] font-extrabold uppercase tracking-[0.08em] text-[var(--text-secondary)]">Casi lo logras</h2>
-          <ul className="mt-2 flex flex-col gap-2">
-            {casi.map(({ l, p }) => {
-              const Ic = ICONOS[l.icono];
-              const naranja = l.icono === 'drop' || l.icono === 'flame';
-              return (
-                <li key={l.id} className="flex items-center gap-3 rounded-[var(--radius-card)] border border-[color-mix(in_oklab,var(--text-secondary)_16%,transparent)] bg-[var(--surface)] p-3">
-                  <span className={`flex size-10 shrink-0 items-center justify-center rounded-[12px] ${naranja ? 'bg-[rgb(232_89_12/.14)] text-[#A83D06]' : 'bg-[var(--chip-bg)] text-[var(--accent)]'}`}><Ic size={18} aria-hidden="true" /></span>
-                  <div className="min-w-0 flex-1">
-                    <p className="flex justify-between gap-2 text-[15px] font-bold"><span>{l.nombre}</span><span className={`text-[14px] tabular-nums ${naranja ? 'text-[#A83D06]' : 'text-[var(--accent)]'}`}>{p.actual} / {p.meta}{l.unidad ? ` ${l.unidad}` : ''}</span></p>
-                    <span className="mt-1.5 block h-2 overflow-hidden rounded-full bg-[color-mix(in_oklab,var(--text-primary)_10%,transparent)]"><motion.span initial={{ width: 0 }} animate={{ width: `${(p.actual / p.meta) * 100}%` }} transition={{ duration: 0.8, ease: EASE }} className="block h-full rounded-full" style={{ background: naranja ? 'linear-gradient(90deg,#FF8A3D,#E8590C)' : 'linear-gradient(90deg,#4B8062,#3D6B4F)' }} /></span>
-                    <p className="mt-1 text-[13px] text-[var(--text-secondary)]">{l.como} · +{l.xp} XP</p>
-                  </div>
-                </li>
-              );
-            })}
-          </ul>
-        </section>
-      )}
-
-      <section aria-label="Ya son tuyos" className="mt-5">
-        <h2 className="text-[13px] font-extrabold uppercase tracking-[0.08em] text-[var(--text-secondary)]">Ya son tuyos ({ganados.length} de {LOGROS.length})</h2>
-        {ganados.length === 0 ? (
-          <p className="mt-2 rounded-[var(--radius-card)] border border-dashed border-[color-mix(in_oklab,var(--text-secondary)_35%,transparent)] p-4 text-[14px] text-[var(--text-secondary)]">Aún no tienes logros. El primero llega al registrar tu primera comida.</p>
-        ) : (
-          <ul className="mt-3 grid grid-cols-4 gap-2">
-            {ganados.map((m, i) => {
-              const Ic = ICONOS[m.icono];
-              const g = m.icono === 'flag';
-              return (
-                <motion.li key={m.id} initial={{ opacity: 0, scale: 0.85 }} animate={{ opacity: 1, scale: 1 }} transition={{ type: 'spring', stiffness: 320, damping: 18, delay: 0.08 * i }} className="text-center">
-                  <span className={`relative mx-auto flex size-14 items-center justify-center rounded-full text-white ${g ? '[background:linear-gradient(145deg,#5B9576,#3D6B4F)] shadow-[0_6px_14px_-4px_rgb(61_107_79/.7)]' : '[background:linear-gradient(145deg,#FF8A3D,#E8590C)] shadow-[0_6px_14px_-4px_rgb(232_89_12/.7)]'}`}>
-                    <Ic size={22} aria-hidden="true" />
-                    <span className="absolute -bottom-0.5 -right-0.5 flex size-[18px] items-center justify-center rounded-full border-2 border-[var(--bg)] bg-[#2F5640] text-white"><Check size={10} strokeWidth={3.5} aria-label="Logrado" /></span>
-                  </span>
-                  <span className="mt-1.5 block text-[12px] font-bold leading-tight">{m.nombre}</span>
-                </motion.li>
-              );
-            })}
-            <li className="text-center"><span className="mx-auto flex size-14 items-center justify-center rounded-full border-[1.5px] border-dashed border-[color-mix(in_oklab,var(--text-secondary)_40%,transparent)] text-[var(--text-secondary)]"><Lock size={20} aria-hidden="true" /></span><span className="mt-1.5 block text-[12px] font-bold leading-tight text-[var(--text-secondary)]">Más por ganar</span></li>
-          </ul>
-        )}
+      <section aria-label="Tus insignias" className="mt-5">
+        <h2 className="text-[13px] font-extrabold uppercase tracking-[0.08em] text-[var(--text-secondary)]">Tus insignias · {ganados.length} de {LOGROS.length}</h2>
+        <ul className="mt-3 grid grid-cols-2 gap-3">
+          {FAMILIAS.map((f, fi) => {
+            const items = f.ids.map((id) => LOGROS.find((l) => l.id === id)!);
+            const ganadosF = items.filter((l) => d.logros.includes(l.id)).length;
+            const proximo = items.find((l) => !d.logros.includes(l.id));
+            const prog = proximo ? proximo.progreso(d) : null;
+            const nivelF = Math.min(ganadosF, TIER.length) - 1;
+            const color = nivelF >= 0 ? TIER[nivelF] : null;
+            const Ic = ICONOS[f.icono];
+            return (
+              <motion.li key={f.nombre} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, delay: 0.07 * fi, ease: EASE }} className="rounded-[var(--radius-card)] border border-[color-mix(in_oklab,var(--text-secondary)_16%,transparent)] bg-[var(--surface)] p-3 text-center">
+                <span className={`relative mx-auto flex size-16 items-center justify-center rounded-[20px] ${color ? 'text-white shadow-[0_5px_0_rgb(0_0_0/.22)]' : 'border-2 border-dashed border-[color-mix(in_oklab,var(--text-secondary)_40%,transparent)] text-[var(--text-secondary)]'}`} style={color ? { background: color.fondo } : undefined}>
+                  <Ic size={28} aria-hidden="true" />
+                  {color && <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-[var(--text-primary)] px-2 py-0.5 text-[11px] font-extrabold uppercase tracking-[0.05em] text-[var(--bg)]">{color.nombre}</span>}
+                </span>
+                <p className="mt-4 text-[15px] font-extrabold leading-tight [font-family:var(--font-display)]">{f.nombre}</p>
+                <p className="text-[13px] text-[var(--text-secondary)]">Nivel {ganadosF} de {items.length}</p>
+                <span className="mt-2 flex justify-center gap-1" aria-hidden="true">{items.map((l, i) => <span key={l.id} className={`h-1.5 w-6 rounded-full ${i < ganadosF ? 'bg-[#E8590C]' : 'bg-[color-mix(in_oklab,var(--text-primary)_12%,transparent)]'}`} />)}</span>
+                {proximo && prog ? (
+                  <>
+                    <span className="mt-2 block h-2 overflow-hidden rounded-full bg-[color-mix(in_oklab,var(--text-primary)_10%,transparent)]"><motion.span initial={{ width: 0 }} animate={{ width: `${(prog.actual / prog.meta) * 100}%` }} transition={{ duration: 0.8, ease: EASE }} className="block h-full rounded-full [background:linear-gradient(90deg,#FF8A3D,#E8590C)]" /></span>
+                    <p className="mt-1 text-[13px] text-[var(--text-secondary)]">{proximo.nombre}: {prog.actual}/{prog.meta}{proximo.unidad ? ` ${proximo.unidad}` : ''}</p>
+                  </>
+                ) : <p className="mt-2 text-[13px] font-bold text-[var(--accent)]">¡Completa!</p>}
+              </motion.li>
+            );
+          })}
+        </ul>
       </section>
 
       <section aria-label="Tu semana" className="hairline-card mt-5 rounded-[var(--radius-card)] p-4">

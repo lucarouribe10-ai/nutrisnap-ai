@@ -15,7 +15,7 @@ const nueva = async () => {
 };
 const iso = (dias) => { const d = new Date(Date.now() - dias * 86_400_000); return new Date(d.getTime() - d.getTimezoneOffset() * 60_000).toISOString().slice(0, 10); };
 const shot = async (p, n, full = false) => { await p.waitForTimeout(1300); await p.screenshot({ path: `${out}/${n}.png`, fullPage: full }); console.log('captura', n); };
-const editar = (p, fn) => p.evaluate(`(() => { const k='ns_app_v2'; const d=JSON.parse(localStorage.getItem(k)); (${fn.toString()})(d); localStorage.setItem(k, JSON.stringify(d)); })()`);
+const editar = (p, fn) => p.evaluate(`(() => { const k='ns_app_v3'; const d=JSON.parse(localStorage.getItem(k)); (${fn.toString()})(d); localStorage.setItem(k, JSON.stringify(d)); })()`);
 
 // 1) DEMO: racha clara en Hoy + ayuda en Logros
 let p = await nueva();
@@ -26,6 +26,19 @@ await shot(p, '02-logros', true);
 await p.getByRole('button', { name: /Cómo funciona/ }).click();
 await shot(p, '03-ayuda-puntos');
 await p.keyboard.press('Escape').catch(() => {});
+await p.goto(`${base}/app/racha`, { waitUntil: 'networkidle' });
+await shot(p, '03b-calendario-racha', true);
+// misiones: dejar la proteína lista y abrir el cofre
+await p.goto(`${base}/app`, { waitUntil: 'networkidle' });
+await shot(p, '03c-hoy-misiones', true);
+await editar(p, (d) => { d.comidasHoy[0].proteina = 100; });
+await p.reload({ waitUntil: 'networkidle' });
+const xpAntes = await p.getByRole('link', { name: /XP\. Ver logros/ }).innerText();
+await p.getByRole('button', { name: 'Abrir el cofre del día' }).click();
+await p.getByText('¡Cofre abierto!').waitFor();
+await shot(p, '03d-cofre');
+await p.getByRole('button', { name: 'Genial' }).click();
+console.log('XP antes/después del cofre:', xpAntes.replace(/\n/g, ' '), '→', (await p.getByRole('link', { name: /XP\. Ver logros/ }).innerText()).replace(/\n/g, ' '));
 
 // 2) Celebración: racha de 2 → 3 al registrar hoy
 await p.goto(`${base}/app`, { waitUntil: 'networkidle' });
@@ -40,16 +53,23 @@ await p.getByText('Con el Chequeo').waitFor({ timeout: 15000 });
 await p.getByRole('button', { name: /1 cucharada/ }).click();
 await p.getByRole('button', { name: 'Guardar en mi día' }).click();
 await p.getByText('Guardado en tu día').waitFor();
-await shot(p, '05-celebracion-hitos');
+await shot(p, '05a-resumen');
+await p.getByRole('button', { name: 'Continuar' }).click();
+await p.getByText('Racha ampliada').waitFor();
+await shot(p, '05b-racha-ampliada');
+await p.getByRole('button', { name: 'Continuar' }).click();
+await p.getByText('¡Lo lograste!').waitFor();
+await shot(p, '05c-premios');
 const hitos = await p.getByRole('list', { name: 'Lo que lograste' }).innerText().catch(() => '(sin hitos)');
 console.log('Hitos:', hitos.replace(/\n+/g, ' | '));
+await p.getByRole('button', { name: 'Volver a Hoy' }).click(); await p.waitForURL('**/app');
 
 // 3) Escudo: falta 1 día → protege; faltan 2 → pausa
 for (const [faltan, esperado] of [[1, 'escudo'], [2, 'pausa']]) {
   p = await nueva();
   await p.goto(`${base}/app`, { waitUntil: 'networkidle' });
   await editar(p, (d) => { d.escudos = 1; });
-  await p.evaluate(`(() => { const k='ns_app_v2'; const d=JSON.parse(localStorage.getItem(k)); const f=${faltan}; const x=(n)=>{const t=new Date(Date.now()-n*86400000);return new Date(t.getTime()-t.getTimezoneOffset()*60000).toISOString().slice(0,10)}; d.fecha=x(f+1); d.ultimoRegistro=x(f+1); localStorage.setItem(k, JSON.stringify(d)); })()`);
+  await p.evaluate(`(() => { const k='ns_app_v3'; const d=JSON.parse(localStorage.getItem(k)); const f=${faltan}; const x=(n)=>{const t=new Date(Date.now()-n*86400000);return new Date(t.getTime()-t.getTimezoneOffset()*60000).toISOString().slice(0,10)}; d.fecha=x(f+1); d.ultimoRegistro=x(f+1); localStorage.setItem(k, JSON.stringify(d)); })()`);
   await p.reload({ waitUntil: 'networkidle' });
   const aviso = await p.getByRole('status').first().innerText().catch(() => '(sin aviso)');
   console.log(`faltan ${faltan} día(s) →`, aviso.replace(/\n/g, ' '), '| esperado:', esperado);
@@ -60,7 +80,7 @@ for (const [faltan, esperado] of [[1, 'escudo'], [2, 'pausa']]) {
 // 4) Primer día REAL: sin datos de Mateo
 p = await nueva();
 await p.goto(`${base}/app`, { waitUntil: 'networkidle' });
-await p.evaluate(`(() => { localStorage.removeItem('ns_app_v2'); localStorage.setItem('ns_onb_v1', JSON.stringify({ perfil: { nombre: 'Laura', dolor: 'aceite', objetivo: 'definir', sexo: 'mujer', edad: 31, estatura: 165, peso: 68, meta: 62, dias: 4 }, resultado: { plato: 'Ensalada fresca', kcalBase: 440, proteina: 38, carbos: 41, grasas: 14, extraAceite: 120, demo: true }, xp: 25 })); })()`);
+await p.evaluate(`(() => { localStorage.removeItem('ns_app_v3'); localStorage.setItem('ns_onb_v1', JSON.stringify({ perfil: { nombre: 'Laura', dolor: 'aceite', objetivo: 'definir', sexo: 'mujer', edad: 31, estatura: 165, peso: 68, meta: 62, dias: 4 }, resultado: { plato: 'Ensalada fresca', kcalBase: 440, proteina: 38, carbos: 41, grasas: 14, extraAceite: 120, demo: true }, xp: 25 })); })()`);
 await p.reload({ waitUntil: 'networkidle' });
 await shot(p, '08-primer-dia-real');
 const real = await p.getByText(/Vista previa con datos de ejemplo/).count();

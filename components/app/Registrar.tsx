@@ -1,12 +1,15 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { motion } from 'motion/react';
+import { animate, motion } from 'motion/react';
 import { Barcode, Camera, Check, FileText, Flame, ImageIcon, Loader2, PenLine, Trophy, X } from 'lucide-react';
 import { ChequeoAceite } from './ChequeoAceite';
 import { useAppData } from './uso';
-import { agregarComida, type Hito } from '@/lib/app-store';
+import { agregarComida, type AppData, type Hito } from '@/lib/app-store';
+import { Llama } from './Llama';
+import { BotonGordo } from './ui3d';
+import { vibrar } from '@/lib/haptics';
 import { BotonPrimario, EASE, PieFijo } from '@/components/onboarding/ui';
 import { track } from '@/lib/eventos';
 
@@ -28,6 +31,9 @@ export function Registrar() {
   const [datos, actualizar] = useAppData();
   const [hitos, setHitos] = useState<Hito[]>([]);
   const [racha, setRacha] = useState(0);
+  const [fases, setFases] = useState<('resumen' | 'racha' | 'premios')[]>([]);
+  const [fase, setFase] = useState(0);
+  const [fin, setFin] = useState<{ data: AppData; antes: number } | null>(null);
   const [paso, setPaso] = useState<Paso>('elegir');
   const [ia, setIa] = useState<IA | null>(null);
   const [foto, setFoto] = useState<string | undefined>();
@@ -73,6 +79,10 @@ export function Registrar() {
     actualizar(() => r.data);
     setHitos(r.hitos);
     setRacha(r.data.racha);
+    setFin({ data: r.data, antes: r.rachaAnterior });
+    setFases(['resumen', ...(r.rachaExtendida ? ['racha' as const] : []), ...(r.hitos.length ? ['premios' as const] : [])]);
+    setFase(0);
+    vibrar(15);
     track('comida_registrada', { via: 'foto', aceite: extra > 0 });
     setXpGanado(xp);
     setPaso('guardado');
@@ -85,6 +95,10 @@ export function Registrar() {
     actualizar(() => r.data);
     setHitos(r.hitos);
     setRacha(r.data.racha);
+    setFin({ data: r.data, antes: r.rachaAnterior });
+    setFases(['resumen', ...(r.rachaExtendida ? ['racha' as const] : []), ...(r.hitos.length ? ['premios' as const] : [])]);
+    setFase(0);
+    vibrar(15);
     track('comida_registrada', { via: 'rapido' });
     setXpGanado(10);
     setPaso('guardado');
@@ -173,25 +187,69 @@ export function Registrar() {
         </div>
       )}
 
-      {paso === 'guardado' && (
-        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, ease: EASE }} className="px-5 pt-12 text-center">
-          <motion.span initial={{ scale: 0.4 }} animate={{ scale: 1 }} transition={{ type: 'spring', stiffness: 380, damping: 14 }} className="mx-auto flex size-20 items-center justify-center rounded-full bg-[var(--accent)] text-[var(--bg)]"><Check size={40} strokeWidth={3.5} aria-hidden="true" /></motion.span>
-          <p className="mt-5 text-[26px] font-extrabold [font-family:var(--font-display)]">Guardado en tu día</p>
-          <p className="mt-2 inline-block rounded-full bg-[#A83D06] px-4 py-1.5 text-[15px] font-extrabold text-white">+{xpGanado} XP</p>
-          {racha > 0 && <p className="mt-3 flex items-center justify-center gap-1.5 text-[16px] font-bold text-[#A83D06]"><Flame size={18} aria-hidden="true" /> Racha: {racha} {racha === 1 ? 'día' : 'días'} seguidos</p>}
-          {hitos.length > 0 && (
-            <ul className="mt-6 flex flex-col gap-3 text-left" aria-label="Lo que lograste">
-              {hitos.map((h, i) => (
-                <motion.li key={h.titulo} initial={{ opacity: 0, scale: 0.85, y: 10 }} animate={{ opacity: 1, scale: 1, y: 0 }} transition={{ type: 'spring', stiffness: 320, damping: 16, delay: 0.35 + 0.18 * i }} className="flex items-center gap-3 rounded-[var(--radius-card)] border border-[rgb(232_89_12/.3)] bg-[linear-gradient(135deg,#FFF3E6,#FBE6CF)] p-3">
-                  <span className="flex size-12 shrink-0 items-center justify-center rounded-full text-white [background:linear-gradient(145deg,#FF8A3D,#E8590C)] shadow-[0_6px_14px_-4px_rgb(232_89_12/.7)]">{h.tipo === 'racha' ? <Flame size={22} aria-hidden="true" /> : <Trophy size={22} aria-hidden="true" />}</span>
-                  <span className="min-w-0 flex-1"><span className="block text-[12px] font-bold uppercase tracking-[0.08em] text-[#7A4A1C]">{h.tipo === 'logro' ? 'Logro desbloqueado' : h.tipo === 'nivel' ? 'Subiste de nivel' : 'Racha'}</span><span className="block text-[17px] font-extrabold text-[#5A2D05]">{h.titulo}</span><span className="block text-[14px] text-[#7A4A1C]">{h.detalle}{h.xp ? ` · +${h.xp} XP` : ''}</span></span>
-                </motion.li>
-              ))}
-            </ul>
+      {paso === 'guardado' && fin && (
+        <motion.div key={fases[fase]} initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.3, ease: EASE }} className="flex min-h-[80dvh] flex-col px-5 pt-8 text-center">
+          {fases[fase] === 'resumen' && (
+            <div className="flex flex-1 flex-col">
+              <motion.span initial={{ scale: 0.4 }} animate={{ scale: 1 }} transition={{ type: 'spring', stiffness: 380, damping: 14 }} className="mx-auto flex size-20 items-center justify-center rounded-full bg-[var(--accent)] text-[var(--bg)]"><Check size={40} strokeWidth={3.5} aria-hidden="true" /></motion.span>
+              <p className="mt-5 text-[28px] font-extrabold [font-family:var(--font-display)]">Guardado en tu día</p>
+              <ul className="mt-6 grid grid-cols-3 gap-2" aria-label="Resumen">
+                {[
+                  { v: `+${xpGanado}`, l: 'XP ganados', c: '#A83D06', f: '#FBE6CF' },
+                  { v: `${Math.min(999, Math.round((fin.data.comidasHoy.reduce((t, x) => t + x.kcal, 0) / fin.data.metaKcal) * 100))}%`, l: 'de tu día', c: '#2F5640', f: '#DDEBE0' },
+                  { v: `${fin.data.comidasHoy.reduce((t, x) => t + (x.aceite ?? 0), 0)}`, l: 'kcal atrapadas', c: '#A83D06', f: '#FBE6CF' },
+                ].map((x, i) => (
+                  <motion.li key={x.l} initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 * i, duration: 0.3 }} className="rounded-[16px] p-3" style={{ background: x.f }}>
+                    <p className="text-[24px] font-extrabold tabular-nums [font-family:var(--font-display)]" style={{ color: x.c }}>{x.v}</p>
+                    <p className="text-[13px] font-semibold text-[#5A4A40]">{x.l}</p>
+                  </motion.li>
+                ))}
+              </ul>
+              <div className="mt-auto pb-6 pt-8"><BotonGordo onClick={() => { vibrar(10); fase + 1 < fases.length ? setFase(fase + 1) : cerrar(); }}>{fase + 1 < fases.length ? 'Continuar' : 'Volver a Hoy'}</BotonGordo></div>
+            </div>
           )}
-          <div className="mt-8"><BotonPrimario onClick={cerrar}>Volver a Hoy</BotonPrimario></div>
+          {fases[fase] === 'racha' && (
+            <div className="flex flex-1 flex-col items-center">
+              <p className="text-[15px] font-bold uppercase tracking-[0.08em] text-[#A83D06]">Racha ampliada</p>
+              <motion.div initial={{ scale: 0.3, y: 30 }} animate={{ scale: 1, y: 0 }} transition={{ type: 'spring', stiffness: 220, damping: 12 }} className="mt-4"><Llama size={170} /></motion.div>
+              <p className="-mt-2 text-[76px] font-extrabold leading-none tabular-nums tracking-[-0.04em] text-[#A83D06] [font-family:var(--font-display)]"><ContadorRacha desde={fin.antes} hasta={racha} /></p>
+              <p className="text-[22px] font-extrabold [font-family:var(--font-display)]">{racha === 1 ? 'día seguido' : 'días seguidos'}</p>
+              <ol className="mt-6 grid w-full grid-cols-7 gap-1.5" aria-label="Tu semana">
+                {fin.data.kcalSemana.map((k, i) => (
+                  <li key={i} className="text-center">
+                    <motion.span initial={i === 6 ? { scale: 0.2 } : false} animate={{ scale: 1 }} transition={{ type: 'spring', stiffness: 400, damping: 12, delay: 0.7 }} className={`mx-auto flex size-9 items-center justify-center rounded-full ${k > 0 ? 'bg-[#A83D06] text-white' : 'border border-[#A83D06]/30 text-[#A83D06]/60'}`}>{k > 0 ? <Check size={16} strokeWidth={3.5} aria-label="Registraste" /> : '·'}</motion.span>
+                  </li>
+                ))}
+              </ol>
+              <p className="mt-4 text-[15px] text-[var(--text-secondary)]">Vuelve mañana para sumar otro día.{fin.data.escudos > 0 ? ` Tienes ${fin.data.escudos} escudo${fin.data.escudos > 1 ? 's' : ''} por si un día falta.` : ''}</p>
+              <div className="mt-auto w-full pb-6 pt-8"><BotonGordo tono="naranja" onClick={() => { vibrar([15, 30, 15]); fase + 1 < fases.length ? setFase(fase + 1) : cerrar(); }}>{fase + 1 < fases.length ? 'Continuar' : 'Volver a Hoy'}</BotonGordo></div>
+            </div>
+          )}
+          {fases[fase] === 'premios' && (
+            <div className="flex flex-1 flex-col">
+              <p className="text-[28px] font-extrabold [font-family:var(--font-display)]">¡Lo lograste!</p>
+              <ul className="mt-5 flex flex-col gap-3 text-left" aria-label="Lo que lograste">
+                {hitos.map((h, i) => (
+                  <motion.li key={h.titulo} initial={{ opacity: 0, scale: 0.85, y: 10 }} animate={{ opacity: 1, scale: 1, y: 0 }} transition={{ type: 'spring', stiffness: 320, damping: 16, delay: 0.2 + 0.18 * i }} className="flex items-center gap-3 rounded-[var(--radius-card)] border border-[rgb(232_89_12/.3)] bg-[linear-gradient(135deg,#FFF3E6,#FBE6CF)] p-3">
+                    <span className="flex size-12 shrink-0 items-center justify-center rounded-full text-white [background:linear-gradient(145deg,#FF8A3D,#E8590C)] shadow-[0_6px_14px_-4px_rgb(232_89_12/.7)]">{h.tipo === 'racha' ? <Flame size={22} aria-hidden="true" /> : <Trophy size={22} aria-hidden="true" />}</span>
+                    <span className="min-w-0 flex-1"><span className="block text-[12px] font-bold uppercase tracking-[0.08em] text-[#7A4A1C]">{h.tipo === 'logro' ? 'Logro desbloqueado' : h.tipo === 'nivel' ? 'Subiste de nivel' : 'Racha'}</span><span className="block text-[17px] font-extrabold text-[#5A2D05]">{h.titulo}</span><span className="block text-[14px] text-[#7A4A1C]">{h.detalle}{h.xp ? ` · +${h.xp} XP` : ''}</span></span>
+                  </motion.li>
+                ))}
+              </ul>
+              <div className="mt-auto pb-6 pt-8"><BotonGordo onClick={cerrar}>Volver a Hoy</BotonGordo></div>
+            </div>
+          )}
         </motion.div>
       )}
     </main>
   );
+}
+
+function ContadorRacha({ desde, hasta }: { desde: number; hasta: number }) {
+  const [v, setV] = useState(desde);
+  useEffect(() => {
+    const c = animate(desde, hasta, { duration: 0.8, delay: 0.5, ease: [0.16, 1, 0.3, 1], onUpdate: (x) => setV(Math.round(x)) });
+    return () => c.stop();
+  }, [desde, hasta]);
+  return <>{v}</>;
 }
