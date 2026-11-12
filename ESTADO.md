@@ -132,6 +132,8 @@ Registro de calorías y macros por FOTO con IA + corrección por VOZ + escáner 
 
 - 2026-11-11 referente de rachas/premios = Duolingo (solo PATRONES, nada de marca/mascota/colores; paleta y fuentes de FICHA-ARTE intactas). Adoptado: pantalla 'Racha ampliada' tras la primera comida del día (llama grande animada, número que sube, semana) + resumen de 3 tarjetas + premios, botones 'gruesos' en momentos de premio, calendario de racha mensual con escudos, misiones del día con cofre (+30 XP), insignias por niveles (Bronce/Plata/Oro/Diamante), llama que se apaga si hoy no cuenta, vibración corta en premios. NO adoptado a propósito: ligas/ranking, gemas/tienda, vidas (castigan; la constitución dice sin culpa, sin comunidad). Evidencia: scripts/flujo-racha.mjs, docs/revisiones/racha/.
 
+- 2026-11-11 Logros ahora es un CAMINO (patrón del camino de Duolingo): 12 logros por dificultad en zigzag, el actual con anillo pulsante y progreso, los siguientes bloqueados (components/app/CaminoLogros.tsx). El usuario compartió 2 referencias (Nutrilens, Caltalk) y pregunta por subir el nivel 'premium' del diseño: pendiente su decisión (elevar dentro del estilo aprobado vs cambiar de dirección). FICHA-ARTE sigue siendo cosa juzgada hasta que el usuario la cambie explícitamente. Los enlaces de Pinterest (pin.it) no se pudieron abrir; se usaron las capturas adjuntas.
+
 ## Sesiones completadas ✅
 - Instalación del SO (v6.10.0) y punto de guardado git — 2026-11-03
 - Sesión 2 — identidad visual (A/B/C → combinación A+B, tour aprobado, FICHA-ARTE) — 2026-11-03

@@ -7,21 +7,10 @@ import { Cuenta, Esqueleto, useAppData } from './uso';
 import { NIVELES, nivelDe } from '@/lib/app-store';
 import { LOGROS, QUE_DA_SUBIR, REGLAS_XP, type IconoLogro } from '@/lib/logros';
 import { EASE } from '@/components/onboarding/ui';
+import { CaminoLogros } from './CaminoLogros';
 
 const DIAS = ['L', 'M', 'M', 'J', 'V', 'S', 'D'];
 const ICONOS: Record<IconoLogro, typeof Flame> = { flame: Flame, drop: Droplet, flag: Flag, star: Star };
-const FAMILIAS: { nombre: string; icono: IconoLogro; ids: string[] }[] = [
-  { nombre: 'Constancia', icono: 'flame', ids: ['racha_3', 'racha_7', 'racha_14', 'racha_30'] },
-  { nombre: 'Cazador de grasas', icono: 'drop', ids: ['cazador_500', 'cazador_1000'] },
-  { nombre: 'Camino a tu meta', icono: 'flag', ids: ['camino_25', 'camino_50', 'camino_75', 'camino_100'] },
-  { nombre: 'Primeros pasos', icono: 'star', ids: ['primer_registro', 'primer_hallazgo'] },
-];
-const TIER = [
-  { nombre: 'Bronce', fondo: 'linear-gradient(145deg,#E0A06A,#B8692F)' },
-  { nombre: 'Plata', fondo: 'linear-gradient(145deg,#C9D2CE,#8E9B96)' },
-  { nombre: 'Oro', fondo: 'linear-gradient(145deg,#FFD25A,#E0A21B)' },
-  { nombre: 'Diamante', fondo: 'linear-gradient(145deg,#8FD9E8,#3FA7C9)' },
-];
 
 export function Logros() {
   const [d] = useAppData();
@@ -31,7 +20,7 @@ export function Logros() {
   const total = d.grasasSemana.reduce((a, b) => a + b, 0);
   const maxG = Math.max(1, ...d.grasasSemana);
   const proteinaDias = d.proteinaDias.filter(Boolean).length;
-  const pendientes = LOGROS.filter((l) => !d.logros.includes(l.id)).map((l) => ({ l, p: l.progreso(d) })).sort((a, b) => b.p.actual / b.p.meta - a.p.actual / a.p.meta);
+  const pendientes = LOGROS.filter((l) => !d.logros.includes(l.id)).map((l) => ({ l, p: l.progreso(d) }));
   const siguiente = pendientes[0];
   const ganados = LOGROS.filter((l) => d.logros.includes(l.id));
   const r = 32;
@@ -69,37 +58,7 @@ export function Logros() {
         </motion.section>
       )}
 
-      <section aria-label="Tus insignias" className="mt-5">
-        <h2 className="text-[13px] font-extrabold uppercase tracking-[0.08em] text-[var(--text-secondary)]">Tus insignias · {ganados.length} de {LOGROS.length}</h2>
-        <ul className="mt-3 grid grid-cols-2 gap-3">
-          {FAMILIAS.map((f, fi) => {
-            const items = f.ids.map((id) => LOGROS.find((l) => l.id === id)!);
-            const ganadosF = items.filter((l) => d.logros.includes(l.id)).length;
-            const proximo = items.find((l) => !d.logros.includes(l.id));
-            const prog = proximo ? proximo.progreso(d) : null;
-            const nivelF = Math.min(ganadosF, TIER.length) - 1;
-            const color = nivelF >= 0 ? TIER[nivelF] : null;
-            const Ic = ICONOS[f.icono];
-            return (
-              <motion.li key={f.nombre} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, delay: 0.07 * fi, ease: EASE }} className="rounded-[var(--radius-card)] border border-[color-mix(in_oklab,var(--text-secondary)_16%,transparent)] bg-[var(--surface)] p-3 text-center">
-                <span className={`relative mx-auto flex size-16 items-center justify-center rounded-[20px] ${color ? 'text-white shadow-[0_5px_0_rgb(0_0_0/.22)]' : 'border-2 border-dashed border-[color-mix(in_oklab,var(--text-secondary)_40%,transparent)] text-[var(--text-secondary)]'}`} style={color ? { background: color.fondo } : undefined}>
-                  <Ic size={28} aria-hidden="true" />
-                  {color && <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-[var(--text-primary)] px-2 py-0.5 text-[11px] font-extrabold uppercase tracking-[0.05em] text-[var(--bg)]">{color.nombre}</span>}
-                </span>
-                <p className="mt-4 text-[15px] font-extrabold leading-tight [font-family:var(--font-display)]">{f.nombre}</p>
-                <p className="text-[13px] text-[var(--text-secondary)]">Nivel {ganadosF} de {items.length}</p>
-                <span className="mt-2 flex justify-center gap-1" aria-hidden="true">{items.map((l, i) => <span key={l.id} className={`h-1.5 w-6 rounded-full ${i < ganadosF ? 'bg-[#E8590C]' : 'bg-[color-mix(in_oklab,var(--text-primary)_12%,transparent)]'}`} />)}</span>
-                {proximo && prog ? (
-                  <>
-                    <span className="mt-2 block h-2 overflow-hidden rounded-full bg-[color-mix(in_oklab,var(--text-primary)_10%,transparent)]"><motion.span initial={{ width: 0 }} animate={{ width: `${(prog.actual / prog.meta) * 100}%` }} transition={{ duration: 0.8, ease: EASE }} className="block h-full rounded-full [background:linear-gradient(90deg,#FF8A3D,#E8590C)]" /></span>
-                    <p className="mt-1 text-[13px] text-[var(--text-secondary)]">{proximo.nombre}: {prog.actual}/{prog.meta}{proximo.unidad ? ` ${proximo.unidad}` : ''}</p>
-                  </>
-                ) : <p className="mt-2 text-[13px] font-bold text-[var(--accent)]">¡Completa!</p>}
-              </motion.li>
-            );
-          })}
-        </ul>
-      </section>
+      <CaminoLogros d={d} />
 
       <section aria-label="Tu semana" className="hairline-card mt-5 rounded-[var(--radius-card)] p-4">
         <div className="flex flex-wrap items-start justify-between gap-2">
