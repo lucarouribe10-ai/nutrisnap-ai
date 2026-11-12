@@ -3,10 +3,10 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'motion/react';
-import { Barcode, Camera, Check, FileText, ImageIcon, Loader2, PenLine, X } from 'lucide-react';
+import { Barcode, Camera, Check, FileText, Flame, ImageIcon, Loader2, PenLine, Trophy, X } from 'lucide-react';
 import { ChequeoAceite } from './ChequeoAceite';
 import { useAppData } from './uso';
-import { agregarComida } from '@/lib/app-store';
+import { agregarComida, type Hito } from '@/lib/app-store';
 import { BotonPrimario, EASE, PieFijo } from '@/components/onboarding/ui';
 import { track } from '@/lib/eventos';
 
@@ -25,7 +25,9 @@ async function reducir(file: File, max: number, calidad: number): Promise<string
 
 export function Registrar() {
   const router = useRouter();
-  const [, actualizar] = useAppData();
+  const [datos, actualizar] = useAppData();
+  const [hitos, setHitos] = useState<Hito[]>([]);
+  const [racha, setRacha] = useState(0);
   const [paso, setPaso] = useState<Paso>('elegir');
   const [ia, setIa] = useState<IA | null>(null);
   const [foto, setFoto] = useState<string | undefined>();
@@ -66,7 +68,11 @@ export function Registrar() {
     if (!ia) return;
     if (aceite === null) { setPidiendo(true); return; }
     const xp = 10 + (extra > 0 ? 5 : 0);
-    actualizar((d) => agregarComida(d, { titulo: ia.plato, nota: ia.demo ? 'Foto (ejemplo)' : 'Foto', kcal: Math.round(ia.kcal + extra), proteina: Math.round(ia.proteina_g), carbos: Math.round(ia.carbos_g), grasas: Math.round(ia.grasas_g), foto: foto ?? '/fotos/ensalada.jpg', aceite: extra || undefined }));
+    if (!datos) return;
+    const r = agregarComida(datos, { titulo: ia.plato, nota: ia.demo ? 'Foto (ejemplo)' : 'Foto', kcal: Math.round(ia.kcal + extra), proteina: Math.round(ia.proteina_g), carbos: Math.round(ia.carbos_g), grasas: Math.round(ia.grasas_g), foto: foto ?? '/fotos/ensalada.jpg', aceite: extra || undefined });
+    actualizar(() => r.data);
+    setHitos(r.hitos);
+    setRacha(r.data.racha);
     track('comida_registrada', { via: 'foto', aceite: extra > 0 });
     setXpGanado(xp);
     setPaso('guardado');
@@ -74,7 +80,11 @@ export function Registrar() {
   const guardarRapido = () => {
     const kcal = Number(rapido.kcal.replace(',', '.'));
     if (rapido.nombre.trim().length < 2 || !(kcal > 0 && kcal <= 3000)) { setIntento(true); return; }
-    actualizar((d) => agregarComida(d, { titulo: rapido.nombre.trim(), nota: 'Registro rápido', kcal: Math.round(kcal), proteina: 0, carbos: 0, grasas: 0 }));
+    if (!datos) return;
+    const r = agregarComida(datos, { titulo: rapido.nombre.trim(), nota: 'Registro rápido', kcal: Math.round(kcal), proteina: 0, carbos: 0, grasas: 0 });
+    actualizar(() => r.data);
+    setHitos(r.hitos);
+    setRacha(r.data.racha);
     track('comida_registrada', { via: 'rapido' });
     setXpGanado(10);
     setPaso('guardado');
@@ -164,10 +174,21 @@ export function Registrar() {
       )}
 
       {paso === 'guardado' && (
-        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, ease: EASE }} className="px-5 pt-16 text-center">
+        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, ease: EASE }} className="px-5 pt-12 text-center">
           <motion.span initial={{ scale: 0.4 }} animate={{ scale: 1 }} transition={{ type: 'spring', stiffness: 380, damping: 14 }} className="mx-auto flex size-20 items-center justify-center rounded-full bg-[var(--accent)] text-[var(--bg)]"><Check size={40} strokeWidth={3.5} aria-hidden="true" /></motion.span>
           <p className="mt-5 text-[26px] font-extrabold [font-family:var(--font-display)]">Guardado en tu día</p>
           <p className="mt-2 inline-block rounded-full bg-[#A83D06] px-4 py-1.5 text-[15px] font-extrabold text-white">+{xpGanado} XP</p>
+          {racha > 0 && <p className="mt-3 flex items-center justify-center gap-1.5 text-[16px] font-bold text-[#A83D06]"><Flame size={18} aria-hidden="true" /> Racha: {racha} {racha === 1 ? 'día' : 'días'} seguidos</p>}
+          {hitos.length > 0 && (
+            <ul className="mt-6 flex flex-col gap-3 text-left" aria-label="Lo que lograste">
+              {hitos.map((h, i) => (
+                <motion.li key={h.titulo} initial={{ opacity: 0, scale: 0.85, y: 10 }} animate={{ opacity: 1, scale: 1, y: 0 }} transition={{ type: 'spring', stiffness: 320, damping: 16, delay: 0.35 + 0.18 * i }} className="flex items-center gap-3 rounded-[var(--radius-card)] border border-[rgb(232_89_12/.3)] bg-[linear-gradient(135deg,#FFF3E6,#FBE6CF)] p-3">
+                  <span className="flex size-12 shrink-0 items-center justify-center rounded-full text-white [background:linear-gradient(145deg,#FF8A3D,#E8590C)] shadow-[0_6px_14px_-4px_rgb(232_89_12/.7)]">{h.tipo === 'racha' ? <Flame size={22} aria-hidden="true" /> : <Trophy size={22} aria-hidden="true" />}</span>
+                  <span className="min-w-0 flex-1"><span className="block text-[12px] font-bold uppercase tracking-[0.08em] text-[#7A4A1C]">{h.tipo === 'logro' ? 'Logro desbloqueado' : h.tipo === 'nivel' ? 'Subiste de nivel' : 'Racha'}</span><span className="block text-[17px] font-extrabold text-[#5A2D05]">{h.titulo}</span><span className="block text-[14px] text-[#7A4A1C]">{h.detalle}{h.xp ? ` · +${h.xp} XP` : ''}</span></span>
+                </motion.li>
+              ))}
+            </ul>
+          )}
           <div className="mt-8"><BotonPrimario onClick={cerrar}>Volver a Hoy</BotonPrimario></div>
         </motion.div>
       )}

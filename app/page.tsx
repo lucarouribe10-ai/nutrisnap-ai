@@ -156,7 +156,7 @@ export default function Page() {
           { pregunta: '¿La IA no me inventará las calorías?', respuestaMarked: 'Es una estimación y te lo decimos. Por eso el [b]Chequeo de Grasas Ocultas[/b] pregunta lo que la cámara no ve y tú ajustas en segundos.' },
           { pregunta: '¿Me van a cobrar por sorpresa?', respuestaMarked: 'No. Te avisamos 1 día antes por correo y en la app, cancelas cuando quieras y tienes [b]7 días de reembolso[/b].' },
           { pregunta: '¿Entiende mis comidas y mi forma de hablar?', respuestaMarked: 'Está pensada para el español de Latinoamérica. Si se equivoca con un plato, lo corriges en segundos y [b]aprende tus costumbres[/b].' },
-          { pregunta: '¿Y si la dejo a los 3 días?', respuestaMarked: 'Por eso hay racha, puntos y logros que muestran tu avance, sin presión. Si una racha se rompe, tienes 48 horas para recuperarla.' },
+          { pregunta: '¿Y si la dejo a los 3 días?', respuestaMarked: 'Por eso hay racha, puntos y logros que muestran tu avance, sin presión. Si un día falta, un escudo de racha la protege.' },
           { pregunta: '¿El escáner de códigos es gratis?', respuestaMarked: 'Sí, sin límite de tiempo. La foto con chequeo, la voz y el historial son de pago.' },
           { pregunta: '¿Qué datos guardan de mí?', respuestaMarked: 'Tu comida, tu peso y tus metas, para calcular tu avance. [b]No vendemos tus datos[/b]. Las fotos no se guardan; solo una miniatura.' },
         ]}

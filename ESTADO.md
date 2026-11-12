@@ -125,6 +125,11 @@ Registro de calorías y macros por FOTO con IA + corrección por VOZ + escáner 
 - Verificado: tsc ✓ build ✓ · flujo Playwright (scripts/flujo-app.mjs) a 375px: navegación, registro de una comida y actualización de Hoy · sin desborde horizontal a 375 y 360px · sin errores de consola · capturas en docs/revisiones/app/. Veredicto del revisor visual de la pantalla principal (Hoy): pendiente.
 - NO construido aún (Sesión 6): servidor/base de datos, auth real, IA real (clave rechazada), Hotmart, escáner de código y de etiqueta.
 
+## Auditoría 2026-11-11 — ejecución aprobada (opción 1: primero claridad de rachas/premios y primer día honesto; luego Etapa 6)
+- HECHO: reglas de racha reales (1 comida/día; escudo de racha que protege 1 día faltante; 2+ días la pausa sin castigo), tarjeta de racha en Hoy con los 7 días y próximo premio, 12 logros data-driven con XP (lib/logros.ts), hoja '¿Cómo funciona?' (racha, escudo, XP, niveles), celebración al registrar (racha, logro, subida de nivel con escudo de premio), primer día REAL honesto (empieza en racha 1, sin datos de Mateo; datos de ejemplo solo en modo demo), Progreso con fechas reales + registrar peso + estado vacío, promesa de '48 h' reemplazada por el escudo. Evidencia: scripts/flujo-racha.mjs y capturas en docs/revisiones/racha/.
+- ANTES DE LANZAR (promesas que dependen de servicios, ver auditoría): aviso 1 día antes de cobrar (Resend), cancelar cuando quiera y reembolso 7 días (Hotmart), escáner de códigos gratis (no existe aún). Sin conectarlas y probarlas, se retiran de los textos.
+- SIGUIENTE (Etapa 6, requiere cuentas del usuario): Supabase (datos+auth+RLS), Hotmart (cobro+webhook), Resend, dominio, IA real.
+
 ## Sesiones completadas ✅
 - Instalación del SO (v6.10.0) y punto de guardado git — 2026-11-03
 - Sesión 2 — identidad visual (A/B/C → combinación A+B, tour aprobado, FICHA-ARTE) — 2026-11-03

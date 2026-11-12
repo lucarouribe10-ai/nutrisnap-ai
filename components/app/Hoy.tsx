@@ -3,10 +3,11 @@
 import Link from 'next/link';
 import { motion } from 'motion/react';
 import { useState } from 'react';
-import { Droplet, Flame, Pencil, Plus, Trash2, Trophy, X } from 'lucide-react';
+import { Droplet, Flame, Pencil, Plus, Trash2, X } from 'lucide-react';
 import { Cuenta, Esqueleto, useAppData } from './uso';
 import { editarComida, eliminarComida, nivelDe, restaurarComida, totalesHoy, type Comida } from '@/lib/app-store';
 import { EASE } from '@/components/onboarding/ui';
+import { RachaCard } from './RachaCard';
 
 const fechaLarga = () => {
   const t = new Intl.DateTimeFormat('es-CO', { weekday: 'long', day: 'numeric', month: 'short' }).format(new Date());
@@ -49,9 +50,11 @@ export function Hoy() {
           <h1 className="truncate text-[20px] font-extrabold leading-tight tracking-[-0.02em] [font-family:var(--font-display)]">Hola, {d.nombre}</h1>
           <p className="text-[14px] text-[var(--text-secondary)]">{fechaLarga()}</p>
         </div>
-        <Link href="/app/logros" aria-label={`Racha de ${d.racha} días. Ver logros`} className="inline-flex min-h-11 items-center gap-1 rounded-full bg-[#A83D06] px-3 text-[14px] font-extrabold text-white"><Flame size={15} aria-hidden="true" />{d.racha} días</Link>
       </header>
       {d.demo && <p className="mt-3 inline-block rounded-full bg-[var(--surface-2)] px-3 py-1 text-[13px] font-semibold text-[var(--text-secondary)]">Vista previa con datos de ejemplo</p>}
+      {d.aviso === 'escudo' && <p role="status" className="mt-3 rounded-[var(--radius-card)] bg-[var(--chip-bg)] p-3 text-[14px] font-semibold text-[var(--accent)]">Ayer faltó un día, pero tu escudo protegió tu racha. Hoy sigue.</p>}
+      {d.aviso === 'pausa' && <p role="status" className="mt-3 rounded-[var(--radius-card)] bg-[var(--surface-2)] p-3 text-[14px] text-[var(--text-primary)]"><strong>Tu racha se pausó.</strong> Pasa, no se pierde lo que lograste. Registra una comida hoy y empieza una nueva.</p>}
+      <RachaCard d={d} />
 
       <motion.section initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, ease: EASE }} aria-label="Camino a tu meta" className="mt-4 rounded-[var(--radius-card)] p-4 text-[#F4FAF5] shadow-[0_14px_26px_-12px_rgb(61_107_79/.65)] [background:radial-gradient(120px_80px_at_100%_0%,rgb(255_255_255/.16),transparent_70%),linear-gradient(160deg,#4B8062,#3D6B4F_55%,#2F5640)]">
         <p className="text-[12px] font-bold uppercase tracking-[0.08em] opacity-85">Camino a tu meta</p>
@@ -121,10 +124,6 @@ export function Hoy() {
         )}
       </section>
 
-      <Link href="/app/logros" className="mt-4 flex min-h-14 items-center gap-3 rounded-[var(--radius-card)] border border-[rgb(232_89_12/.25)] p-3 [background:linear-gradient(135deg,#FBE9D3,#F7D9B6)]">
-        <span className="flex size-10 shrink-0 items-center justify-center rounded-[12px] bg-white/65 text-[#9A5A00]"><Trophy size={18} aria-hidden="true" /></span>
-        <span className="min-w-0 flex-1"><span className="block text-[15px] font-bold text-[#5A2D05]">Casi lo logras: Semana del Chequeo</span><span className="block text-[13px] text-[#7A4A1C]">Responde el Chequeo 2 días más</span></span>
-      </Link>
 
       {abierta && (
         <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/40" onClick={() => setAbierta(null)}>
