@@ -31,26 +31,27 @@ export function AppShell({ children }: { children: ReactNode }) {
     <div className="mx-auto min-h-dvh max-w-[480px] bg-[var(--bg)] pb-28 text-[var(--text-primary)] [font-family:var(--font-body)]">
       {offline && <p role="status" className="bg-[var(--surface-2)] px-5 py-2 text-center text-[14px] font-semibold text-[var(--text-secondary)]">Sin conexión: tus datos se guardan en este dispositivo.</p>}
       {children}
-      <nav aria-label="Navegación principal" className="fixed inset-x-0 bottom-0 z-40 mx-auto max-w-[480px] px-4 pb-[max(12px,env(safe-area-inset-bottom))]">
-        <ul className="grid grid-cols-5 items-center rounded-[28px] bg-[#1E2820] px-2 py-2 shadow-[0_18px_34px_-12px_rgb(20_28_22/.65)]">
+      <nav aria-label="Navegación principal" className="fixed inset-x-0 bottom-0 z-40 mx-auto max-w-[480px] border-t border-[color-mix(in_oklab,var(--text-secondary)_20%,transparent)] bg-[color-mix(in_oklab,var(--surface)_94%,transparent)] px-2 pb-[max(8px,env(safe-area-inset-bottom))] pt-2 backdrop-blur">
+        <ul className="grid grid-cols-5 items-end">
           {TABS.map((t) => {
             const activa = t.href === '/app' ? ruta === '/app' : ruta.startsWith(t.href);
             const Icono = t.icon;
             if ('fab' in t) {
               return (
-                <li key={t.href} className="flex justify-center">
-                  <motion.div whileTap={{ scale: 0.92 }}>
-                    <Link href={t.href} aria-label="Registrar una comida" className="-mt-8 flex size-[60px] items-center justify-center rounded-full border-4 border-[var(--bg)] text-white shadow-[0_12px_22px_-6px_rgb(232_89_12/.7)] [background:linear-gradient(180deg,#F5782B,#E8590C)]">
-                      <Icono size={26} aria-hidden="true" />
+                <li key={t.href} className="flex flex-col items-center">
+                  <motion.div whileTap={{ scale: 0.94 }}>
+                    <Link href={t.href} aria-label="Registrar una comida" className="-mt-7 flex size-14 items-center justify-center rounded-full border-[3px] border-[var(--bg)] text-[var(--bg)] shadow-[0_10px_20px_-6px_color-mix(in_oklab,var(--accent)_65%,transparent)] [background:linear-gradient(180deg,#4B8062,#3D6B4F)]">
+                      <Icono size={24} aria-hidden="true" />
                     </Link>
                   </motion.div>
+                  <span className="mt-0.5 text-[12px] font-semibold text-[var(--accent)]">Registrar</span>
                 </li>
               );
             }
             return (
               <li key={t.href}>
-                <Link href={t.href} aria-current={activa ? 'page' : undefined} className={`flex min-h-12 flex-col items-center justify-center gap-0.5 text-[12px] font-semibold ${activa ? 'text-[var(--tint)]' : 'text-[#A9B8AC]'}`}>
-                  <span className={`flex h-7 w-12 items-center justify-center rounded-full ${activa ? 'bg-white/15' : ''}`}><Icono size={20} aria-hidden="true" /></span>
+                <Link href={t.href} aria-current={activa ? 'page' : undefined} className={`flex min-h-12 flex-col items-center justify-center gap-0.5 text-[12px] font-semibold ${activa ? 'text-[var(--accent)]' : 'text-[var(--text-secondary)]'}`}>
+                  <span className={`flex h-7 w-12 items-center justify-center rounded-[10px] ${activa ? 'bg-[var(--chip-bg)]' : ''}`}><Icono size={20} aria-hidden="true" /></span>
                   {t.label}
                 </Link>
               </li>
