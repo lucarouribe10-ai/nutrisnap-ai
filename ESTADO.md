@@ -109,6 +109,12 @@ Registro de calorías y macros por FOTO con IA + corrección por VOZ + escáner 
 
 - 2026-11-07 elevación de la landing (pedida por el usuario, prompt /landing): AgitacionCifras (3 cifras con ícono), antes→después en 2 columnas, CtaFila tras mecanismo y tras garantía, tarjetas del problema sin look de botón, Isotipo propio, aviso 'Acceso anticipado' en la oferta. CTA = /onboarding (Modelo 2, ya decidido). Carrusel manual (el 19 prohíbe auto-avance). Scripts: scripts/screenshot-secciones.mjs. Evidencia por sección en docs/revisiones/landing-secciones/. Revisión independiente nº3 pendiente.
 
+## Sesión 4 — recorrido de inicio, plan y acceso (en curso, 2026-11-11)
+- Rutas: /onboarding (3 preguntas: objetivo · datos · días de entreno → primera foto → resultado con Chequeo → 'Construyendo tu plan' ~5 s) → /paywall → /entrar → /app (stub de Sesión 5). Componentes en components/onboarding/, lógica en lib/plan.ts (Mifflin-St Jeor con piso de kcal, tope 1% del peso/semana y aviso de meta bajo peso saludable; solo mayores de 18), lib/eventos.ts (contrato de eventos en sesión; ?qa=1 marca sesiones QA), lib/onboarding-store.ts (localStorage).
+- BFF /api/analizar: clave ANTHROPIC_API_KEY solo en servidor; SIN clave devuelve DEMO marcado (demo:true). La IA real NO se ha ejecutado nunca → NO declarar el momento-wow listo hasta probar con clave (pendiente del usuario: ponerla en .env.local sin pasarla por el chat).
+- Paywall: timeline de prueba de 3 días con fechas reales, anual recomendado ($4.17/mes, total visible), CTA 'Empezar mis 3 días gratis'; el pago real (Hotmart) y el envío real del enlace de acceso son vista previa honesta (Sesión 6). 'Continuar con Google' se agrega con la auth real (no se muestra un botón que no hace nada).
+- Verificado: tsc ✓ build ✓ · flujo completo por Playwright a 375px (scripts/flujo-onboarding.mjs) sin errores de consola · capturas en docs/revisiones/flujo/ · veredictos del revisor visual de onboarding y paywall: pendiente.
+
 ## Sesiones completadas ✅
 - Instalación del SO (v6.10.0) y punto de guardado git — 2026-11-03
 - Sesión 2 — identidad visual (A/B/C → combinación A+B, tour aprobado, FICHA-ARTE) — 2026-11-03
