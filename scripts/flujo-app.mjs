@@ -14,6 +14,15 @@ const p = await nueva(375);
 const shot = async (n, full = false) => { await p.waitForTimeout(1400); await p.screenshot({ path: `${out}/${n}.png`, fullPage: full }); console.log('captura', n); };
 await p.goto(`${base}/app?qa=1`, { waitUntil: 'networkidle' });
 await shot('01-hoy');
+// control y libertad: abrir detalle, eliminar y deshacer
+await p.getByRole('button', { name: /Batido de proteína/ }).click();
+await shot('01b-detalle-comida');
+await p.getByRole('button', { name: 'Eliminar' }).click();
+await p.getByText(/Eliminaste/).waitFor();
+const sinBatido = await p.getByRole('button', { name: /Batido de proteína/ }).count();
+await p.getByRole('button', { name: 'Deshacer' }).click();
+await p.getByRole('button', { name: /Batido de proteína/ }).waitFor();
+console.log('eliminar→deshacer OK (tras eliminar había', sinBatido, 'filas del batido)');
 const kcalAntes = await p.getByText(/de .* kcal/).first().innerText();
 await p.getByRole('link', { name: 'Progreso' }).click(); await p.waitForURL('**/progreso'); await shot('02-progreso', true);
 await p.getByRole('link', { name: 'Logros' }).click(); await p.waitForURL('**/logros'); await shot('03-logros', true);

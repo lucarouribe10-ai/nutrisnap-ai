@@ -56,7 +56,7 @@ export function semilla(perfil?: Perfil): AppData {
     xp: 340,
     fecha: hoyISO(),
     comidasHoy: [
-      { id: 's1', hora: '08:10', titulo: 'Avena con huevos', nota: 'Foto · segundos', kcal: 520, proteina: 28, carbos: 58, grasas: 18, foto: '/fotos/desayuno.jpg' },
+      { id: 's1', hora: '08:10', titulo: 'Avena con huevos', nota: 'Foto', kcal: 520, proteina: 28, carbos: 58, grasas: 18, foto: '/fotos/desayuno.jpg' },
       { id: 's2', hora: '13:05', titulo: 'Pollo con arroz y frijoles', nota: 'Foto + voz', kcal: 640, proteina: 52, carbos: 62, grasas: 18, foto: '/fotos/pollo.jpg', aceite: 120 },
       { id: 's3', hora: '16:30', titulo: 'Batido de proteína', nota: 'Escáner de código', kcal: 210, proteina: 30, carbos: 12, grasas: 4, foto: '/fotos/batido.jpg' },
     ],
@@ -96,6 +96,26 @@ export function borrarTodo() {
 
 export function totalesHoy(d: AppData) {
   return d.comidasHoy.reduce((t, c) => ({ kcal: t.kcal + c.kcal, proteina: t.proteina + c.proteina, carbos: t.carbos + c.carbos, grasas: t.grasas + c.grasas, aceite: t.aceite + (c.aceite ?? 0) }), { kcal: 0, proteina: 0, carbos: 0, grasas: 0, aceite: 0 });
+}
+
+function recalcular(sig: AppData): AppData {
+  const t = totalesHoy(sig);
+  return {
+    ...sig,
+    kcalSemana: [...sig.kcalSemana.slice(0, 6), t.kcal],
+    proteinaDias: [...sig.proteinaDias.slice(0, 6), t.proteina >= sig.metaProteina],
+    grasasSemana: [...sig.grasasSemana.slice(0, 6), t.aceite],
+  };
+}
+export function eliminarComida(d: AppData, id: string): AppData {
+  return recalcular({ ...d, comidasHoy: d.comidasHoy.filter((c) => c.id !== id) });
+}
+export function restaurarComida(d: AppData, c: Comida): AppData {
+  const lista = [...d.comidasHoy, c].sort((a, b) => a.hora.localeCompare(b.hora));
+  return recalcular({ ...d, comidasHoy: lista });
+}
+export function editarComida(d: AppData, id: string, cambios: { titulo: string; kcal: number }): AppData {
+  return recalcular({ ...d, comidasHoy: d.comidasHoy.map((c) => (c.id === id ? { ...c, ...cambios } : c)) });
 }
 
 export function agregarComida(d: AppData, c: Omit<Comida, 'id' | 'hora'>): AppData {

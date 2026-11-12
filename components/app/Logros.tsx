@@ -54,7 +54,7 @@ export function Logros() {
         <h2 className="text-[13px] font-extrabold uppercase tracking-[0.08em] text-[var(--text-secondary)]">Casi lo logras</h2>
         <ul className="mt-2 flex flex-col gap-2">
           {[
-            { t: 'Semana sin ceguera', v: '5 / 7', p: 5 / 7, nota: '2 días más respondiendo el Chequeo', icon: ShieldCheck, o: false },
+            { t: 'Semana del Chequeo', v: '5 / 7', p: 5 / 7, nota: 'Responde el Chequeo 2 días más', icon: ShieldCheck, o: false },
             { t: 'Cazador de grasas II', v: `${Math.max(640, total)} / 1.000 kcal`, p: Math.min(1, Math.max(640, total) / 1000), nota: `Te faltan ${Math.max(0, 1000 - Math.max(640, total))} kcal por atrapar`, icon: Droplet, o: true },
           ].map((x) => (
             <li key={x.t} className="flex items-center gap-3 rounded-[var(--radius-card)] border border-[color-mix(in_oklab,var(--text-secondary)_16%,transparent)] bg-[var(--surface)] p-3">
