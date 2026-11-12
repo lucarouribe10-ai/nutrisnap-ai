@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { animate, motion, useReducedMotion } from 'motion/react';
-import { Camera, Check, Mic, ScanLine, ShieldCheck, X } from 'lucide-react';
+import { ArrowRight, Camera, Check, Droplet, Mic, ScanLine, ShieldCheck, X } from 'lucide-react';
 import { BotonPrimario, EASE, PieFijo } from './ui';
 import { calcularPlan, DOLORES, ETIQUETA_OBJETIVO, fechaMeta, perfilCompleto, type Plan } from '@/lib/plan';
 import { leerEstado, type EstadoOnboarding } from '@/lib/onboarding-store';
@@ -102,6 +102,24 @@ export function Paywall() {
         </p>
       </motion.section>
 
+      {estado.resultado && (
+        <motion.section {...entrada(1)} aria-label="Lo que ya atrapaste" className="mt-4 rounded-[var(--radius-card)] border-l-4 border-[var(--accent-2)] bg-[var(--surface)] p-4 shadow-[var(--shadow-1)]">
+          <p className="text-[12px] font-bold uppercase tracking-[0.08em] text-[var(--text-secondary)]">Tu primera foto</p>
+          {estado.resultado.extraAceite > 0 ? (
+            <>
+              <p className="mt-1 flex flex-wrap items-center gap-2 text-[22px] font-extrabold tabular-nums [font-family:var(--font-display)]">
+                <span className="text-[var(--text-secondary)] line-through decoration-2">{estado.resultado.kcalBase}</span>
+                <ArrowRight size={18} aria-hidden="true" />
+                <span>{estado.resultado.kcalBase + estado.resultado.extraAceite} kcal</span>
+              </p>
+              <p className="mt-1 flex items-start gap-2 text-[14px] text-[var(--text-secondary)]"><Droplet size={16} className="mt-0.5 shrink-0 text-[var(--accent-2)]" aria-hidden="true" /> El Chequeo atrapó {estado.resultado.extraAceite} kcal que tu foto no veía.</p>
+            </>
+          ) : (
+            <p className="mt-1 text-[15px]">Registraste tu primera comida en segundos: <strong>{estado.resultado.kcalBase} kcal</strong>.</p>
+          )}
+        </motion.section>
+      )}
+
       <motion.section {...entrada(4)} aria-label="Elige tu plan" className="mt-7 flex flex-col gap-3" role="radiogroup">
         {([
           ['anual', 'Anual', 'US$49.99 al año', 'US$4.17', 'Mejor precio'],
@@ -147,7 +165,7 @@ export function Paywall() {
       </motion.section>
 
       <motion.div {...entrada(5)} className="mt-5 space-y-3 text-[14px] text-[var(--text-secondary)]">
-        <p className="flex items-start gap-2"><ShieldCheck size={18} className="mt-0.5 shrink-0 text-[var(--accent)]" aria-hidden="true" /><span><strong className="font-bold text-[var(--text-primary)]">Garantía de Cero Sorpresas:</strong> cancelas en 2 toques desde la app y tienes 7 días de reembolso, sin preguntas.</span></p>
+        <p className="flex items-start gap-2"><ShieldCheck size={18} className="mt-0.5 shrink-0 text-[var(--accent)]" aria-hidden="true" /><span><strong className="font-bold text-[var(--text-primary)]">Garantía de Cero Sorpresas:</strong> cancelas cuando quieras y tienes 7 días de reembolso, sin preguntas.</span></p>
         <p className="rounded-[var(--radius-card)] border border-dashed border-[color-mix(in_oklab,var(--text-secondary)_40%,transparent)] p-3 text-center">Vista previa: el pago de Hotmart y el aviso por correo se activan cuando conectemos tus cuentas.</p>
         <p className="text-center"><Link href="/terminos" className="underline underline-offset-4">Términos</Link> · <Link href="/privacidad" className="underline underline-offset-4">Privacidad</Link> · <Link href="/reembolsos" className="underline underline-offset-4">Reembolsos</Link></p>
       </motion.div>

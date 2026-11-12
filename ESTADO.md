@@ -117,6 +117,8 @@ Registro de calorías y macros por FOTO con IA + corrección por VOZ + escáner 
 - Paywall: CTA fijo abajo con precio y fecha de cobro, timeline con fechas reales, garantía nombrada, textos ≥14px, enlaces legales. Pago real (Hotmart) y aviso por correo = vista previa honesta (Sesión 6); 'Continuar con Google' se agrega con la auth real.
 - Verificado: tsc ✓ build ✓ · flujo completo por Playwright a 375px (scripts/flujo-onboarding.mjs) sin errores de consola · capturas en docs/revisiones/flujo/. Veredictos del revisor (1ª pasada: onboarding 29/12/14, paywall 27/14/13, NO LISTA) → 2ª revisión pendiente tras los cambios.
 
+- Análisis de la propuesta de Gemini sobre paywall (2026-11-11): YA TENÍAMOS ubicación tras el quiz, timeline de prueba, anual como $/mes, titular con nombre+meta, CTA de prueba gratis. ADOPTADO: prueba personal (tu primera foto 440→560) en vez de reseña. RECHAZADO: precios US$39.99/6.99 (no pasan margen), reseña 5★ inventada, cancelar 'en 1 toque desde la App Store/Play Store' (somos web + Hotmart), RevenueCat/Superwall/Adapty (SDK de apps de tienda: el equivalente web son feature flags/experimentos, archivo 37, Sesión 8), estadísticas sin fuente (5x, +30% LATAM). RIESGO ANOTADO: la promesa 'cancela cuando quieras' debe verificarse con el flujo REAL de cancelación de Hotmart (18) antes de lanzar; se retiró '2 toques' de los textos hasta confirmarlo.
+
 ## Sesiones completadas ✅
 - Instalación del SO (v6.10.0) y punto de guardado git — 2026-11-03
 - Sesión 2 — identidad visual (A/B/C → combinación A+B, tour aprobado, FICHA-ARTE) — 2026-11-03
