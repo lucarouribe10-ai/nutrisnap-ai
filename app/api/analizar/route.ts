@@ -69,7 +69,12 @@ export async function POST(req: Request) {
       }),
       signal: AbortSignal.timeout(20_000),
     });
-    if (!r.ok) return NextResponse.json({ error: 'ia_no_disponible' }, { status: 502 });
+    if (!r.ok) {
+      // Diagnóstico seguro: solo código y tipo de error del proveedor (nunca la clave ni la imagen).
+      const cuerpo = await r.text().catch(() => '');
+      console.error('[analizar] proveedor IA respondió', r.status, cuerpo.slice(0, 200));
+      return NextResponse.json({ error: 'ia_no_disponible' }, { status: 502 });
+    }
     const data = (await r.json()) as { content?: { type: string; text?: string }[] };
     const texto = data.content?.find((c) => c.type === 'text')?.text ?? '';
     const json = JSON.parse(texto.slice(texto.indexOf('{'), texto.lastIndexOf('}') + 1));
