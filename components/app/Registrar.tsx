@@ -42,12 +42,15 @@ export function Registrar() {
   const [rapido, setRapido] = useState({ nombre: '', kcal: '' });
   const [intento, setIntento] = useState(false);
   const [xpGanado, setXpGanado] = useState(0);
+  const [nota, setNota] = useState('');
+  const [imagenActual, setImagenActual] = useState<string | null>(null);
 
-  const analizar = async (imagen: string | null, demo: boolean, miniatura?: string) => {
+  const analizar = async (imagen: string | null, demo: boolean, miniatura?: string, notaUsar?: string) => {
     setFoto(miniatura);
+    setImagenActual(imagen);
     setPaso('analizando');
     try {
-      const r = await fetch('/api/analizar', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ imagen, demo }) });
+      const r = await fetch('/api/analizar', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ imagen, demo, nota: (notaUsar ?? nota).trim() || undefined }) });
       if (!r.ok) throw new Error('ia');
       const data = (await r.json()) as IA;
       if (!data.kcal || data.kcal <= 0) { setPaso('error'); return; }
@@ -115,7 +118,12 @@ export function Registrar() {
       {paso === 'elegir' && (
         <div className="px-5 pt-4">
           <p className="text-[15px] text-[var(--text-secondary)]">Una foto y el Chequeo de Grasas Ocultas. Toma segundos.</p>
-          <div className="mt-5 flex flex-col gap-3">
+          <label className="mt-4 block rounded-[var(--radius-card)] border border-[color-mix(in_oklab,var(--text-secondary)_24%,transparent)] bg-[var(--surface)] p-3">
+            <span className="flex items-center gap-2 text-[14px] font-bold"><PenLine size={16} className="text-[var(--accent)]" aria-hidden="true" /> Cuéntale algo del plato <span className="font-medium text-[var(--text-secondary)]">(opcional)</span></span>
+            <input value={nota} onChange={(e) => setNota(e.target.value)} maxLength={200} placeholder="Ej: arepa con carne frita, hecho en casa, entre 3 personas" className="mt-2 h-12 w-full rounded-[12px] border border-[color-mix(in_oklab,var(--text-secondary)_28%,transparent)] bg-[var(--bg)] px-3 text-[16px] outline-none focus:border-[var(--accent)]" />
+            <span className="mt-1 block text-[13px] text-[var(--text-secondary)]">Escríbelo antes de tomar la foto: ayuda a la IA a acertar.</span>
+          </label>
+          <div className="mt-4 flex flex-col gap-3">
             <label className="flex min-h-16 cursor-pointer items-center gap-3 rounded-[var(--radius-card)] bg-[var(--accent)] px-4 text-[var(--bg)] shadow-[0_8px_30px_color-mix(in_oklab,var(--accent)_25%,transparent)]">
               <Camera size={24} aria-hidden="true" /><span><span className="block text-[17px] font-bold">Tomar o elegir una foto</span><span className="block text-[14px] opacity-90">Foto + Chequeo de Grasas Ocultas</span></span>
               <input type="file" accept="image/*" capture="environment" className="sr-only" onChange={(e) => alElegir(e.target.files?.[0])} />
@@ -160,12 +168,21 @@ export function Registrar() {
           <div className="panel-campo mt-3 rounded-[var(--radius-card)] p-4">
             <div className="flex items-end justify-between">
               <div><p className="text-[12px] font-semibold text-[var(--text-secondary)]">Solo la foto</p><p className={`text-[24px] font-extrabold tabular-nums [font-family:var(--font-display)] ${aceite !== null && extra > 0 ? 'text-[var(--text-secondary)] line-through decoration-2' : ''}`}>{Math.round(ia.kcal)}</p></div>
-              <div className="text-right"><p className="text-[12px] font-semibold text-[var(--accent)]">Con el Chequeo</p><p aria-live="polite" className="text-[40px] font-extrabold leading-none tabular-nums [font-family:var(--font-display)]">{aceite === null ? '—' : Math.round(ia.kcal + extra)}<span className="ml-1 text-[14px] font-semibold text-[var(--text-secondary)]">kcal</span></p></div>
+              <div className="text-right"><p className="text-[12px] font-semibold text-[var(--accent)]">Con el Chequeo</p><p aria-live="polite" className="text-[40px] font-extrabold leading-none tabular-nums [font-family:var(--font-display)]">{aceite === null ? <span className="text-[var(--text-secondary)]">?</span> : Math.round(ia.kcal + extra)}<span className="ml-1 text-[14px] font-semibold text-[var(--text-secondary)]">kcal</span></p></div>
             </div>
             <div className="tick-escala mt-3" aria-hidden="true" />
             <p className="mt-2 text-[14px] text-[var(--text-secondary)]">Proteína {Math.round(ia.proteina_g)} g · Carbos {Math.round(ia.carbos_g)} g · Grasas {Math.round(ia.grasas_g)} g</p>
           </div>
-          <div className="mt-3"><ChequeoAceite kcalUna={ia.pregunta_aceite.una_cucharada_kcal} valor={aceite} pidiendo={pidiendo} onChange={(n) => setAceite(n)} /></div>
+          {!ia.demo && imagenActual && (
+            <div className="mt-3 rounded-[var(--radius-card)] border border-[color-mix(in_oklab,var(--text-secondary)_24%,transparent)] bg-[var(--surface)] p-3">
+              <label className="block">
+                <span className="text-[14px] font-bold">¿La IA no acertó? Cuéntale algo del plato</span>
+                <input value={nota} onChange={(e) => setNota(e.target.value)} maxLength={200} placeholder="Ej: es una arepa, hecha en casa, entre 3 personas" className="mt-2 h-12 w-full rounded-[12px] border border-[color-mix(in_oklab,var(--text-secondary)_28%,transparent)] bg-[var(--bg)] px-3 text-[16px] outline-none focus:border-[var(--accent)]" />
+              </label>
+              <button type="button" disabled={nota.trim().length < 3} onClick={() => analizar(imagenActual, false, foto, nota)} className="mt-2 flex min-h-12 w-full items-center justify-center gap-2 rounded-full border border-[color-mix(in_oklab,var(--accent)_45%,transparent)] text-[15px] font-semibold text-[var(--accent)] disabled:opacity-45">Recalcular con tu nota</button>
+            </div>
+          )}
+          <div className="mt-3"><ChequeoAceite kcalUna={ia.pregunta_aceite.una_cucharada_kcal} pregunta={ia.pregunta_aceite.texto} valor={aceite} pidiendo={pidiendo} onChange={(n) => setAceite(n)} /></div>
           <PieFijo><BotonPrimario onClick={guardar}>Guardar en mi día</BotonPrimario></PieFijo>
         </div>
       )}
