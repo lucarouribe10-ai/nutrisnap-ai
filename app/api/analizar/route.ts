@@ -36,17 +36,23 @@ function limitado(ip: string) {
   return e.n > 8;
 }
 
-const PROMPT = `Eres un nutricionista que estima calorías desde una foto de comida (cocina latinoamericana incluida).
+const PROMPT = `Eres un nutricionista que estima calorías desde una foto de comida. Conoces muy bien la cocina colombiana y latinoamericana (arepa de maíz con carne, huevo o queso; bandeja paisa; ajiaco; sancocho; empanadas; patacones; pandebono; changua; arroz con pollo; frijoles; plátano maduro; chicharrón; buñuelos; etc.) y también comida casera.
 Responde SOLO con JSON válido, sin texto extra, con esta forma exacta:
-{"plato":"nombre corto en español, máximo 60 caracteres; si hay varios platos, resúmelos (ej. Pizza y ensalada)","kcal":número,"proteina_g":número,"carbos_g":número,"grasas_g":número,"pregunta_aceite":{"texto":"¿Cuánto aceite o aderezo llevó?","una_cucharada_kcal":120}}
-Estima SOLO lo que se ve, sin sumar aceite ni aderezos invisibles (el usuario los agrega después). Son estimaciones.
+{"plato":"nombre corto en español, máximo 60 caracteres; si hay varios platos, resúmelos","kcal":número,"proteina_g":número,"carbos_g":número,"grasas_g":número,"pregunta_aceite":{"texto":"pregunta corta sobre el aceite o grasa que no se ve","una_cucharada_kcal":120}}
+Reglas:
+- Identifica el plato por lo que realmente se ve; no lo cambies por uno parecido de otra cocina (una arepa NO es una hamburguesa ni pan árabe).
+- Estima el tamaño de las porciones por la foto (tamaño del plato, cubiertos, manos). Si la foto muestra varias porciones o platos, suma todo lo visible.
+- Estima SOLO lo que se ve y la preparación visible; NO sumes aceite ni aderezos invisibles: el usuario los agrega después con el Chequeo de Grasas Ocultas. Son estimaciones.
+- La pregunta del aceite debe ser específica a lo que se ve: si hay fritura o carne frita, pregunta por el aceite de freír; si hay tocino, por la grasa que soltó; si hay ensalada, por el aderezo; si hay arroz o guiso, por el aceite del sofrito. Una sola pregunta, máximo 100 caracteres.
+- "una_cucharada_kcal" es lo que suma 1 cucharada de ese aceite o grasa (entre 40 y 200; el aceite vegetal es 120).
+- Si el usuario dejó una nota sobre el plato, úsala (hecho en casa, cantidad de personas, ingredientes) y tenla por más confiable que tu suposición.
 Si la imagen no es comida, responde {"plato":"No veo comida","kcal":0,"proteina_g":0,"carbos_g":0,"grasas_g":0,"pregunta_aceite":{"texto":"","una_cucharada_kcal":120}}.`;
 
 export async function POST(req: Request) {
   const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'local';
   if (limitado(ip)) return NextResponse.json({ error: 'demasiados_intentos' }, { status: 429 });
 
-  let body: { imagen?: string; demo?: boolean };
+  let body: { imagen?: string; demo?: boolean; nota?: string };
   try {
     body = await req.json();
   } catch {
@@ -55,6 +61,7 @@ export async function POST(req: Request) {
   const key = process.env.ANTHROPIC_API_KEY;
   if (body.demo || !key) return NextResponse.json(DEMO);
 
+  const nota = typeof body.nota === 'string' ? body.nota.replace(/[\r\n]+/g, ' ').trim().slice(0, 200) : '';
   const m = /^data:(image\/(?:jpeg|png|webp));base64,(.+)$/.exec(body.imagen ?? '');
   if (!m || m[2].length > 2_500_000) return NextResponse.json({ error: 'imagen_invalida' }, { status: 400 });
 
@@ -66,7 +73,7 @@ export async function POST(req: Request) {
         model: process.env.AI_MODEL ?? 'claude-haiku-5-5',
         max_tokens: 1024,
         thinking: { type: 'disabled' },
-        messages: [{ role: 'user', content: [{ type: 'image', source: { type: 'base64', media_type: m[1], data: m[2] } }, { type: 'text', text: PROMPT }] }],
+        messages: [{ role: 'user', content: [{ type: 'image', source: { type: 'base64', media_type: m[1], data: m[2] } }, { type: 'text', text: nota ? `${PROMPT}\n\nNota del usuario sobre este plato: ${nota}` : PROMPT }] }],
       }),
       signal: AbortSignal.timeout(20_000),
     });
