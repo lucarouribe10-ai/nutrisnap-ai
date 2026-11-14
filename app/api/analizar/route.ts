@@ -5,7 +5,7 @@ import { z } from 'zod';
 
 
 const Salida = z.object({
-  plato: z.string().min(1).max(80),
+  plato: z.string().min(1).transform((t) => (t.length > 80 ? `${t.slice(0, 77).trimEnd()}…` : t)),
   kcal: z.number().min(0).max(3000),
   proteina_g: z.number().min(0).max(300),
   carbos_g: z.number().min(0).max(500),
@@ -38,7 +38,7 @@ function limitado(ip: string) {
 
 const PROMPT = `Eres un nutricionista que estima calorías desde una foto de comida (cocina latinoamericana incluida).
 Responde SOLO con JSON válido, sin texto extra, con esta forma exacta:
-{"plato":"nombre corto en español","kcal":número,"proteina_g":número,"carbos_g":número,"grasas_g":número,"pregunta_aceite":{"texto":"¿Cuánto aceite o aderezo llevó?","una_cucharada_kcal":120}}
+{"plato":"nombre corto en español, máximo 60 caracteres; si hay varios platos, resúmelos (ej. Pizza y ensalada)","kcal":número,"proteina_g":número,"carbos_g":número,"grasas_g":número,"pregunta_aceite":{"texto":"¿Cuánto aceite o aderezo llevó?","una_cucharada_kcal":120}}
 Estima SOLO lo que se ve, sin sumar aceite ni aderezos invisibles (el usuario los agrega después). Son estimaciones.
 Si la imagen no es comida, responde {"plato":"No veo comida","kcal":0,"proteina_g":0,"carbos_g":0,"grasas_g":0,"pregunta_aceite":{"texto":"","una_cucharada_kcal":120}}.`;
 
@@ -64,7 +64,8 @@ export async function POST(req: Request) {
       headers: { 'content-type': 'application/json', 'x-api-key': key, 'anthropic-version': '2023-06-01' },
       body: JSON.stringify({
         model: process.env.AI_MODEL ?? 'claude-haiku-5-5',
-        max_tokens: 500,
+        max_tokens: 1024,
+        thinking: { type: 'disabled' },
         messages: [{ role: 'user', content: [{ type: 'image', source: { type: 'base64', media_type: m[1], data: m[2] } }, { type: 'text', text: PROMPT }] }],
       }),
       signal: AbortSignal.timeout(20_000),
@@ -75,13 +76,23 @@ export async function POST(req: Request) {
       console.error('[analizar] proveedor IA respondió', r.status, cuerpo.slice(0, 200));
       return NextResponse.json({ error: 'ia_no_disponible' }, { status: 502 });
     }
-    const data = (await r.json()) as { content?: { type: string; text?: string }[] };
+    const data = (await r.json()) as { content?: { type: string; text?: string }[]; stop_reason?: string; usage?: { output_tokens?: number } };
     const texto = data.content?.find((c) => c.type === 'text')?.text ?? '';
-    const json = JSON.parse(texto.slice(texto.indexOf('{'), texto.lastIndexOf('}') + 1));
+    let json: unknown;
+    try {
+      json = JSON.parse(texto.slice(texto.indexOf('{'), texto.lastIndexOf('}') + 1));
+    } catch {
+      console.error('[analizar] la IA no devolvió JSON válido. motivo:', data.stop_reason, 'bloques:', (data.content ?? []).map((c) => c.type).join(','), 'tokens salida:', data.usage?.output_tokens, 'texto:', texto.slice(0, 120).replace(/\s+/g, ' '));
+      return NextResponse.json({ error: 'respuesta_invalida' }, { status: 502 });
+    }
     const ok = Salida.safeParse(json);
-    if (!ok.success) return NextResponse.json({ error: 'respuesta_invalida' }, { status: 502 });
+    if (!ok.success) {
+      console.error('[analizar] la respuesta no cumple el formato:', JSON.stringify(ok.error.issues.slice(0, 2)).slice(0, 200));
+      return NextResponse.json({ error: 'respuesta_invalida' }, { status: 502 });
+    }
     return NextResponse.json({ demo: false, ...ok.data });
-  } catch {
+  } catch (e) {
+    console.error('[analizar] fallo al llamar a la IA:', e instanceof Error ? e.name + ' ' + e.message.slice(0, 120) : 'desconocido');
     return NextResponse.json({ error: 'ia_no_disponible' }, { status: 502 });
   }
 }
