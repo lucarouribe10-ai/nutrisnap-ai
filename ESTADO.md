@@ -82,7 +82,16 @@ Registro de calorías y macros por FOTO con IA + corrección por VOZ + escáner 
 
 - País de lanzamiento (decidido por el usuario 2026-11-03): COLOMBIA. Español neutro con tuteo, ejemplos de comida colombianos (arepa, bandeja paisa light, huevos pericos, pollo con arroz, aguacate, jugo de lulo), precios mostrados en USD + referencia COP pendiente de verificar con Hotmart.
 
-## Decisiones técnicas (Sesión 1 — internas, 2026-11-03)
+## Decisiones técnicas
+
+### Etapa 6 — decisiones técnicas (2026-11-14, decididas por el agente, sin pedir aprobación)
+- Backend: Supabase (Postgres + Auth). Región del proyecto: South America (São Paulo), la más cercana a Colombia. Plan Free para empezar.
+- Auth: Hotmart-first → PRIMARIO magic link + código de 6 dígitos por email (passwordless, mismo correo con enlace y código); passkeys/Google después. Sin contraseñas. Onboarding-first anónimo: `/`, `/onboarding`, `/paywall`, `/entrar`, legales y `/auth/*` son públicos; `/app/*` y las API privadas exigen sesión. Paquetes: @supabase/ssr + @supabase/supabase-js; refresco de sesión en el proxy/middleware con getUser().
+- Modelo de datos (supabase/migrations/20261114000001_init.sql): profiles, app_state (gamificación jsonb v3), comidas, pesos, ia_usos (solo servidor), entitlements (solo servidor/webhook). B2C: todo por user_id. RLS en TODAS las tablas, políticas por comando con (select auth.uid()), columnas indexadas, trigger que crea perfil+permiso free al registrarse (security definer, schema private, search_path vacío). ia_usos y entitlements: el usuario solo LEE; escribe el servidor con la clave secreta.
+- Claves: URL + clave publicable (pública por diseño) en NEXT_PUBLIC_*; clave secreta SOLO servidor (SUPABASE_SECRET_KEY). Nunca en el chat.
+- Migración de datos locales: tras el primer login se sube el contenido de localStorage (onboarding + app v3) a las tablas y desde ahí manda la nube.
+- Límite de IA: 8 fotos/día por usuario contado en ia_usos (reemplaza el límite en memoria por IP); la IA exige sesión y permiso (prueba/activo).
+ (Sesión 1 — internas, 2026-11-03)
 - Framework: Next.js 16 App Router (landing con SEO + rutas API/BFF para IA y webhook). Tailwind v4. PWA instalable (cámara, micrófono, escáner por navegador).
 - Backend: Supabase (Postgres + Auth + RLS). Auth: vista previa anónima → paywall → login (magic link + Google). Hosting: Vercel. Cobro: Hotmart (webhook verificado). Email: Resend.
 - IA: BFF en servidor, nunca claves en el navegador. Foto comprimida en el dispositivo → modelo de visión barato → JSON de platos/macros + lista de "preguntas de grasas ocultas". Voz: audio corto → transcripción servidor → ajuste. SÍNCRONO (objetivo <5 s); sin cola. Fotos originales no se guardan (solo miniatura). Kill-switch con tabla ai_calls y tope 8 fotos/día.
