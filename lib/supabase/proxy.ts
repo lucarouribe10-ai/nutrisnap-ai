@@ -14,6 +14,8 @@ export async function updateSession(request: NextRequest) {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
   const aEntrar = () => {
+    // El panel no revela que existe: sin sesión responde 404 (no manda a iniciar sesión).
+    if (request.nextUrl.pathname.startsWith('/admin')) return NextResponse.rewrite(new URL('/no-existe', request.url), { status: 404 });
     const destino = request.nextUrl.clone();
     destino.pathname = '/entrar';
     destino.search = '';

@@ -5,5 +5,5 @@ export async function proxy(request: NextRequest) {
   return updateSession(request);
 }
 
-// Solo la app interna exige sesión. Landing, onboarding, planes, /entrar, legales y /auth/* son públicos.
-export const config = { matcher: ['/app', '/app/:path*'] };
+// La app interna y el panel exigen sesión (el panel además exige ser administradora). Landing, onboarding, planes, /entrar, legales y /auth/* son públicos.
+export const config = { matcher: ['/app', '/app/:path*', '/admin', '/admin/:path*'] };

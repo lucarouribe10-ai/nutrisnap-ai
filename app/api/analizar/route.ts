@@ -2,6 +2,8 @@
 // Sin clave configurada devuelve un resultado de DEMO marcado demo:true (nunca se hace pasar por real).
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
+import { adminDisponible, createAdminClient } from '@/lib/supabase/admin';
+import { createClient } from '@/lib/supabase/server';
 
 
 const Salida = z.object({
@@ -36,6 +38,26 @@ function limitado(ip: string) {
   return e.n > 8;
 }
 
+/** Guarda cada llamada a la IA con su costo real (ai_calls). Nunca rompe la respuesta: si no se puede guardar, solo se avisa en el registro. */
+async function registrarLlamada(f: { ok: boolean; demo?: boolean; modelo?: string; entrada?: number; salida?: number; ms?: number; error?: string }) {
+  if (!adminDisponible()) return;
+  try {
+    let userId: string | null = null;
+    try {
+      const { data } = await (await createClient()).auth.getClaims();
+      userId = (data?.claims?.sub as string | undefined) ?? null;
+    } catch { /* anónimo (vista previa del recorrido) */ }
+    // Precios por millón de tokens, en USD, configurables en el servidor. Sin precio → costo null ("Sin datos" en el panel), nunca inventado.
+    const pIn = Number(process.env.AI_PRICE_IN_USD_PER_MTOK);
+    const pOut = Number(process.env.AI_PRICE_OUT_USD_PER_MTOK);
+    const costo = f.entrada !== undefined && f.salida !== undefined && pIn > 0 && pOut > 0 ? (f.entrada * pIn + f.salida * pOut) / 1_000_000 : null;
+    const { error } = await createAdminClient().from('ai_calls').insert({ user_id: userId, feature: 'analisis_foto', modelo: f.modelo ?? null, tokens_entrada: f.entrada ?? null, tokens_salida: f.salida ?? null, costo_usd: costo, duracion_ms: f.ms ?? null, ok: f.ok, demo: f.demo ?? false, error: f.error ?? null });
+    if (error) console.error('[analizar] no se pudo registrar la llamada:', error.code);
+  } catch (e) {
+    console.error('[analizar] registro de llamada falló:', e instanceof Error ? e.name : 'desconocido');
+  }
+}
+
 const PROMPT = `Eres un nutricionista que estima calorías desde una foto de comida. Conoces muy bien la cocina colombiana y latinoamericana (arepa de maíz con carne, huevo o queso; bandeja paisa; ajiaco; sancocho; empanadas; patacones; pandebono; changua; arroz con pollo; frijoles; plátano maduro; chicharrón; buñuelos; etc.) y también comida casera.
 Responde SOLO con JSON válido, sin texto extra, con esta forma exacta:
 {"plato":"nombre corto en español, máximo 60 caracteres; si hay varios platos, resúmelos","kcal":número,"proteina_g":número,"carbos_g":número,"grasas_g":número,"pregunta_aceite":{"texto":"pregunta corta sobre el aceite o grasa que no se ve","una_cucharada_kcal":120}}
@@ -65,12 +87,14 @@ export async function POST(req: Request) {
   const m = /^data:(image\/(?:jpeg|png|webp));base64,(.+)$/.exec(body.imagen ?? '');
   if (!m || m[2].length > 2_500_000) return NextResponse.json({ error: 'imagen_invalida' }, { status: 400 });
 
+  const t0 = Date.now();
+  const modelo = process.env.AI_MODEL ?? 'claude-haiku-5-5';
   try {
     const r = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: { 'content-type': 'application/json', 'x-api-key': key, 'anthropic-version': '2023-06-01' },
       body: JSON.stringify({
-        model: process.env.AI_MODEL ?? 'claude-haiku-5-5',
+        model: modelo,
         max_tokens: 1024,
         thinking: { type: 'disabled' },
         messages: [{ role: 'user', content: [{ type: 'image', source: { type: 'base64', media_type: m[1], data: m[2] } }, { type: 'text', text: nota ? `${PROMPT}\n\nNota del usuario sobre este plato: ${nota}` : PROMPT }] }],
@@ -81,25 +105,31 @@ export async function POST(req: Request) {
       // Diagnóstico seguro: solo código y tipo de error del proveedor (nunca la clave ni la imagen).
       const cuerpo = await r.text().catch(() => '');
       console.error('[analizar] proveedor IA respondió', r.status, cuerpo.slice(0, 200));
+      await registrarLlamada({ ok: false, modelo, ms: Date.now() - t0, error: `proveedor_${r.status}` });
       return NextResponse.json({ error: 'ia_no_disponible' }, { status: 502 });
     }
-    const data = (await r.json()) as { content?: { type: string; text?: string }[]; stop_reason?: string; usage?: { output_tokens?: number } };
+    const data = (await r.json()) as { content?: { type: string; text?: string }[]; stop_reason?: string; usage?: { input_tokens?: number; output_tokens?: number } };
+    const uso = { entrada: data.usage?.input_tokens, salida: data.usage?.output_tokens, modelo, ms: Date.now() - t0 };
     const texto = data.content?.find((c) => c.type === 'text')?.text ?? '';
     let json: unknown;
     try {
       json = JSON.parse(texto.slice(texto.indexOf('{'), texto.lastIndexOf('}') + 1));
     } catch {
       console.error('[analizar] la IA no devolvió JSON válido. motivo:', data.stop_reason, 'bloques:', (data.content ?? []).map((c) => c.type).join(','), 'tokens salida:', data.usage?.output_tokens, 'texto:', texto.slice(0, 120).replace(/\s+/g, ' '));
+      await registrarLlamada({ ok: false, error: 'json_invalido', ...uso });
       return NextResponse.json({ error: 'respuesta_invalida' }, { status: 502 });
     }
     const ok = Salida.safeParse(json);
     if (!ok.success) {
       console.error('[analizar] la respuesta no cumple el formato:', JSON.stringify(ok.error.issues.slice(0, 2)).slice(0, 200));
+      await registrarLlamada({ ok: false, error: 'formato_invalido', ...uso });
       return NextResponse.json({ error: 'respuesta_invalida' }, { status: 502 });
     }
+    await registrarLlamada({ ok: true, ...uso });
     return NextResponse.json({ demo: false, ...ok.data });
   } catch (e) {
     console.error('[analizar] fallo al llamar a la IA:', e instanceof Error ? e.name + ' ' + e.message.slice(0, 120) : 'desconocido');
+    await registrarLlamada({ ok: false, modelo, ms: Date.now() - t0, error: 'sin_respuesta' });
     return NextResponse.json({ error: 'ia_no_disponible' }, { status: 502 });
   }
 }
