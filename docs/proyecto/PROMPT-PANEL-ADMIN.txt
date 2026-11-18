@@ -1,0 +1,22 @@
+PROMPT GUARDADO POR LA DUEÑA (2026-11-18) — se ejecuta DESPUÉS de publicar la app en internet.
+Regla: primero dar el PLAN de secciones/funciones y esperar su OK; luego construir con código real (nada de demo).
+
+Constrúyeme el panel de administración premium, avanzado y profesional de esta app (solo para que pueda ingresar yo, el dueño de la app). Así que primero dame el plan de secciones, funciones y todo lo que hará este panel de administración y espera mi OK; luego constrúyelo con código real, protegido y con mucho cuidado, como para que se logre algo realmente profesional y considerando todo lo que sea necesario para que pueda ver los números de mi app e incluso pueda añadir nuevos usuarios manualmente solo con su correo electrónico y nombre por si quiero agregar a alguien o a un usuario no le llega el acceso correctamente.
+
+El panel debe mostrar decisiones, no ruido. Si un dato no existe todavía, márcalo como "Sin datos" en vez de inventar cualquier cosa, osea no puedes construir una demo, debes construir un panel real, conectado con la app y listo para usar.
+
+LEE PRIMERO: 21-BACKOFFICE (secciones, event_log, logEvent, métricas, GANANCIA REAL + AVISOS al dueño), 09-SEGURIDAD + 26-AUTH-MODERNO (acceso solo-admin verificado en el servidor + RLS), 31-EVALS-OBSERVABILIDAD-OPERACION (costo real de IA desde la tabla ai_calls), 40-UNIT-ECONOMICS (el modelo de margen que el panel muestra REAL), 36-ANALITICA-Y-EVENTOS (el event_log es la fuente; PostHog NO se duplica) y 17-VISUALIZACION-DATOS (gráficos con specs Tufte).
+
+INCLUYE DE FORMA OBLIGATORIA (pero si crees que hay que incluir cosas de más como para hacer algo realmente bueno, hazlo):
+ • VENTAS: ingresos, compras, cancelaciones, churn (separar voluntario vs involuntario), MRR (webhook/18).
+ • GANANCIA REAL: lo que QUEDA tras costos (ingresos − Hotmart − afiliados − impuestos − IA de ai_calls − infra − email) + % de margen. "Facturaste $X y te quedaron $Y limpios". Es lo que más le importa al dueño.
+ • USUARIOS: activación, retención D1/D7/D30, total y activos.
+ • USO: acción principal y eventos del event_log (contrato de 24); funnel del onboarding.
+ • NEGOCIO: LTV, CAC y ganancia POR CANAL (usando profiles.source), ratio LTV:CAC (≥3:1), payback.
+ • IA (si aplica): costo real por feature y por usuario desde ai_calls; gasto del día.
+ • AVISOS AUTOMÁTICOS al dueño (banner arriba, lenguaje simple, qué pasó→por qué importa→qué hacer): IA cara (>20% de ingresos), webhook fallando, churn involuntario alto, canal que pierde dinero, margen negativo. Si todo bien: "✅ Todo en orden este mes".
+ • ERRORES: resumen de Sentry/logs; alertas abiertas.
+
+REGLAS: acceso restringido a admin verificado EN EL SERVIDOR (no solo ocultando la ruta — eso es IDOR); RLS que impida que un usuario normal lea estos datos; lenguaje claro, no técnico, con números que el dueño entienda de un vistazo. Verifica tsc + build + dev al cerrar cada capa · cada pantalla del panel se cierra con screenshot renderizado + veredicto del revisor-visual (Regla 7 de CLAUDE.md) · mejora lo que exista, no reescribas sin avisar · cero features nuevas (a ESTADO.md) · causa raíz, no parches · actualiza ESTADO.md con el reporte de cierre y su evidencia.
+
+NOTAS DEL AGENTE (compatibilidad con lo ya construido): el panel necesita tablas que hoy NO existen (event_log, ai_calls, ventas/compras desde Hotmart, profiles.source, gastos de infra) — habrá que crearlas con RLS solo-admin; ia_usos y entitlements ya existen. Las métricas de ventas dependen de que el webhook de Hotmart esté conectado: hasta entonces se muestran como "Sin datos".

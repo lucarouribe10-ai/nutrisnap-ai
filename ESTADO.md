@@ -151,8 +151,15 @@ Registro de calorías y macros por FOTO con IA + corrección por VOZ + escáner 
 ## Sesión en progreso 🔧
 - Ninguna (Sesión 1 cerrada).
 
-## Próximas sesiones 📋
-- Sesión 2: identidad visual y tour de la app. Sesión 3: página de ventas. Sesiones 4-8 según el plan maestro.
+## Próximas sesiones 📋 (HOJA DE RUTA acordada con la dueña, 2026-11-18)
+1. PUBLICAR la app en internet (GitHub + Vercel, variables de entorno seguras, Supabase con las URL de producción) — guía 62/08.
+2. PANEL DE ADMINISTRACIÓN del dueño: prompt guardado en docs/proyecto/PROMPT-PANEL-ADMIN.txt — primero PLAN y esperar OK; real, sin demo; admin verificado en servidor + RLS; alta manual de usuarios por correo+nombre; "Sin datos" donde no haya.
+3. Dominio propio + Resend con dominio verificado (hoy el correo solo llega al correo de la dueña) + Supabase SMTP.
+4. Hotmart: producto, checkout, webhook firmado (hottok) + idempotencia → entitlements; confirmar plazos de prueba/reembolso (FICHA-MERCADO §4).
+5. IA: tope por usuario con ia_usos (8 fotos/día), borrar claves de prueba de Anthropic y crear una de producción con límite de gasto; evals y costo real (ai_calls).
+6. Tercera revisión del revisor-visual de las 4 pantallas del dinero (hoy, landing, onboarding, paywall) tras estilo v3.
+7. Auditoría de seguridad/integridad (27/61/48), páginas legales (47), correos (emails), analítica (36) y soporte.
+Pendientes de producto menores: nombre "XP" vs "puntos" (la dueña preguntó qué es), logo SVG con nombre, imagen para compartir (OG), fotos propias.
 
 ## Problemas conocidos ⚠️
 - veredicto pantalla principal (Hoy): estilo v2, 2ª revisión (2026-11-12) NO LISTA: usab 30/40 · craft 15/20 (gates 36/16; fiel a la referencia). Evolución 26/15 → 30/15. Pendiente: check claro en el día de hoy (2:1), compactar racha, tokens para colores sueltos, mostrar macros en vez de 'Foto', explicar escudo/XP, transición entre pestañas y salida animada de hoja/toast, captura fullPage real. Decisión del usuario pendiente (otra ronda o avanzar).
