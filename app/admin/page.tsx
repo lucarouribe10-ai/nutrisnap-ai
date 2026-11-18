@@ -1,4 +1,5 @@
 import { Suspense } from 'react';
+import Link from 'next/link';
 import { AlertTriangle, CheckCircle2, Cpu, Users, Wallet, Activity, TrendingUp } from 'lucide-react';
 import { requireAdmin } from '@/lib/admin/guard';
 import { dinero, inicioDeMes, usd } from '@/lib/admin/formato';
@@ -30,7 +31,7 @@ async function Contenido() {
 
   const errores = r?.errores_abiertos ?? 0;
   const aviso = errores > 0
-    ? { ok: false, titulo: `Hay ${errores} ${errores === 1 ? 'error' : 'errores'} sin resolver esta semana`, detalle: 'Alguien pudo chocar con un problema en la app. Cuando esté lista la pestaña Salud verás cuál es y cuántas personas afectó.' }
+    ? { ok: false, titulo: `Hay ${errores} ${errores === 1 ? 'error' : 'errores'} sin resolver esta semana`, detalle: 'Alguien pudo chocar con un problema en la app. En la pestaña Salud ves cuál es y cuántas personas afectó.' }
     : { ok: true, titulo: 'Todo en orden este mes', detalle: '' };
 
   return (
@@ -42,7 +43,7 @@ async function Contenido() {
 
       <Entrada i={0} className={`flex items-start gap-3 rounded-[var(--radius-card)] p-4 ${aviso.ok ? 'bg-[var(--lima)]' : 'bg-[var(--durazno)]'}`}>
         {aviso.ok ? <CheckCircle2 size={22} className="mt-0.5 shrink-0 text-[var(--accent)]" aria-hidden="true" /> : <AlertTriangle size={22} className="mt-0.5 shrink-0 text-[#A83D06]" aria-hidden="true" />}
-        <div role="status"><p className="text-[16px] font-bold">{aviso.titulo}</p>{aviso.detalle && <p className="mt-0.5 text-[14px] text-[var(--text-secondary)]">{aviso.detalle}</p>}</div>
+        <div role="status"><p className="text-[16px] font-bold">{aviso.titulo}</p>{aviso.detalle && <p className="mt-0.5 text-[14px] text-[var(--text-secondary)]">{aviso.detalle}</p>}{!aviso.ok && <Link href="/admin/salud" className="mt-1 inline-flex min-h-11 items-center text-[14px] font-bold text-[#8A3A06] underline underline-offset-4">Ver en Salud</Link>}</div>
       </Entrada>
 
       <Tarjeta titulo="Ganancia real de este mes" ayuda="Lo que te queda después de pagar Hotmart, comisiones, impuestos, IA, servidores y correos. Se calcula cuando haya ventas registradas." icono={<Wallet size={18} />}>
