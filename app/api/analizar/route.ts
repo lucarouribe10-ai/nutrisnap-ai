@@ -2,6 +2,7 @@
 // Sin clave configurada devuelve un resultado de DEMO marcado demo:true (nunca se hace pasar por real).
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
+import { createHash } from 'node:crypto';
 import { adminDisponible, createAdminClient } from '@/lib/supabase/admin';
 import { createClient } from '@/lib/supabase/server';
 
@@ -38,20 +39,61 @@ function limitado(ip: string) {
   return e.n > 8;
 }
 
+type Quien = { userId: string | null; ipHash: string };
+
+/** Quién llama: la cuenta (si hay sesión) o una huella de la IP (nunca se guarda la IP). */
+async function identidad(req: Request): Promise<Quien> {
+  let userId: string | null = null;
+  try {
+    const { data } = await (await createClient()).auth.getClaims();
+    userId = (data?.claims?.sub as string | undefined) ?? null;
+  } catch { /* anónimo (vista previa del recorrido) */ }
+  const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'local';
+  const ipHash = createHash('sha256').update(`${process.env.IP_SALT ?? 'nutrisnap'}:${ip}`).digest('hex').slice(0, 32);
+  return { userId, ipHash };
+}
+
+/**
+ * Topes que protegen el dinero, contados en la base (no en memoria): por cuenta (8 fotos/día), por visitante anónimo (3/día),
+ * y topes globales del día (llamadas y USD). Si no se puede contar, se bloquea (falla CERRADO): mejor una demo que una factura sorpresa.
+ */
+async function superaCupo(q: Quien): Promise<null | 'usuario' | 'anonimo' | 'global'> {
+  if (!adminDisponible()) return 'global';
+  try {
+    const adm = createAdminClient();
+    const desde = new Date(Date.now() - 86_400_000).toISOString();
+    const topeLlamadas = Number(process.env.AI_TOPE_DIARIO_LLAMADAS ?? 300);
+    const topeUsd = Number(process.env.AI_TOPE_DIARIO_USD ?? 5);
+    const limiteUsuario = Number(process.env.AI_LIMITE_USUARIO_DIA ?? 8);
+    const limiteAnonimo = Number(process.env.AI_LIMITE_ANONIMO_DIA ?? 3);
+    const base = () => adm.from('ai_calls').select('id', { count: 'exact', head: true }).eq('demo', false).gte('created_at', desde);
+    const propio = q.userId ? base().eq('user_id', q.userId) : base().is('user_id', null).eq('ip_hash', q.ipHash);
+    const [glob, mio, costos] = await Promise.all([
+      base(),
+      propio,
+      adm.from('ai_calls').select('costo_usd').eq('demo', false).gte('created_at', desde).not('costo_usd', 'is', null).limit(5000),
+    ]);
+    if (glob.error || mio.error || costos.error) return 'global';
+    if ((glob.count ?? 0) >= topeLlamadas) return 'global';
+    const gastoUsd = (costos.data ?? []).reduce((t, c) => t + Number(c.costo_usd), 0);
+    if (topeUsd > 0 && gastoUsd >= topeUsd) return 'global';
+    if (q.userId && (mio.count ?? 0) >= limiteUsuario) return 'usuario';
+    if (!q.userId && (mio.count ?? 0) >= limiteAnonimo) return 'anonimo';
+    return null;
+  } catch {
+    return 'global';
+  }
+}
+
 /** Guarda cada llamada a la IA con su costo real (ai_calls). Nunca rompe la respuesta: si no se puede guardar, solo se avisa en el registro. */
-async function registrarLlamada(f: { ok: boolean; demo?: boolean; modelo?: string; entrada?: number; salida?: number; ms?: number; error?: string }) {
+async function registrarLlamada(q: Quien, f: { ok: boolean; demo?: boolean; modelo?: string; entrada?: number; salida?: number; ms?: number; error?: string }) {
   if (!adminDisponible()) return;
   try {
-    let userId: string | null = null;
-    try {
-      const { data } = await (await createClient()).auth.getClaims();
-      userId = (data?.claims?.sub as string | undefined) ?? null;
-    } catch { /* anónimo (vista previa del recorrido) */ }
     // Precios por millón de tokens, en USD, configurables en el servidor. Sin precio → costo null ("Sin datos" en el panel), nunca inventado.
     const pIn = Number(process.env.AI_PRICE_IN_USD_PER_MTOK);
     const pOut = Number(process.env.AI_PRICE_OUT_USD_PER_MTOK);
     const costo = f.entrada !== undefined && f.salida !== undefined && pIn > 0 && pOut > 0 ? (f.entrada * pIn + f.salida * pOut) / 1_000_000 : null;
-    const { error } = await createAdminClient().from('ai_calls').insert({ user_id: userId, feature: 'analisis_foto', modelo: f.modelo ?? null, tokens_entrada: f.entrada ?? null, tokens_salida: f.salida ?? null, costo_usd: costo, duracion_ms: f.ms ?? null, ok: f.ok, demo: f.demo ?? false, error: f.error ?? null });
+    const { error } = await createAdminClient().from('ai_calls').insert({ user_id: q.userId, ip_hash: q.userId ? null : q.ipHash, feature: 'analisis_foto', modelo: f.modelo ?? null, tokens_entrada: f.entrada ?? null, tokens_salida: f.salida ?? null, costo_usd: costo, duracion_ms: f.ms ?? null, ok: f.ok, demo: f.demo ?? false, error: f.error ?? null });
     if (error) console.error('[analizar] no se pudo registrar la llamada:', error.code);
   } catch (e) {
     console.error('[analizar] registro de llamada falló:', e instanceof Error ? e.name : 'desconocido');
@@ -74,9 +116,20 @@ export async function POST(req: Request) {
   const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'local';
   if (limitado(ip)) return NextResponse.json({ error: 'demasiados_intentos' }, { status: 429 });
 
+  // Solo desde esta misma app (otro sitio no puede usar tu IA desde el navegador de alguien).
+  const origen = req.headers.get('origin');
+  if (origen) {
+    try {
+      if (new URL(origen).host !== req.headers.get('host')) return NextResponse.json({ error: 'origen_no_permitido' }, { status: 403 });
+    } catch {
+      return NextResponse.json({ error: 'origen_no_permitido' }, { status: 403 });
+    }
+  }
+  const crudo = await req.text();
+  if (crudo.length > 3_600_000) return NextResponse.json({ error: 'imagen_invalida' }, { status: 413 });
   let body: { imagen?: string; demo?: boolean; nota?: string };
   try {
-    body = await req.json();
+    body = JSON.parse(crudo);
   } catch {
     return NextResponse.json({ error: 'solicitud_invalida' }, { status: 400 });
   }
@@ -86,6 +139,11 @@ export async function POST(req: Request) {
   const nota = typeof body.nota === 'string' ? body.nota.replace(/[\r\n]+/g, ' ').trim().slice(0, 200) : '';
   const m = /^data:(image\/(?:jpeg|png|webp));base64,(.+)$/.exec(body.imagen ?? '');
   if (!m || m[2].length > 2_500_000) return NextResponse.json({ error: 'imagen_invalida' }, { status: 400 });
+
+  const quien = await identidad(req);
+  const tope = await superaCupo(quien);
+  if (tope === 'usuario') return NextResponse.json({ error: 'limite_diario' }, { status: 429 });
+  if (tope !== null) return NextResponse.json({ ...DEMO, limite: true }); // visitante o tope global: resultado de ejemplo, honesto (demo:true)
 
   const t0 = Date.now();
   const modelo = process.env.AI_MODEL ?? 'claude-haiku-5-5';
@@ -105,7 +163,7 @@ export async function POST(req: Request) {
       // Diagnóstico seguro: solo código y tipo de error del proveedor (nunca la clave ni la imagen).
       const cuerpo = await r.text().catch(() => '');
       console.error('[analizar] proveedor IA respondió', r.status, cuerpo.slice(0, 200));
-      await registrarLlamada({ ok: false, modelo, ms: Date.now() - t0, error: `proveedor_${r.status}` });
+      await registrarLlamada(quien, { ok: false, modelo, ms: Date.now() - t0, error: `proveedor_${r.status}` });
       return NextResponse.json({ error: 'ia_no_disponible' }, { status: 502 });
     }
     const data = (await r.json()) as { content?: { type: string; text?: string }[]; stop_reason?: string; usage?: { input_tokens?: number; output_tokens?: number } };
@@ -116,20 +174,20 @@ export async function POST(req: Request) {
       json = JSON.parse(texto.slice(texto.indexOf('{'), texto.lastIndexOf('}') + 1));
     } catch {
       console.error('[analizar] la IA no devolvió JSON válido. motivo:', data.stop_reason, 'bloques:', (data.content ?? []).map((c) => c.type).join(','), 'tokens salida:', data.usage?.output_tokens, 'texto:', texto.slice(0, 120).replace(/\s+/g, ' '));
-      await registrarLlamada({ ok: false, error: 'json_invalido', ...uso });
+      await registrarLlamada(quien, { ok: false, error: 'json_invalido', ...uso });
       return NextResponse.json({ error: 'respuesta_invalida' }, { status: 502 });
     }
     const ok = Salida.safeParse(json);
     if (!ok.success) {
       console.error('[analizar] la respuesta no cumple el formato:', JSON.stringify(ok.error.issues.slice(0, 2)).slice(0, 200));
-      await registrarLlamada({ ok: false, error: 'formato_invalido', ...uso });
+      await registrarLlamada(quien, { ok: false, error: 'formato_invalido', ...uso });
       return NextResponse.json({ error: 'respuesta_invalida' }, { status: 502 });
     }
-    await registrarLlamada({ ok: true, ...uso });
+    await registrarLlamada(quien, { ok: true, ...uso });
     return NextResponse.json({ demo: false, ...ok.data });
   } catch (e) {
     console.error('[analizar] fallo al llamar a la IA:', e instanceof Error ? e.name + ' ' + e.message.slice(0, 120) : 'desconocido');
-    await registrarLlamada({ ok: false, modelo, ms: Date.now() - t0, error: 'sin_respuesta' });
+    await registrarLlamada(quien, { ok: false, modelo, ms: Date.now() - t0, error: 'sin_respuesta' });
     return NextResponse.json({ error: 'ia_no_disponible' }, { status: 502 });
   }
 }
