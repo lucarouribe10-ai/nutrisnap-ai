@@ -1,13 +1,45 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { animate, useReducedMotion } from 'motion/react';
-import { guardarApp, leerApp, type AppData } from '@/lib/app-store';
+import { guardarApp, leerApp, migrarFotos, pasarElTiempo, type AppData } from '@/lib/app-store';
+import { cargarDeNube, subirANube, subirPendiente } from '@/lib/nube';
 
-/** Lee/guarda los datos de la app interna; mientras carga devuelve null (la pantalla muestra su esqueleto). */
+/**
+ * Lee/guarda los datos de la app interna; mientras carga devuelve null (la pantalla muestra su esqueleto).
+ * Primero muestra lo del navegador (rápido) y enseguida sincroniza con la cuenta: la nube manda;
+ * si la cuenta está vacía y lo local es real (no de ejemplo), se sube como primer guardado.
+ */
 export function useAppData() {
   const [d, setD] = useState<AppData | null>(null);
-  useEffect(() => setD(leerApp()), []);
-  const actualizar = (fn: (x: AppData) => AppData) => setD((prev) => { if (!prev) return prev; const n = fn(prev); guardarApp(n); return n; });
+  const tocado = useRef(false);
+  useEffect(() => {
+    const local = leerApp();
+    setD(local);
+    let vivo = true;
+    void (async () => {
+      const nube = await cargarDeNube();
+      if (!vivo || tocado.current) return;
+      if (nube) {
+        const n = migrarFotos(pasarElTiempo(nube));
+        guardarApp(n);
+        setD(n);
+        if (n !== nube) subirANube(n);
+      } else {
+        subirANube(local);
+      }
+    })();
+    const alSalir = () => { if (document.visibilityState === 'hidden') subirPendiente(); };
+    document.addEventListener('visibilitychange', alSalir);
+    return () => { vivo = false; document.removeEventListener('visibilitychange', alSalir); subirPendiente(); };
+  }, []);
+  const actualizar = (fn: (x: AppData) => AppData) => setD((prev) => {
+    if (!prev) return prev;
+    tocado.current = true;
+    const n = fn(prev);
+    guardarApp(n);
+    subirANube(n);
+    return n;
+  });
   return [d, actualizar] as const;
 }
 

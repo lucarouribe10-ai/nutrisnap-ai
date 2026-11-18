@@ -5,7 +5,7 @@
 create schema if not exists private;
 
 -- ───────────── utilidades ─────────────
-create or replace function private.set_updated_at() returns trigger language plpgsql as $$
+create or replace function private.set_updated_at() returns trigger language plpgsql set search_path = '' as $$
 begin new.updated_at = now(); return new; end; $$;
 
 -- ───────────── perfiles (respuestas del onboarding y plan) ─────────────

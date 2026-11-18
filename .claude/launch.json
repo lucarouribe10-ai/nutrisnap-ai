@@ -1,6 +1,7 @@
 {
   "version": "0.0.1",
   "configurations": [
-    { "name": "nutrisnap-dev", "runtimeExecutable": "npm", "runtimeArgs": ["run", "dev"], "port": 3000 }
+    { "name": "nutrisnap-dev", "runtimeExecutable": "npm", "runtimeArgs": ["run", "dev"], "port": 3000 },
+    { "name": "nutrisnap-sin-login", "runtimeExecutable": "env", "runtimeArgs": ["DEV_BYPASS_AUTH=1", "npm", "run", "dev"], "port": 3000 }
   ]
 }

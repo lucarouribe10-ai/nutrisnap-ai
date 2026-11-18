@@ -57,10 +57,7 @@ await p.getByRole('button', { name: /Empezar mis 3 días gratis/ }).click();
 await p.waitForURL('**/entrar**');
 await p.waitForTimeout(600);
 await shot('10-login');
-await p.getByLabel('Tu correo').fill('prueba@ejemplo.com');
-await p.getByRole('button', { name: /Enviarme mi enlace/ }).click();
-await p.getByText('Revisa tu correo').waitFor();
-await shot('11-login-enviado');
+// El envío del código es REAL (Supabase + Resend): el script se detiene aquí para no mandar correos de prueba.
 const eventos = await p.evaluate(() => JSON.parse(sessionStorage.getItem('ns_eventos') ?? '[]').map((e) => e.evento));
 console.log('eventos', eventos.join(','));
 console.log('errores de consola:', errores.length ? errores : 'ninguno');
