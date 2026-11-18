@@ -152,7 +152,7 @@ Registro de calorías y macros por FOTO con IA + corrección por VOZ + escáner 
 - Ninguna (Sesión 1 cerrada).
 
 ## Próximas sesiones 📋 (HOJA DE RUTA acordada con la dueña, 2026-11-18)
-1. PUBLICAR la app en internet (GitHub + Vercel, variables de entorno seguras, Supabase con las URL de producción) — guía 62/08.
+1. PUBLICAR la app en internet — EN CURSO (2026-11-18): código subido a GitHub privado lucarouribe10-ai/nutrisnap-ai (main, SHA = remoto ✓, acceso por llave SSH dedicada ~/.ssh/id_ed25519_nutrisnap, `gh` instalado pero sin login); escaneo de secretos en historial limpio; SIGUE: importar en Vercel desde GitHub (la dueña), variables públicas + AI_MODEL (sin clave de IA todavía → modo demo), luego URL de Supabase Auth, luego clave de IA de producción con tope (GitHub+Vercel, variables de entorno seguras, Supabase con las URL de producción) — guía 62/08.
 2. PANEL DE ADMINISTRACIÓN del dueño: prompt guardado en docs/proyecto/PROMPT-PANEL-ADMIN.txt — primero PLAN y esperar OK; real, sin demo; admin verificado en servidor + RLS; alta manual de usuarios por correo+nombre; "Sin datos" donde no haya.
 3. Dominio propio + Resend con dominio verificado (hoy el correo solo llega al correo de la dueña) + Supabase SMTP.
 4. Hotmart: producto, checkout, webhook firmado (hottok) + idempotencia → entitlements; confirmar plazos de prueba/reembolso (FICHA-MERCADO §4).
