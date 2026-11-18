@@ -40,7 +40,8 @@ async function subirAhora() {
   const id = await uid();
   if (!id) return;
   try {
-    await createClient().from('app_state').upsert({ user_id: id, version: 3, data: d }, { onConflict: 'user_id' });
+    const { error } = await createClient().from('app_state').upsert({ user_id: id, version: 3, data: d }, { onConflict: 'user_id' });
+    if (error) console.warn('No se pudo guardar en la cuenta:', error.code ?? error.message);
   } catch {
     /* sin red: queda en el navegador y se vuelve a subir en el próximo cambio */
   }

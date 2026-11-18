@@ -79,7 +79,7 @@ export function Hoy() {
         <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-[var(--lima)] text-[14px] font-extrabold text-[var(--accent)] [font-family:var(--font-display)]" aria-hidden="true">{d.nombre.slice(0, 2).toUpperCase()}</span>
         <div className="min-w-0 flex-1">
           <h1 className="truncate text-[20px] font-extrabold leading-tight tracking-[-0.02em] [font-family:var(--font-display)]">Hola, {d.nombre}</h1>
-          <p className="text-[14px] font-medium text-[var(--text-secondary)]">{fechaLarga()}{d.demo ? ' · datos de ejemplo' : ''}</p>
+          <p className="text-[14px] font-medium text-[var(--text-secondary)]">{fechaLarga()}{d.demo ? <> · datos de ejemplo · <Link href="/onboarding" className="font-bold text-[var(--accent)] underline underline-offset-2">crea tu plan</Link></> : ''}</p>
         </div>
         <Link href="/app/logros" aria-label={`Nivel ${nivel.actual.n}, ${d.xp} XP. Ver logros`} className="inline-flex min-h-11 items-center gap-1 rounded-full bg-[var(--surface)] px-3 text-[13px] font-extrabold text-[#A83D06] shadow-[0_6px_16px_-8px_rgb(21_25_26/.3)]"><Zap size={14} aria-hidden="true" />{d.xp} XP</Link>
       </header>

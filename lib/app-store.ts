@@ -148,6 +148,11 @@ export function leerApp(): AppData {
     const raw = localStorage.getItem(KEY);
     if (raw) {
       const d = JSON.parse(raw) as AppData;
+      if (d.version === 3 && d.demo) {
+        // Quedó guardada la vista de ejemplo pero la persona ya completó su recorrido: manda lo real.
+        const real = iniciarReal(leerEstado());
+        if (real) { guardarApp(real); return real; }
+      }
       if (d.version === 3) return migrarFotos(pasarElTiempo(d));
     }
   } catch {
