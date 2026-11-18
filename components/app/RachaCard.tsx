@@ -59,6 +59,7 @@ export function SemanaFranja({ d }: { d: AppData }) {
   const hoy = new Date();
   const semana = Array.from({ length: 7 }, (_, k) => { const f = new Date(hoy.getTime() - (6 - k) * 86_400_000); return { letra: LETRAS[f.getDay()], dia: f.getDate(), hecho: d.kcalSemana[k] > 0, esHoy: k === 6 }; });
   return (
+    <Link href="/app/racha" aria-label="Ver tu calendario de racha" className="block rounded-[20px]">
     <ol aria-label="Últimos 7 días" className="grid grid-cols-7 gap-1 text-center">
       {semana.map((x, i) => (
         <motion.li key={i} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.25, delay: 0.05 * i, ease: EASE }}>
@@ -68,5 +69,6 @@ export function SemanaFranja({ d }: { d: AppData }) {
         </motion.li>
       ))}
     </ol>
+    </Link>
   );
 }
