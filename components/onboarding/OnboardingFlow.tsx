@@ -133,7 +133,7 @@ export function OnboardingFlow() {
     }
   };
   const usarEjemplo = () => {
-    setFoto({ url: '/fotos/ensalada.jpg', demo: true });
+    setFoto({ url: '/fotos/bowl-garbanzos.jpg', demo: true });
     void analizar(null, true);
   };
 
@@ -222,7 +222,7 @@ export function OnboardingFlow() {
   const retroceder = ATRAS[paso] ? () => setPaso(ATRAS[paso] as Paso) : undefined;
 
   return (
-    <main className="mx-auto min-h-dvh max-w-[480px] bg-[var(--bg)] [background:linear-gradient(180deg,var(--tint),var(--bg)_300px)] pb-28 text-[var(--text-primary)] [font-family:var(--font-body)]">
+    <main className="mx-auto min-h-dvh max-w-[480px] bg-[var(--bg)] [background:linear-gradient(180deg,color-mix(in_oklab,var(--tint)_35%,var(--bg)),var(--bg)_300px)] pb-28 text-[var(--text-primary)] [font-family:var(--font-body)]">
       {paso !== 'analizando' && paso !== 'plan' && paso !== 'diagnostico' && <BarraProgreso pct={PCT[paso]} onAtras={retroceder} />}
       <AnimatePresence mode="wait">
         <motion.div
@@ -354,7 +354,7 @@ export function OnboardingFlow() {
                 </div>
               </div>
               <div className="mt-6 flex flex-col gap-3 px-5">
-                <label className="flex h-14 w-full cursor-pointer items-center justify-center gap-2 rounded-[var(--radius-button)] bg-[var(--accent)] text-[17px] font-semibold text-[var(--bg)] shadow-[0_8px_30px_color-mix(in_oklab,var(--accent)_25%,transparent)]">
+                <label className="flex h-14 w-full cursor-pointer items-center justify-center gap-2 rounded-[var(--radius-button)] bg-[var(--negro)] text-[17px] font-semibold text-[var(--bg)] shadow-[0_8px_30px_rgb(21_25_26/.25)]">
                   <Camera size={20} aria-hidden="true" /> Tomar o elegir una foto
                   <input type="file" accept="image/*" capture="environment" className="sr-only" onChange={(e) => alElegirArchivo(e.target.files?.[0])} />
                 </label>
@@ -425,7 +425,7 @@ export function OnboardingFlow() {
                   <p className={`mt-1 text-[14px] ${pideAceite && aceite === null ? 'font-bold text-[#A83D06]' : 'text-[var(--text-secondary)]'}`}>{pideAceite && aceite === null ? 'Elige una opción para ver tu total.' : 'La cámara no lo ve. Tócalo o dilo por voz.'}</p>
                   <div className="mt-3 grid grid-cols-3 gap-2" role="group" aria-label="Cantidad de aceite">
                     {([0, 1, 2] as const).map((n) => (
-                      <button key={n} type="button" aria-label={n === 0 ? 'Nada de aceite' : `${n} cucharada${n > 1 ? 's' : ''}, más ${ia.pregunta_aceite.una_cucharada_kcal * n} kcal`} aria-pressed={aceite === n} onClick={() => { setAceite(n); setPorVoz(false); }} className={`flex min-h-14 flex-col items-center justify-center rounded-full px-2 py-1.5 text-[15px] font-bold leading-tight ${aceite === n ? 'bg-[#C2490A] text-white shadow-[0_8px_14px_-8px_rgb(194_73_10/.8)]' : 'bg-[var(--surface-2)] text-[var(--text-primary)]'}`}>
+                      <button key={n} type="button" aria-label={n === 0 ? 'Nada de aceite' : `${n} cucharada${n > 1 ? 's' : ''}, más ${ia.pregunta_aceite.una_cucharada_kcal * n} kcal`} aria-pressed={aceite === n} onClick={() => { setAceite(n); setPorVoz(false); }} className={`flex min-h-14 flex-col items-center justify-center rounded-full px-2 py-1.5 text-[15px] font-bold leading-tight ${aceite === n ? 'bg-[var(--negro)] text-[var(--on-negro)] shadow-[0_8px_14px_-8px_rgb(21_25_26/.6)]' : 'bg-[var(--surface-2)] text-[var(--text-primary)]'}`}>
                         {n === 0 ? 'Nada' : <>{n} cda.<span className="block text-[13px] font-semibold opacity-90">+{ia.pregunta_aceite.una_cucharada_kcal * n} kcal</span></>}
                       </button>
                     ))}

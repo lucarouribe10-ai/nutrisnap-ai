@@ -62,7 +62,7 @@ export function Hero({
         style={{
           background:
             'radial-gradient(640px 420px at 100% 0%, color-mix(in oklab, var(--accent-2) 8%, transparent) 0%, transparent 55%), ' +
-            'linear-gradient(180deg, var(--tint) 0%, var(--bg) 82%)',
+            'linear-gradient(180deg, color-mix(in oklab, var(--tint) 35%, var(--bg)) 0%, var(--bg) 82%)',
         }}
       />
 

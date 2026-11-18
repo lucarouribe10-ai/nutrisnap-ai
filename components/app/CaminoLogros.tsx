@@ -10,8 +10,8 @@ const ICONOS: Record<IconoLogro, typeof Flame> = { flame: Flame, drop: Droplet, 
 const COLOR: Record<IconoLogro, string> = {
   flame: 'linear-gradient(145deg,#FF8A3D,#E8590C)',
   drop: 'linear-gradient(145deg,#FFA35C,#D9480F)',
-  flag: 'linear-gradient(145deg,#5B9576,#3D6B4F)',
-  star: 'linear-gradient(145deg,#7FB896,#3D6B4F)',
+  flag: 'linear-gradient(145deg,#8CCB74,#3F8F55)',
+  star: 'linear-gradient(145deg,#A5D96B,#4C9A3F)',
 };
 const W = 300;
 const PASO = 118;
@@ -46,7 +46,7 @@ export function CaminoLogros({ d }: { d: AppData }) {
                   <span className={`relative flex size-full items-center justify-center rounded-full ${n.ok ? 'text-white shadow-[0_6px_0_rgb(0_0_0/.2)]' : actual ? 'border-[3px] border-[#E8590C] bg-[var(--surface)] text-[#E8590C] shadow-[0_6px_0_rgb(232_89_12/.25)]' : 'border-2 border-dashed border-[color-mix(in_oklab,var(--text-secondary)_40%,transparent)] bg-[var(--surface)] text-[var(--text-secondary)]'}`} style={n.ok ? { background: COLOR[n.l.icono] } : undefined}>
                     {n.ok ? <Ic size={28} aria-hidden="true" /> : actual ? <Ic size={28} aria-hidden="true" /> : <Lock size={22} aria-hidden="true" />}
                   </span>
-                  {n.ok && <span className="absolute -bottom-1 -right-1 flex size-6 items-center justify-center rounded-full border-2 border-[var(--bg)] bg-[#2F5640] text-white"><Check size={13} strokeWidth={3.5} aria-label="Logrado" /></span>}
+                  {n.ok && <span className="absolute -bottom-1 -right-1 flex size-6 items-center justify-center rounded-full border-2 border-[var(--bg)] bg-[var(--negro)] text-[var(--lima)]"><Check size={13} strokeWidth={3.5} aria-label="Logrado" /></span>}
                 </div>
                 <p className={`mx-auto mt-2 max-w-[112px] text-[13px] font-extrabold leading-tight ${n.ok || actual ? 'text-[var(--text-primary)]' : 'text-[var(--text-secondary)]'}`}>{n.l.nombre}</p>
                 {actual && (

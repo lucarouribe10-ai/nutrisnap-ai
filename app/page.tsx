@@ -99,7 +99,7 @@ export default function Page() {
           { src: '/app-preview/primer-resultado.jpg', alt: 'Vista previa del diseño: primer resultado con el Chequeo', label: 'Tu primer resultado, aceite incluido' },
           { src: '/app-preview/hoy.jpg', alt: 'Vista previa del diseño: pantalla de hoy con tu avance a la meta', label: 'Tu avance hacia la meta' },
           { src: '/app-preview/chequeo.jpg', alt: 'Vista previa del diseño: detalle de comida con el Chequeo', label: 'Atrapa el aceite en un toque' },
-          { src: '/app-preview/escaner.jpg', alt: 'Vista previa del diseño: escáner con modos foto, código, etiqueta y voz', label: 'Escanea códigos sin pagar' },
+          { src: '/app-preview/progreso.jpg', alt: 'Vista previa del diseño: progreso con tu peso hacia la meta y tus calorías de la semana', label: 'Tu tendencia, no el número de un día' },
           { src: '/app-preview/logros.jpg', alt: 'Vista previa del diseño: logros y tu semana', label: 'Tus logros y tu semana' },
         ]}
         kicker="ASÍ SE VE POR DENTRO · DATOS DE EJEMPLO"

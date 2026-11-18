@@ -92,7 +92,7 @@ export function ChipOpcion({
 }
 
 export function BotonPrimario({ children, onClick, disabled, type = 'button', href }: { children: ReactNode; onClick?: () => void; disabled?: boolean; type?: 'button' | 'submit'; href?: string }) {
-  const cls = `flex h-14 w-full items-center justify-center gap-2 rounded-[var(--radius-button)] bg-[var(--accent)] px-4 text-center text-[17px] font-semibold text-[var(--bg)] shadow-[0_8px_30px_color-mix(in_oklab,var(--accent)_25%,transparent)] transition-opacity [touch-action:manipulation] ${disabled ? 'cursor-not-allowed opacity-50' : ''}`;
+  const cls = `flex h-14 w-full items-center justify-center gap-2 rounded-[var(--radius-button)] bg-[var(--negro)] px-4 text-center text-[17px] font-semibold text-[var(--bg)] shadow-[0_8px_30px_rgb(21_25_26/.25)] transition-opacity [touch-action:manipulation] ${disabled ? 'cursor-not-allowed opacity-50' : ''}`;
   if (href) return <motion.a whileTap={{ scale: 0.97 }} href={href} className={cls}>{children}</motion.a>;
   return (
     <motion.button whileTap={disabled ? undefined : { scale: 0.97 }} type={type} onClick={onClick} disabled={disabled} className={cls}>

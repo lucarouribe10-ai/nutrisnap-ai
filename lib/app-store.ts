@@ -98,8 +98,8 @@ export function semilla(perfil?: Perfil): AppData {
     historial: [...Array.from({ length: 12 }, (_, i) => haceDias(i)), ...Array.from({ length: 30 }, (_, i) => i + 14).filter((i) => i % 5 !== 0).map((i) => haceDias(i))],
     escudoDias: [haceDias(26)],
     comidasHoy: [
-      { id: 's1', hora: '08:10', titulo: 'Avena con huevos', nota: 'Foto', kcal: 520, proteina: 28, carbos: 58, grasas: 18, foto: '/fotos/desayuno.jpg' },
-      { id: 's2', hora: '13:05', titulo: 'Pollo con arroz y frijoles', nota: 'Foto + voz', kcal: 640, proteina: 52, carbos: 62, grasas: 18, foto: '/fotos/pollo.jpg', aceite: 120 },
+      { id: 's1', hora: '08:10', titulo: 'Tostada con huevo', nota: 'Foto', kcal: 520, proteina: 28, carbos: 58, grasas: 18, foto: '/fotos/tostada-huevo.jpg' },
+      { id: 's2', hora: '13:05', titulo: 'Poke bowl de pollo', nota: 'Foto + voz', kcal: 640, proteina: 52, carbos: 62, grasas: 18, foto: '/fotos/poke-pollo.jpg', aceite: 120 },
       { id: 's3', hora: '16:30', titulo: 'Batido de proteína', nota: 'Escáner de código', kcal: 210, proteina: 30, carbos: 12, grasas: 4, foto: '/fotos/batido.jpg' },
     ],
   };
@@ -117,7 +117,7 @@ export function iniciarReal(e: EstadoOnboarding): AppData | null {
   const plan = calcularPlan(p);
   const hoy = hoyISO();
   const r = e.resultado;
-  const comidas: Comida[] = r ? [{ id: 'primera', hora: new Date().toTimeString().slice(0, 5), titulo: r.plato, nota: 'Tu primera foto', kcal: Math.round(r.kcalBase + r.extraAceite), proteina: Math.round(r.proteina), carbos: Math.round(r.carbos), grasas: Math.round(r.grasas), foto: r.demo ? '/fotos/ensalada.jpg' : undefined, aceite: r.extraAceite || undefined }] : [];
+  const comidas: Comida[] = r ? [{ id: 'primera', hora: new Date().toTimeString().slice(0, 5), titulo: r.plato, nota: 'Tu primera foto', kcal: Math.round(r.kcalBase + r.extraAceite), proteina: Math.round(r.proteina), carbos: Math.round(r.carbos), grasas: Math.round(r.grasas), foto: r.demo ? '/fotos/bowl-garbanzos.jpg' : undefined, aceite: r.extraAceite || undefined }] : [];
   const d: AppData = {
     version: 3, demo: false, nombre: p.nombre ?? 'Tú', metaKcal: plan.kcal, metaProteina: plan.proteina,
     pesoInicial: p.peso, pesoMeta: p.meta ?? p.peso, pesos: [{ fecha: hoy, kg: p.peso }],
@@ -131,12 +131,24 @@ export function iniciarReal(e: EstadoOnboarding): AppData | null {
   return d;
 }
 
+/** Datos guardados con fotos o nombres de versiones anteriores: se actualizan a las fotos vigentes (nunca queda una imagen rota). */
+const FOTOS_VIEJAS: Record<string, { foto: string; titulo?: string }> = {
+  '/fotos/desayuno.jpg': { foto: '/fotos/tostada-huevo.jpg', titulo: 'Tostada con huevo' },
+  '/fotos/pollo.jpg': { foto: '/fotos/poke-pollo.jpg', titulo: 'Poke bowl de pollo' },
+  '/fotos/ensalada-pollo.jpg': { foto: '/fotos/poke-pollo.jpg', titulo: 'Poke bowl de pollo' },
+  '/fotos/ensalada.jpg': { foto: '/fotos/bowl-garbanzos.jpg' },
+};
+export function migrarFotos(d: AppData): AppData {
+  if (!d.comidasHoy.some((c) => c.foto && FOTOS_VIEJAS[c.foto])) return d;
+  return { ...d, comidasHoy: d.comidasHoy.map((c) => { const n = c.foto ? FOTOS_VIEJAS[c.foto] : undefined; return n ? { ...c, foto: n.foto, titulo: d.demo && n.titulo ? n.titulo : c.titulo } : c; }) };
+}
+
 export function leerApp(): AppData {
   try {
     const raw = localStorage.getItem(KEY);
     if (raw) {
       const d = JSON.parse(raw) as AppData;
-      if (d.version === 3) return pasarElTiempo(d);
+      if (d.version === 3) return migrarFotos(pasarElTiempo(d));
     }
   } catch {
     /* sigue con datos nuevos */
@@ -163,7 +175,7 @@ export function borrarTodo() {
 }
 
 /** Si pasó de día: corre la semana y aplica la regla de la racha (escudo de 1 día, sin castigo). */
-function pasarElTiempo(d: AppData): AppData {
+export function pasarElTiempo(d: AppData): AppData {
   const hoy = hoyISO();
   if (d.fecha === hoy) return d;
   const dias = Math.max(1, diasEntre(d.fecha, hoy));

@@ -81,7 +81,7 @@ export function Paywall() {
 
   return (
     <main className="mx-auto min-h-dvh max-w-[480px] bg-[var(--bg)] px-5 pb-44 pt-3 text-[var(--text-primary)] [font-family:var(--font-body)]">
-      <div className="-mx-5 -mt-3 rounded-b-[26px] px-5 pb-5 pt-3 [background:radial-gradient(220px_150px_at_90%_0%,rgb(255_255_255/.55),transparent_70%),var(--tint)]">
+      <div className="-mx-5 -mt-3 px-5 pb-5 pt-3 [background:linear-gradient(180deg,color-mix(in_oklab,var(--tint)_35%,var(--bg)),var(--bg))]">
       <button type="button" aria-label="Cerrar" onClick={cerrar} className="flex size-11 items-center justify-center rounded-full text-[var(--text-secondary)]"><X size={20} aria-hidden="true" /></button>
 
       <motion.div {...entrada(0)} className="mt-1">

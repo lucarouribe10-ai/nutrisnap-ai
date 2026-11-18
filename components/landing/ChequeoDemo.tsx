@@ -36,9 +36,9 @@ export function ChequeoDemo() {
       <div className="hairline-card rounded-[var(--radius-card)] p-4 shadow-[var(--shadow-2)]">
         <div className="flex items-center gap-3">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/fotos/ensalada.jpg" alt="Ensalada fresca" width={72} height={72} className="size-[72px] rounded-full border-[3px] border-white object-cover shadow-[0_4px_10px_-4px_rgb(36_43_36/.35)]" />
+          <img src="/fotos/bowl-garbanzos.jpg" alt="Bowl de garbanzos" width={72} height={72} className="size-[72px] rounded-full border-[3px] border-white object-cover shadow-[0_4px_10px_-4px_rgb(36_43_36/.35)]" />
           <div>
-            <p className="text-[14px] font-bold text-[var(--text-primary)]">Ensalada fresca</p>
+            <p className="text-[14px] font-bold text-[var(--text-primary)]">Bowl de garbanzos</p>
             <p className="text-[12px] font-semibold text-[var(--text-secondary)]">Almuerzo · 13:05 · foto</p>
           </div>
         </div>
@@ -72,7 +72,7 @@ export function ChequeoDemo() {
                 type="button"
                 aria-pressed={sel === i}
                 onClick={() => { setSel(i as 0 | 1 | 2); setPorVoz(false); }}
-                className={`min-h-11 flex-1 rounded-full px-1 py-2 text-center transition-colors ${sel === i ? 'bg-[#C2490A] text-white shadow-[0_8px_14px_-8px_rgb(194_73_10/.8)]' : 'bg-white text-[var(--text-primary)] hover:bg-white/70'}`}
+                className={`min-h-11 flex-1 rounded-full px-1 py-2 text-center transition-colors ${sel === i ? 'bg-[var(--negro)] text-[var(--on-negro)] shadow-[0_8px_14px_-8px_rgb(21_25_26/.6)]' : 'bg-white text-[var(--text-primary)] hover:bg-white/70'}`}
               >
                 {o.label}
               </button>
@@ -82,7 +82,7 @@ export function ChequeoDemo() {
               aria-label="Decirlo por voz"
               aria-pressed={porVoz}
               onClick={() => { setSel(1); setPorVoz(true); }}
-              className={`flex min-h-11 w-11 items-center justify-center rounded-full transition-colors ${porVoz ? 'bg-[#C2490A] text-white' : 'bg-white text-[var(--text-primary)] hover:bg-white/70'}`}
+              className={`flex min-h-11 w-11 items-center justify-center rounded-full transition-colors ${porVoz ? 'bg-[var(--negro)] text-[var(--on-negro)]' : 'bg-white text-[var(--text-primary)] hover:bg-white/70'}`}
             >
               <Mic size={15} aria-hidden="true" />
             </button>

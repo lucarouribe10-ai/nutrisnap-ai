@@ -34,21 +34,21 @@ export function Logros() {
       </CabeceraLima>
 
       {siguiente && (
-        <motion.section initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, ease: EASE }} aria-label="Tu siguiente logro" className="relative mt-3 overflow-hidden rounded-[18px] p-4 text-[#F4FAF5] shadow-[0_16px_28px_-12px_rgb(47_86_64/.8)] [background:radial-gradient(150px_110px_at_85%_10%,rgb(255_138_61/.55),transparent_70%),linear-gradient(160deg,#3F7358,#2F5640_60%,#24432F)]">
+        <motion.section initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, ease: EASE }} aria-label="Tu siguiente logro" className="caja-durazno mt-3 rounded-[28px] p-4 text-[var(--text-primary)]">
           <p className="text-[12px] font-bold uppercase tracking-[0.09em] opacity-85">Tu siguiente logro</p>
           <div className="mt-2 flex items-center gap-4">
-            <div className="relative size-20 shrink-0 [filter:drop-shadow(0_0_10px_rgb(255_138_61/.55))]">
+            <div className="relative size-20 shrink-0">
               <svg width="80" height="80" viewBox="0 0 80 80" aria-hidden="true">
-                <circle cx="40" cy="40" r={r} fill="none" strokeWidth="9" stroke="rgb(255 255 255/.2)" />
-                <motion.circle cx="40" cy="40" r={r} fill="none" strokeWidth="9" stroke="#FF8A3D" strokeLinecap="round" strokeDasharray={c} initial={{ strokeDashoffset: c }} animate={{ strokeDashoffset: c * (1 - siguiente.p.actual / siguiente.p.meta) }} transition={{ duration: 0.9, ease: EASE }} transform="rotate(-90 40 40)" />
+                <circle cx="40" cy="40" r={r} fill="none" strokeWidth="9" stroke="#FFE2C2" />
+                <motion.circle cx="40" cy="40" r={r} fill="none" strokeWidth="9" stroke="#E8590C" strokeLinecap="round" strokeDasharray={c} initial={{ strokeDashoffset: c }} animate={{ strokeDashoffset: c * (1 - siguiente.p.actual / siguiente.p.meta) }} transition={{ duration: 0.9, ease: EASE }} transform="rotate(-90 40 40)" />
               </svg>
-              <Hero size={26} className="absolute inset-0 m-auto text-[#FFD2B0]" aria-hidden="true" />
+              <Hero size={26} className="absolute inset-0 m-auto text-[#E8590C]" aria-hidden="true" />
             </div>
             <div>
               <h2 className="text-[18px] font-extrabold leading-tight [font-family:var(--font-display)]">{siguiente.l.nombre}</h2>
               <p className="text-[14px] opacity-90">{siguiente.l.como}</p>
               <p className="mt-1 text-[24px] font-extrabold leading-none tabular-nums [font-family:var(--font-display)]"><Cuenta valor={siguiente.p.actual} /> <span className="text-[14px] font-semibold opacity-85">de {siguiente.p.meta.toLocaleString('es-CO')} {siguiente.l.unidad}</span></p>
-              <p className="mt-1 text-[14px] font-bold text-[#FFD2B0]">Premio: +{siguiente.l.xp} XP</p>
+              <p className="mt-1 text-[14px] font-bold text-[#8A3A06]">Premio: +{siguiente.l.xp} XP</p>
             </div>
           </div>
         </motion.section>
@@ -56,7 +56,7 @@ export function Logros() {
 
       <CaminoLogros d={d} />
 
-      <section aria-label="Tu semana" className="hairline-card mt-5 rounded-[var(--radius-card)] p-4">
+      <section aria-label="Tu semana" className="mt-5 rounded-[var(--radius-card)] bg-[var(--surface)] p-4 shadow-[var(--shadow-2)]">
         <div className="flex flex-wrap items-start justify-between gap-2">
           <div>
             <h2 className="text-[12px] font-extrabold uppercase tracking-[0.08em] text-[var(--text-secondary)]">Grasas atrapadas esta semana</h2>

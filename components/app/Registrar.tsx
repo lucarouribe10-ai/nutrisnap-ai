@@ -78,7 +78,7 @@ export function Registrar() {
     if (aceite === null) { setPidiendo(true); return; }
     const xp = 10 + (extra > 0 ? 5 : 0);
     if (!datos) return;
-    const r = agregarComida(datos, { titulo: ia.plato, nota: ia.demo ? 'Foto (ejemplo)' : 'Foto', kcal: Math.round(ia.kcal + extra), proteina: Math.round(ia.proteina_g), carbos: Math.round(ia.carbos_g), grasas: Math.round(ia.grasas_g), foto: foto ?? '/fotos/ensalada.jpg', aceite: extra || undefined });
+    const r = agregarComida(datos, { titulo: ia.plato, nota: ia.demo ? 'Foto (ejemplo)' : 'Foto', kcal: Math.round(ia.kcal + extra), proteina: Math.round(ia.proteina_g), carbos: Math.round(ia.carbos_g), grasas: Math.round(ia.grasas_g), foto: foto ?? '/fotos/bowl-garbanzos.jpg', aceite: extra || undefined });
     actualizar(() => r.data);
     setHitos(r.hitos);
     setRacha(r.data.racha);
@@ -124,11 +124,11 @@ export function Registrar() {
             <span className="mt-1 block text-[13px] text-[var(--text-secondary)]">Escríbelo antes de tomar la foto: ayuda a la IA a acertar.</span>
           </label>
           <div className="mt-4 flex flex-col gap-3">
-            <label className="flex min-h-16 cursor-pointer items-center gap-3 rounded-[var(--radius-card)] bg-[var(--accent)] px-4 text-[var(--bg)] shadow-[0_8px_30px_color-mix(in_oklab,var(--accent)_25%,transparent)]">
+            <label className="flex min-h-16 cursor-pointer items-center gap-3 rounded-[var(--radius-card)] bg-[var(--negro)] px-4 text-[var(--bg)] shadow-[0_8px_30px_rgb(21_25_26/.25)]">
               <Camera size={24} aria-hidden="true" /><span><span className="block text-[17px] font-bold">Tomar o elegir una foto</span><span className="block text-[14px] opacity-90">Foto + Chequeo de Grasas Ocultas</span></span>
               <input type="file" accept="image/*" capture="environment" className="sr-only" onChange={(e) => alElegir(e.target.files?.[0])} />
             </label>
-            <button type="button" onClick={() => analizar(null, true, '/fotos/ensalada.jpg')} className="flex min-h-16 items-center gap-3 rounded-[var(--radius-card)] border border-[color-mix(in_oklab,var(--accent)_45%,transparent)] bg-[var(--surface)] px-4 text-left"><ImageIcon size={22} className="text-[var(--accent)]" aria-hidden="true" /><span><span className="block text-[16px] font-bold">Usar una foto de ejemplo</span><span className="block text-[14px] text-[var(--text-secondary)]">Para probar sin comida a la mano</span></span></button>
+            <button type="button" onClick={() => analizar(null, true, '/fotos/bowl-garbanzos.jpg')} className="flex min-h-16 items-center gap-3 rounded-[var(--radius-card)] border border-[color-mix(in_oklab,var(--accent)_45%,transparent)] bg-[var(--surface)] px-4 text-left"><ImageIcon size={22} className="text-[var(--accent)]" aria-hidden="true" /><span><span className="block text-[16px] font-bold">Usar una foto de ejemplo</span><span className="block text-[14px] text-[var(--text-secondary)]">Para probar sin comida a la mano</span></span></button>
             <button type="button" onClick={() => setPaso('rapido')} className="flex min-h-16 items-center gap-3 rounded-[var(--radius-card)] border border-[color-mix(in_oklab,var(--text-secondary)_28%,transparent)] bg-[var(--surface)] px-4 text-left"><PenLine size={22} className="text-[var(--accent)]" aria-hidden="true" /><span><span className="block text-[16px] font-bold">Registro rápido</span><span className="block text-[14px] text-[var(--text-secondary)]">Escribe el nombre y las calorías</span></span></button>
             {[[Barcode, 'Escanear código de barras', 'El escáner gratis llega en la siguiente etapa'], [FileText, 'Leer etiqueta nutricional', 'Disponible pronto']].map(([Ic, t, d]) => {
               const I = Ic as typeof Barcode;
@@ -160,18 +160,25 @@ export function Registrar() {
 
       {paso === 'resultado' && ia && (
         <div className="px-5 pt-4">
-          <div className="hairline-card flex items-center gap-3 rounded-[var(--radius-card)] p-3 shadow-[var(--shadow-1)]">
+          <div className="caja-lima rounded-[32px] px-5 pb-8 pt-5 text-center">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            {foto && <img src={foto} alt={ia.plato} width={56} height={56} className="size-14 rounded-[12px] object-cover" />}
-            <div><p className="text-[17px] font-bold">{ia.plato}</p><p className="text-[14px] text-[var(--text-secondary)]">{ia.demo ? 'Ejemplo ilustrativo (estimado)' : 'Estimado con margen de error'}</p></div>
+            {foto && <img src={foto} alt={ia.plato} width={176} height={176} className="mx-auto size-44 rounded-full border-[6px] border-white object-cover shadow-[0_22px_34px_-14px_rgb(21_25_26/.55)]" />}
+            <p className="mt-4 text-[22px] font-extrabold leading-tight tracking-[-0.02em] [font-family:var(--font-display)]">{ia.plato}</p>
+            <p className="mt-0.5 text-[14px] font-semibold text-[var(--accent)]">{ia.demo ? 'Ejemplo ilustrativo (estimado)' : 'Estimado con margen de error'}</p>
           </div>
-          <div className="panel-campo mt-3 rounded-[var(--radius-card)] p-4">
+          <ul className="-mt-4 mb-3 grid grid-cols-3 gap-2 px-1" aria-label="Macros de este plato">
+            {[['Proteína', ia.proteina_g, 'var(--lima-2)'], ['Carbos', ia.carbos_g, '#BCE0F2'], ['Grasas', ia.grasas_g, '#FFD3A3']].map(([n, v, f]) => (
+              <li key={n as string} className="rounded-[20px] border-2 bg-[var(--surface)] px-2 py-2.5 text-center" style={{ borderColor: f as string }}>
+                <p className="text-[12px] font-bold text-[var(--text-secondary)]">{n as string}</p>
+                <p className="text-[18px] font-extrabold tabular-nums tracking-[-0.03em] [font-family:var(--font-display)]">{Math.round(v as number)} g</p>
+              </li>
+            ))}
+          </ul>
+          <div className="caja-durazno rounded-[var(--radius-card)] p-4">
             <div className="flex items-end justify-between">
-              <div><p className="text-[12px] font-semibold text-[var(--text-secondary)]">Solo la foto</p><p className={`text-[24px] font-extrabold tabular-nums [font-family:var(--font-display)] ${aceite !== null && extra > 0 ? 'text-[var(--text-secondary)] line-through decoration-2' : ''}`}>{Math.round(ia.kcal)}</p></div>
-              <div className="text-right"><p className="text-[12px] font-semibold text-[var(--accent)]">Con el Chequeo</p><p aria-live="polite" className="text-[40px] font-extrabold leading-none tabular-nums [font-family:var(--font-display)]">{aceite === null ? <span className="text-[var(--text-secondary)]">?</span> : Math.round(ia.kcal + extra)}<span className="ml-1 text-[14px] font-semibold text-[var(--text-secondary)]">kcal</span></p></div>
+              <div><p className="text-[12px] font-bold text-[var(--text-secondary)]">Solo la foto</p><p className={`text-[24px] font-extrabold tabular-nums [font-family:var(--font-display)] ${aceite !== null && extra > 0 ? 'text-[var(--text-secondary)] line-through decoration-2' : ''}`}>{Math.round(ia.kcal)}</p></div>
+              <div className="text-right"><p className="text-[12px] font-bold text-[#8A3A06]">Con el Chequeo</p><p aria-live="polite" className="text-[40px] font-extrabold leading-none tabular-nums tracking-[-0.04em] [font-family:var(--font-display)]">{aceite === null ? <span className="text-[var(--text-secondary)]">?</span> : Math.round(ia.kcal + extra)}<span className="ml-1 text-[14px] font-semibold text-[var(--text-secondary)]">kcal</span></p></div>
             </div>
-            <div className="tick-escala mt-3" aria-hidden="true" />
-            <p className="mt-2 text-[14px] text-[var(--text-secondary)]">Proteína {Math.round(ia.proteina_g)} g · Carbos {Math.round(ia.carbos_g)} g · Grasas {Math.round(ia.grasas_g)} g</p>
           </div>
           {!ia.demo && imagenActual && (
             <div className="mt-3 rounded-[var(--radius-card)] border border-[color-mix(in_oklab,var(--text-secondary)_24%,transparent)] bg-[var(--surface)] p-3">
@@ -208,7 +215,7 @@ export function Registrar() {
         <motion.div key={fases[fase]} initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.3, ease: EASE }} className="flex min-h-[80dvh] flex-col px-5 pt-8 text-center">
           {fases[fase] === 'resumen' && (
             <div className="flex flex-1 flex-col">
-              <motion.span initial={{ scale: 0.4 }} animate={{ scale: 1 }} transition={{ type: 'spring', stiffness: 380, damping: 14 }} className="mx-auto flex size-20 items-center justify-center rounded-full bg-[var(--accent)] text-[var(--bg)]"><Check size={40} strokeWidth={3.5} aria-hidden="true" /></motion.span>
+              <motion.span initial={{ scale: 0.4 }} animate={{ scale: 1 }} transition={{ type: 'spring', stiffness: 380, damping: 14 }} className="mx-auto flex size-20 items-center justify-center rounded-full bg-[var(--negro)] text-[var(--lima)]"><Check size={40} strokeWidth={3.5} aria-hidden="true" /></motion.span>
               <p className="mt-5 text-[28px] font-extrabold [font-family:var(--font-display)]">Guardado en tu día</p>
               <ul className="mt-6 grid grid-cols-3 gap-2" aria-label="Resumen">
                 {[
