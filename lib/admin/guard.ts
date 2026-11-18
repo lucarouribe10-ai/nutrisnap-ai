@@ -11,8 +11,10 @@ export async function requireAdmin() {
     const supabase = await createClient();
     const { data, error } = await supabase.auth.getClaims();
     const sub = data?.claims?.sub;
-    if (error || !sub) notFound();
+    if (error || !sub) { console.warn('[admin] 404: sin sesión válida en el servidor'); notFound(); }
     const { data: esAdmin, error: err2 } = await supabase.rpc('es_admin');
+    if (err2) console.warn('[admin] 404: la consulta es_admin falló:', err2.code ?? err2.message);
+    else if (esAdmin !== true) console.warn('[admin] 404: la cuenta no es administradora');
     if (err2 || esAdmin !== true) notFound();
     return { id: sub as string, email: (data?.claims as { email?: string } | undefined)?.email ?? null, supabase };
   } catch (e) {
