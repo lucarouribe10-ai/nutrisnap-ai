@@ -3,6 +3,7 @@ import { AlertTriangle, CheckCircle2, Cpu, Users, Wallet, Activity, TrendingUp }
 import { requireAdmin } from '@/lib/admin/guard';
 import { dinero, inicioDeMes, usd } from '@/lib/admin/formato';
 import { Heroe, SinDatos, Tarjeta } from '@/components/admin/Tarjeta';
+import { Entrada } from '@/components/admin/Entrada';
 
 type Resumen = { usuarios_total: number; nuevos_7d: number; activos_7d: number; activos_30d: number; con_datos: number; con_acceso: number; eventos_24h: number; errores_abiertos: number };
 
@@ -39,10 +40,10 @@ async function Contenido() {
         <p className="text-[15px] text-[var(--text-secondary)]">Lo que más te importa, de un vistazo.</p>
       </div>
 
-      <div role="status" className={`flex items-start gap-3 rounded-[var(--radius-card)] p-4 ${aviso.ok ? 'bg-[var(--lima)]' : 'bg-[var(--durazno)]'}`}>
+      <Entrada i={0} className={`flex items-start gap-3 rounded-[var(--radius-card)] p-4 ${aviso.ok ? 'bg-[var(--lima)]' : 'bg-[var(--durazno)]'}`}>
         {aviso.ok ? <CheckCircle2 size={22} className="mt-0.5 shrink-0 text-[var(--accent)]" aria-hidden="true" /> : <AlertTriangle size={22} className="mt-0.5 shrink-0 text-[#A83D06]" aria-hidden="true" />}
-        <div><p className="text-[16px] font-bold">{aviso.titulo}</p>{aviso.detalle && <p className="mt-0.5 text-[14px] text-[var(--text-secondary)]">{aviso.detalle}</p>}</div>
-      </div>
+        <div role="status"><p className="text-[16px] font-bold">{aviso.titulo}</p>{aviso.detalle && <p className="mt-0.5 text-[14px] text-[var(--text-secondary)]">{aviso.detalle}</p>}</div>
+      </Entrada>
 
       <Tarjeta titulo="Ganancia real de este mes" ayuda="Lo que te queda después de pagar Hotmart, comisiones, impuestos, IA, servidores y correos. Se calcula cuando haya ventas registradas." icono={<Wallet size={18} />}>
         {ventas.length === 0
