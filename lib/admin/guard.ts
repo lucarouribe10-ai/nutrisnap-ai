@@ -23,3 +23,18 @@ export async function requireAdmin() {
     notFound();
   }
 }
+
+/** Variante para acciones de formulario: devuelve null (en vez de 404) cuando la persona no es administradora. */
+export async function adminOrNull() {
+  try {
+    const supabase = await createClient();
+    const { data, error } = await supabase.auth.getClaims();
+    const sub = data?.claims?.sub;
+    if (error || !sub) return null;
+    const { data: esAdmin, error: err2 } = await supabase.rpc('es_admin');
+    if (err2 || esAdmin !== true) return null;
+    return { id: sub as string, email: (data?.claims as { email?: string } | undefined)?.email ?? null };
+  } catch {
+    return null;
+  }
+}
