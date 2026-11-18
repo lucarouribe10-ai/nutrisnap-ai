@@ -1,5 +1,6 @@
 'use client';
 
+import { Vista } from '@/components/Vista';
 import { CreditCard, PenLine, ScanEye, Scale, Timer } from 'lucide-react';
 import { Hero } from '@/components/landing/Hero';
 import { Problema } from '@/components/landing/Problema';
@@ -92,6 +93,8 @@ export default function Page() {
       />
 
       <CtaFila label={CTA_LABEL} href={CTA_HREF} nota="Sin tarjeta para tu primera foto · 3 días de prueba después" />
+
+      <Vista evento="landing_vista" />
 
       <AppPorDentro
         tituloMarked="Tu día, [acento]claro de un vistazo[/acento]"

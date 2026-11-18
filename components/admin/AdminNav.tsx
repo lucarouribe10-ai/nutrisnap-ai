@@ -6,6 +6,9 @@ import { usePathname } from 'next/navigation';
 const PESTANAS = [
   { href: '/admin', texto: 'Resumen', lista: true },
   { href: '/admin/usuarios', texto: 'Usuarios', lista: true },
+  { href: '/admin/salud', texto: 'Salud', lista: true },
+  { href: '/admin/uso', texto: 'Uso', lista: true },
+  { href: '/admin/ia', texto: 'Costo de IA', lista: true },
 ] as const;
 
 /** Barra de pestañas del panel. Solo aparecen las secciones ya construidas: cada fase suma la suya (nada que parezca botón y no haga nada). */

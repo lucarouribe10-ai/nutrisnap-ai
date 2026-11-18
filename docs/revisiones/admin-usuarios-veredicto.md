@@ -1,9 +1,9 @@
 # VEREDICTO revisor-visual — admin-usuarios
-Fecha: 2026-11-18 12:00
-Screenshot: docs/revisiones/admin-usuarios-1440.png (escritorio; NO hay captura a 375px, docs/revisiones/admin-usuarios-375.png no existe)
-Usabilidad: 29/40
-Craft: 12/20
+Fecha: 2026-11-18 12:50
+Screenshot: docs/revisiones/admin-usuarios-375.png
+Usabilidad: 28/40
+Craft: 13/20
 Copy (si vende): N-A
 Fidelidad (si hubo referencia): N-A
 Veredicto: NO LISTA
-Top defectos: 1) Sin movimiento en toda la pantalla (cero entrada escalonada, cero feedback de tap, cero transiciones, sin reduced-motion; los botones por fila solo se desactivan sin indicador de carga). 2) Jerarquía de acciones: el formulario de alta (4 campos) va antes que la lista y empuja a las personas bajo el pliegue; 4 botones negros del mismo peso (Agregar, Buscar, Extender/Dar acceso por fila) compiten, sin acción primaria clara. 3) 5 de 7 pestañas son "PRONTO" (ruido y más de 4 opciones); además la lista no tiene filtros por estado ni paginación (regla de más de 8-10 ítems). 4) El mensaje de éxito queda fijo entre los campos y el botón tras reiniciar el formulario; "Quitar acceso" usa confirm() nativo del navegador y no hay deshacer; el admin aparece como "Sin nombre". 5) Falta la captura a 375px: tabs con scroll horizontal, rejilla de 2 columnas y formulario apilado sin verificar.
+Top defectos: (1) Filtro sin resultados (p. ej. «Vencidas») muestra «Todavía no hay cuentas.» aunque haya cuentas: mensaje falso, sin salida (app/admin/usuarios/page.tsx línea 34). (2) Craft 13/20: identidad ownable casi ausente en el panel (solo borde lima + pastillas; sin isotipo/detalle firma) y movimiento limitado a entrada escalonada + tap (chips de filtro sin feedback de tap, sin transición entre pestañas). (3) Tarjeta repite información («Origen: Alta manual» y «Motivo: Alta manual») y a la administradora se le muestra «Sin acceso» + «Dar acceso 30 días», confuso. (4) Errores con jerga y sin solución: «Falta configurar la clave secreta del servidor», «Datos no válidos», «Sin datos:». (5) Pestañas y filtros se ven idénticos (dos filas de píldoras iguales), el botón «Buscar» con borde grueso de 2px compite con la acción principal, y la escala tipográfica usa ~8 tamaños (11 a 28 px) en vez de máx. 3-4.

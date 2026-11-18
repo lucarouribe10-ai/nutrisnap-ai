@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
 import { BarChart3, Camera, Home, Trophy, User } from 'lucide-react';
 import type { ReactNode } from 'react';
+import { track } from '@/lib/eventos';
 
 const TABS = [
   { href: '/app', label: 'Hoy', icon: Home },
@@ -19,6 +20,13 @@ const TABS = [
 export function AppShell({ children }: { children: ReactNode }) {
   const ruta = usePathname();
   const [offline, setOffline] = useState(false);
+  useEffect(() => {
+    try {
+      if (sessionStorage.getItem('ns_ses_ini')) return;
+      sessionStorage.setItem('ns_ses_ini', '1');
+      track('sesion_iniciada');
+    } catch { /* sin almacenamiento: no se mide */ }
+  }, []);
   useEffect(() => {
     const a = () => setOffline(!navigator.onLine);
     a();

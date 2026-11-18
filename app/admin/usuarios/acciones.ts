@@ -26,7 +26,7 @@ async function auditar(adm: ReturnType<typeof createAdminClient>, adminId: strin
 export async function altaManual(_prev: Resultado, formData: FormData): Promise<Resultado> {
   const quien = await adminOrNull();
   if (!quien) return NO_AUTORIZADO;
-  if (!adminDisponible()) return { ok: false, mensaje: 'Falta configurar la clave secreta del servidor.' };
+  if (!adminDisponible()) return { ok: false, mensaje: 'El panel no puede guardar cambios todavía. Avisa a soporte técnico para completar la conexión.' };
   const p = Alta.safeParse({ email: formData.get('email'), nombre: formData.get('nombre'), dias: formData.get('dias'), motivo: formData.get('motivo') || undefined });
   if (!p.success) return { ok: false, mensaje: p.error.issues[0]?.message ?? 'Revisa los datos.' };
   const { email, nombre, dias, motivo } = p.data;
@@ -41,12 +41,12 @@ export async function altaManual(_prev: Resultado, formData: FormData): Promise<
     const ya = /already|exists|registered/i.test(crear.error?.message ?? '') || crear.error?.code === 'email_exists';
     if (!ya) {
       console.error('[admin] alta manual falló:', crear.error?.code ?? crear.error?.message);
-      return { ok: false, mensaje: 'No se pudo crear la cuenta. Intenta de nuevo.' };
+      return { ok: false, mensaje: 'No se pudo crear la cuenta. Revisa el correo e intenta de nuevo; si sigue igual, avisa a soporte técnico.' };
     }
     nueva = false;
     const lista = await adm.auth.admin.listUsers({ page: 1, perPage: 200 });
     id = lista.data?.users.find((u) => u.email?.toLowerCase() === email)?.id ?? null;
-    if (!id) return { ok: false, mensaje: 'Ese correo ya existe pero no pude encontrarlo. Búscalo en la lista.' };
+    if (!id) return { ok: false, mensaje: 'Ese correo ya tiene cuenta, pero no aparece en la búsqueda rápida. Búscalo en la lista de abajo.' };
   }
 
   const hasta = new Date(Date.now() + dias * DIA).toISOString();
@@ -54,7 +54,7 @@ export async function altaManual(_prev: Resultado, formData: FormData): Promise<
   const acceso = await adm.from('entitlements').upsert({ user_id: id, plan: 'cortesia', estado: 'activo', renueva_el: hasta, motivo: motivo ?? 'Alta manual', otorgado_por: quien.id }, { onConflict: 'user_id' });
   if (perfil.error || acceso.error) {
     console.error('[admin] alta manual: no se pudo guardar perfil/acceso:', perfil.error?.code, acceso.error?.code);
-    return { ok: false, mensaje: 'La cuenta se creó pero no se pudo dar el acceso. Revísala en la lista.' };
+    return { ok: false, mensaje: 'La cuenta se creó, pero no se pudo dar el acceso. Búscala en la lista y toca «Dar acceso 30 días».' };
   }
   await auditar(adm, quien.id, nueva ? 'alta_manual' : 'dar_acceso', email, { dias, motivo: motivo ?? null, nueva });
   revalidatePath('/admin/usuarios');
@@ -68,9 +68,9 @@ const Cambio = z.object({ id: z.string().uuid(), accion: z.enum(['dar', 'extende
 export async function cambiarAcceso(_prev: Resultado, formData: FormData): Promise<Resultado> {
   const quien = await adminOrNull();
   if (!quien) return NO_AUTORIZADO;
-  if (!adminDisponible()) return { ok: false, mensaje: 'Falta configurar la clave secreta del servidor.' };
+  if (!adminDisponible()) return { ok: false, mensaje: 'El panel no puede guardar cambios todavía. Avisa a soporte técnico para completar la conexión.' };
   const p = Cambio.safeParse({ id: formData.get('id'), accion: formData.get('accion'), dias: formData.get('dias') || 30 });
-  if (!p.success) return { ok: false, mensaje: 'Datos no válidos.' };
+  if (!p.success) return { ok: false, mensaje: 'No se pudo leer lo que enviaste. Recarga la página e intenta de nuevo.' };
   const { id, accion, dias } = p.data;
 
   const adm = createAdminClient();
@@ -86,7 +86,7 @@ export async function cambiarAcceso(_prev: Resultado, formData: FormData): Promi
   const { error } = await adm.from('entitlements').upsert(fila, { onConflict: 'user_id' });
   if (error) {
     console.error('[admin] cambiar acceso falló:', error.code);
-    return { ok: false, mensaje: 'No se pudo guardar el cambio. Intenta de nuevo.' };
+    return { ok: false, mensaje: 'No se pudo guardar el cambio. Recarga la página e intenta de nuevo.' };
   }
   await auditar(adm, quien.id, accion === 'quitar' ? 'quitar_acceso' : accion === 'extender' ? 'extender_acceso' : 'dar_acceso', id, { dias: accion === 'quitar' ? null : dias });
   revalidatePath('/admin/usuarios');

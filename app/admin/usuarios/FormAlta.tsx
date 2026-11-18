@@ -31,7 +31,7 @@ export function FormAlta() {
           <UserPlus size={18} aria-hidden="true" /> Agregar a una persona
         </button>
       )}
-      {aviso && !abierto && <p role={aviso.ok ? 'status' : 'alert'} className={`mt-3 rounded-[16px] p-3 text-[14px] font-medium ${aviso.ok ? 'bg-[var(--lima)] text-[var(--text-primary)]' : 'bg-[var(--durazno)] text-[#8A3A06]'}`}>{aviso.mensaje}</p>}
+      {aviso && !abierto && <p role={aviso.ok ? 'status' : 'alert'} className={`mt-3 animate-[aparece_.3s_ease-out] motion-reduce:animate-none rounded-[16px] p-3 text-[14px] font-medium ${aviso.ok ? 'bg-[var(--lima)] text-[var(--text-primary)]' : 'bg-[var(--durazno)] text-[#8A3A06]'}`}>{aviso.mensaje}</p>}
       {abierto && (
         <form ref={formRef} action={accion} className="hairline-card rounded-[var(--radius-card)] p-4" aria-label="Agregar una persona">
           <div className="flex items-start justify-between gap-3">

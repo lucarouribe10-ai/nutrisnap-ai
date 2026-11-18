@@ -30,3 +30,5 @@
 .caja-lima { background: var(--surface); border: 2px solid var(--lima-2); }
 .caja-durazno { background: var(--surface); border: 2px solid #FFD3A3; }
 .caja-cielo { background: var(--surface); border: 2px solid #BCE0F2; }
+
+@keyframes aparece { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
