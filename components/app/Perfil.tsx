@@ -51,7 +51,7 @@ export function Perfil() {
 
       <section aria-label="Tu plan" className="caja-lima mt-4 rounded-[var(--radius-card)] p-4">
         <p className="text-[12px] font-bold uppercase tracking-[0.08em] text-[var(--text-secondary)]">Tu plan</p>
-        <p className="mt-1 text-[17px] font-bold">Prueba de 3 días · plan anual</p>
+        <p className="mt-1 text-[17px] font-bold">Prueba de 7 días · plan anual</p>
         <p className="mt-1 text-[14px] text-[var(--text-secondary)]">Sin cobro hoy. Te avisamos 1 día antes. Cancelas cuando quieras y tienes 7 días de reembolso.</p>
         <p className="mt-2 rounded-[14px] bg-[var(--surface-2)] p-2 text-center text-[13px] text-[var(--text-secondary)]">Vista previa: el estado real de tu suscripción se conecta con Hotmart.</p>
       </section>

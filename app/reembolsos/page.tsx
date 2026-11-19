@@ -13,7 +13,7 @@ export default function Page() {
           cuerpo: (
             <>
               <p>Si te cobramos y no te sirve, escribe un correo dentro de los <strong>7 días siguientes al cobro</strong> y te devolvemos el dinero completo, sin preguntas.</p>
-              <Lista items={['Durante la prueba de 3 días no se cobra nada: si cancelas antes del primer cobro, no pagas.', 'Te avisamos por correo 1 día antes del primer cobro, con la fecha y el monto.', 'Esta garantía aplica al primer cobro de cada plan, mensual o anual.']} />
+              <Lista items={['Durante la prueba de 7 días no se cobra nada: si cancelas antes del primer cobro, no pagas.', 'Te avisamos por correo 1 día antes del primer cobro, con la fecha y el monto.', 'Esta garantía aplica al primer cobro de cada plan, mensual o anual.']} />
             </>
           ),
         },

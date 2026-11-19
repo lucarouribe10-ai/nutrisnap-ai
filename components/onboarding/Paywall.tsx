@@ -46,7 +46,7 @@ export function Paywall() {
     }
     setEstado(e);
     setPlan(calcularPlan(e.perfil));
-    setFechas({ hoy: fecha(suma(0)), aviso: fecha(suma(2)), cobro: fecha(suma(3)) });
+    setFechas({ hoy: fecha(suma(0)), aviso: fecha(suma(6)), cobro: fecha(suma(7)) });
     track('paywall_visto');
   }, [router]);
 
@@ -171,7 +171,7 @@ export function Paywall() {
       </motion.section>
 
       <motion.section {...entrada(3)} aria-label="Cómo funciona tu prueba" className="hairline-card mt-5 rounded-[var(--radius-card)] p-4">
-        <h2 className="text-[14px] font-bold uppercase tracking-[0.08em] text-[var(--text-secondary)]">Así funciona tu prueba de 3 días</h2>
+        <h2 className="text-[14px] font-bold uppercase tracking-[0.08em] text-[var(--text-secondary)]">Así funciona tu prueba de 7 días</h2>
         <ol className="relative mt-3 flex flex-col gap-4 pl-7">
           <motion.span aria-hidden="true" initial={reduce ? false : { scaleY: 0 }} animate={{ scaleY: 1 }} transition={{ duration: 0.6, delay: 0.3, ease: EASE }} style={{ originY: 0 }} className="absolute left-[7px] top-2 h-[calc(100%-1.5rem)] w-[2px] bg-[color-mix(in_oklab,var(--accent)_40%,transparent)]" />
           {nodos.map(([t, d, lleno]) => (
@@ -191,7 +191,7 @@ export function Paywall() {
 
       <PieFijo>
         {errorNav && <p role="alert" className="mb-2 text-center text-[14px] font-semibold text-[var(--durazno-tinta)]">No pudimos continuar. Revisa tu conexión e intenta de nuevo.</p>}
-        <BotonPrimario onClick={empezar} disabled={enviando}>{enviando ? 'Abriendo…' : 'Empezar mis 3 días gratis'}</BotonPrimario>
+        <BotonPrimario onClick={empezar} disabled={enviando}>{enviando ? 'Abriendo…' : 'Empezar mis 7 días gratis'}</BotonPrimario>
         <motion.p key={elegido} initial={reduce ? false : { opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.2 }} aria-live="polite" className="mt-2 text-center text-[14px] text-[var(--text-secondary)]">Hoy US$0 · luego {monto}/{periodo} el {fechas.cobro}</motion.p>
         <p className="mt-0.5 flex items-center justify-center gap-1.5 text-center text-[14px] font-semibold"><ShieldCheck size={15} className="shrink-0 text-[var(--accent)]" aria-hidden="true" /> Garantía de Cero Sorpresas · 7 días de reembolso</p>
         <button type="button" onClick={cerrar} className="mx-auto mt-0.5 flex min-h-11 items-center px-3 text-[14px] font-semibold text-[var(--text-secondary)] underline underline-offset-4">Ahora no, seguir con el escáner gratis</button>

@@ -35,7 +35,7 @@ export default function Page() {
           titulo: 'Prueba gratis, renovación y cancelación',
           cuerpo: (
             <Lista items={[
-              <>La suscripción empieza con 3 días de prueba gratis. Al terminar, se cobra el plan que elegiste y <strong>se renueva automáticamente</strong> cada mes o cada año hasta que canceles.</>,
+              <>La suscripción empieza con 7 días de prueba gratis. Al terminar, se cobra el plan que elegiste y <strong>se renueva automáticamente</strong> cada mes o cada año hasta que canceles.</>,
               'Te avisamos por correo 1 día antes del primer cobro, con la fecha y el monto.',
               'Puedes cancelar cuando quieras, sin llamar a nadie, desde tu cuenta de Hotmart (el enlace está en el correo de compra). Si cancelas, conservas el acceso hasta el final del periodo ya pagado. Si no puedes, escríbenos y lo cancelamos por ti.',
               'La garantía y los reembolsos están en la página de Reembolsos.',

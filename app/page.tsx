@@ -36,7 +36,7 @@ export default function Page() {
         ctaHref={CTA_HREF}
         socialProof={
           <ul className="mx-auto flex w-fit flex-col gap-1 text-left text-[14px]">
-            {['Garantía de Cero Sorpresas', 'Prueba de 3 días, aviso antes de cobrar', 'Reembolso de 7 días, sin preguntas'].map((t) => (
+            {['Garantía de Cero Sorpresas', 'Prueba de 7 días, aviso antes de cobrar', 'Reembolso de 7 días, sin preguntas'].map((t) => (
               <li key={t} className="flex items-center gap-2">
                 <ShieldCheck size={16} strokeWidth={2.2} aria-hidden="true" className="shrink-0 text-[var(--accent)]" />
                 <span>{t}</span>
@@ -93,7 +93,7 @@ export default function Page() {
         }}
       />
 
-      <CtaFila label={CTA_LABEL} href={CTA_HREF} nota="Sin tarjeta para tu primera foto · 3 días de prueba después" />
+      <CtaFila label={CTA_LABEL} href={CTA_HREF} nota="Sin tarjeta para tu primera foto · 7 días de prueba después" />
 
       <Vista evento="landing_vista" />
 
@@ -113,7 +113,7 @@ export default function Page() {
 
       <Oferta
         tituloMarked="Empieza gratis. Sigue por [acento]US$7.50 al mes[/acento]"
-        trialDias={3}
+        trialDias={7}
         aviso="Acceso anticipado: estamos terminando la app y estás entre los primeros en probarla."
         anual={{
           nombre: 'Anual',
@@ -160,7 +160,7 @@ export default function Page() {
           { pregunta: '¿La IA no me inventará las calorías?', respuestaMarked: 'Es una estimación y te lo decimos. Por eso el [b]Chequeo de Grasas Ocultas[/b] pregunta lo que la cámara no ve y tú ajustas en segundos.' },
           { pregunta: '¿Me van a cobrar por sorpresa?', respuestaMarked: 'No. Te avisamos 1 día antes por correo y en la app, cancelas cuando quieras y tienes [b]7 días de reembolso[/b].' },
           { pregunta: '¿Entiende mis comidas y mi forma de hablar?', respuestaMarked: 'Está pensada para el español de Latinoamérica. Si se equivoca con un plato, lo corriges en segundos y [b]aprende tus costumbres[/b].' },
-          { pregunta: '¿Y si la dejo a los 3 días?', respuestaMarked: 'Por eso hay racha, puntos y logros que muestran tu avance, sin presión. Si un día falta, un escudo de racha la protege.' },
+          { pregunta: '¿Y si la dejo a los pocos días?', respuestaMarked: 'Por eso hay racha, puntos y logros que muestran tu avance, sin presión. Si un día falta, un escudo de racha la protege.' },
           { pregunta: '¿El escáner de códigos es gratis?', respuestaMarked: 'Sí, sin límite de tiempo. La foto con chequeo, la voz y el historial son de pago.' },
           { pregunta: '¿Qué datos guardan de mí?', respuestaMarked: 'Tu comida, tu peso y tus metas, para calcular tu avance. [b]No vendemos tus datos[/b]. Las fotos no se guardan; solo una miniatura.' },
         ]}
@@ -171,8 +171,8 @@ export default function Page() {
         futurePacingMarked="Hoy tomas la foto, tocas «1 cucharada» y sigues con tu vida. Unos segundos, sin estrés."
         ctaLabel={CTA_LABEL}
         ctaHref={CTA_HREF}
-        recap="3 días gratis · Aviso antes de cobrar · Reembolso de 7 días"
-        psMarked="PS: NutriSnap atrapa las grasas ocultas que tu foto no ve. Empiezas con 3 días gratis, sin cobros sorpresa."
+        recap="7 días gratis · Aviso antes de cobrar · Reembolso de 7 días"
+        psMarked="PS: NutriSnap atrapa las grasas ocultas que tu foto no ve. Empiezas con 7 días gratis, sin cobros sorpresa."
       />
 
       <FooterLegal

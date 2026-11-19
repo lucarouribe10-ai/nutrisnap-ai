@@ -20,7 +20,7 @@ const PASOS: Record<string, string> = {
   chequeo_respondido: 'Respondieron el Chequeo de Grasas Ocultas',
   plan_construido: 'Vieron su plan',
   paywall_visto: 'Llegaron a la pantalla de planes',
-  checkout_iniciado: 'Tocaron «Empezar mis 3 días gratis»',
+  checkout_iniciado: 'Tocaron «Empezar mis 7 días gratis»',
   login_exitoso: 'Entraron con su código',
 };
 

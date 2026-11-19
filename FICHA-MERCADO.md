@@ -11,7 +11,7 @@
 ## 4. PRUEBA Y GARANTÍA (plazos que la pasarela permite DE VERDAD)
 - Plazos de prueba que admite Hotmart: NO VERIFICADO — se confirma al crear la cuenta (18).
 - Plazos de garantía que admite Hotmart: NO VERIFICADO — se confirma al crear la cuenta; el plazo de 7 días es el estándar de la plataforma.
-- Prueba elegida: 3 días · Garantía elegida: 7 días
+- Prueba elegida: 7 días (decisión final 2026-11-18) · Garantía elegida: 7 días (⚠️ no supera la prueba; ver ESTADO)
 - Regla dura (18): garantía 7 > prueba 3 → SÍ. Decidido por el usuario 2026-11-04 (opción 1 de 3).
 - ¿Desde cuándo cuenta la garantía (adhesión o primer cobro)? NO CONFIRMADO → el copy dice "reembolso de 7 días" sin fijar la fecha de inicio. Con prueba de 3 días, aun contando desde la adhesión quedan 4 días de cobertura tras el primer cobro.
 ## 5. Pendientes de verificación

@@ -7,7 +7,7 @@ const figtree = Figtree({ variable: "--font-figtree", subsets: ["latin"], weight
 
 export const metadata: Metadata = {
   title: "NutriSnap AI — Tu foto no ve el aceite. NutriSnap sí lo pregunta",
-  description: "Registra tus comidas en 3 segundos con foto, voz y escáner. El Chequeo de Grasas Ocultas atrapa lo que la cámara no ve. 3 días gratis y aviso antes de cobrar.",
+  description: "Registra tus comidas en 3 segundos con foto, voz y escáner. El Chequeo de Grasas Ocultas atrapa lo que la cámara no ve. 7 días gratis y aviso antes de cobrar.",
 };
 export const viewport: Viewport = { themeColor: "#F6F8F1", width: "device-width", initialScale: 1 };
 
