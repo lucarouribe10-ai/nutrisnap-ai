@@ -34,6 +34,23 @@ async function comprimir(file: File): Promise<string> {
   return c.toDataURL('image/jpeg', 0.8);
 }
 
+/** Miniatura cuadrada de ~112 px (la foto original no se guarda). Si algo falla devuelve undefined: la miniatura es un detalle, nunca bloquea el recorrido. */
+async function hacerMiniatura(dataUrl: string): Promise<string | undefined> {
+  try {
+    const img = new Image();
+    img.src = dataUrl;
+    await img.decode();
+    const lado = Math.min(img.width, img.height);
+    const c = document.createElement('canvas');
+    c.width = 112;
+    c.height = 112;
+    c.getContext('2d')!.drawImage(img, (img.width - lado) / 2, (img.height - lado) / 2, lado, lado, 0, 0, 112, 112);
+    return c.toDataURL('image/jpeg', 0.7);
+  } catch {
+    return undefined;
+  }
+}
+
 const num = (s: string) => (s.trim() === '' ? undefined : Number(s.replace(',', '.')));
 
 export function OnboardingFlow() {
@@ -43,6 +60,7 @@ export function OnboardingFlow() {
   const [perfil, setPerfil] = useState<Perfil>({});
   const [campos, setCampos] = useState({ edad: '', estatura: '', peso: '', meta: '' });
   const [foto, setFoto] = useState<{ url: string; demo: boolean } | null>(null);
+  const [mini, setMini] = useState<string | undefined>(undefined);
   const [ia, setIa] = useState<RespuestaIA | null>(null);
   const [errorIA, setErrorIA] = useState<false | 'ia' | 'nocomida'>(false);
   const [intentado, setIntentado] = useState(false);
@@ -126,6 +144,8 @@ export function OnboardingFlow() {
     try {
       const url = await comprimir(f);
       setFoto({ url, demo: false });
+      setMini(undefined);
+      void hacerMiniatura(url).then(setMini);
       void analizar(url, false);
     } catch {
       setErrorIA('ia');
@@ -134,6 +154,7 @@ export function OnboardingFlow() {
   };
   const usarEjemplo = () => {
     setFoto({ url: '/fotos/bowl-garbanzos.jpg', demo: true });
+    setMini('/fotos/bowl-garbanzos.jpg');
     void analizar(null, true);
   };
 
@@ -175,7 +196,7 @@ export function OnboardingFlow() {
       setPideAceite(true);
       return;
     }
-    const res: ResultadoFoto = { plato: ia.plato, kcalBase: ia.kcal, proteina: ia.proteina_g, carbos: ia.carbos_g, grasas: ia.grasas_g, extraAceite: extra, demo: ia.demo };
+    const res: ResultadoFoto = { plato: ia.plato, kcalBase: ia.kcal, proteina: ia.proteina_g, carbos: ia.carbos_g, grasas: ia.grasas_g, extraAceite: extra, demo: ia.demo, miniatura: mini };
     guardarEstado({ perfil, resultado: res, xp: 15 });
     track('chequeo_respondido', { aceite, voz: porVoz });
     ir('plan');

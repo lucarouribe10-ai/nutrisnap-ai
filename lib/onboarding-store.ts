@@ -9,6 +9,7 @@ export interface ResultadoFoto {
   grasas: number;
   extraAceite: number; // kcal agregadas por el chequeo (0 si "Nada")
   demo: boolean;
+  miniatura?: string; // foto reducida (≈112 px) o ruta de la foto de ejemplo; la foto original nunca se guarda
 }
 export interface EstadoOnboarding {
   perfil: Perfil;
