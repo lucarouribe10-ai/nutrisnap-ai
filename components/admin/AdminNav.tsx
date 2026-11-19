@@ -1,22 +1,31 @@
 'use client';
 
+import { useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 const PESTANAS = [
-  { href: '/admin', texto: 'Resumen', lista: true },
-  { href: '/admin/usuarios', texto: 'Usuarios', lista: true },
-  { href: '/admin/salud', texto: 'Salud', lista: true },
-  { href: '/admin/uso', texto: 'Uso', lista: true },
-  { href: '/admin/ia', texto: 'Costo de IA', lista: true },
+  { href: '/admin', texto: 'Resumen' },
+  { href: '/admin/usuarios', texto: 'Usuarios' },
+  { href: '/admin/salud', texto: 'Salud' },
+  { href: '/admin/uso', texto: 'Uso' },
+  { href: '/admin/ia', texto: 'Costo de IA' },
 ] as const;
 
-/** Barra de pestañas del panel. Solo aparecen las secciones ya construidas: cada fase suma la suya (nada que parezca botón y no haga nada). */
-export function AdminNav() {
-  const ruta = usePathname();
+/** Barra de pestañas del panel. Solo aparecen las secciones ya construidas. En el celular la pestaña activa se centra sola y el borde derecho se difumina para indicar que hay más. */
+export function AdminNav({ rutaForzada }: { rutaForzada?: string } = {}) {
+  const real = usePathname();
+  const ruta = rutaForzada ?? real;
+  const caja = useRef<HTMLElement>(null);
+  useEffect(() => {
+    const el = caja.current;
+    const activa = el?.querySelector('[aria-current="page"]') as HTMLElement | null;
+    if (!el || !activa) return;
+    el.scrollTo({ left: Math.max(0, activa.offsetLeft - (el.clientWidth - activa.offsetWidth) / 2), behavior: 'auto' });
+  }, [ruta]);
   return (
-    <nav aria-label="Secciones del panel" className="-mx-5 overflow-x-auto px-5 pb-1 [scrollbar-width:none]">
-      <ul className="flex w-max gap-2">
+    <nav ref={caja} aria-label="Secciones del panel" className="-mx-5 overflow-x-auto px-5 pb-1 [mask-image:linear-gradient(to_right,black_calc(100%-24px),transparent)] [scrollbar-width:none] md:[mask-image:none]">
+      <ul className="flex w-max gap-2 pr-6">
         {PESTANAS.map((p) => {
           const activa = p.href === '/admin' ? ruta === '/admin' : ruta.startsWith(p.href);
           return (

@@ -1,87 +1,89 @@
-# VEREDICTO revisor-visual — Panel de administración, fase 2 (Resumen, Salud, Uso, Costo de IA)
-Fecha: 2026-11-18 00:00
-Alcance: herramienta interna del dueño (no vende: Copy N-A). Capturas de ESCRITORIO, NO hay captura a 375px de ninguna de las cuatro; todo lo móvil se juzgó solo por código (certeza baja). Gate: >=36/40 y >=16/20.
-Nota: la captura del Resumen está desactualizada respecto al código (muestra «Cuando esté lista la pestaña Salud verás…» y no muestra el enlace «Ver en Salud» que el código ya tiene). Hay que recapturar.
-Nota: las capturas miden ~1634-1714 px de ancho y el contenido ocupa casi todo, aunque el código limita a 960px; no parece un viewport real de 1440. Recapturar a 1440 y a 375.
+# VEREDICTO revisor-visual — Panel de administración, fase 2 (Resumen, Salud, Uso, Costo de IA) — SEGUNDA PASADA
+Fecha: 2026-11-18 12:00
+Alcance: herramienta interna de la dueña (no vende: Copy N-A; sin referencia visual). Capturas a 375 y 1440 px, vacío y lleno, con datos de ejemplo. Gate: >=36/40 y >=16/20 por pantalla.
+Fidelidad a FICHA-ARTE v3: paleta (#F5F7F2 / #FEFFFC / lima / durazno / negro píldora), Figtree única, radio 24 y píldoras coinciden. No hay hex directos en components/admin (ya van por tokens; --durazno-tinta añadido). No clona Capítulo ni Umbral. Sin desvío.
+Verificación en código: movimiento (Entrada con stagger, Contar, Barra que se dibuja) con useReducedMotion en las tres; tap con active:scale en pestañas y botones; Ayuda cierra con Escape y al tocar fuera, objetivo táctil 44px; «Marcar como resuelto» ahora tiene estado «Guardando…», aviso de qué pasó, «Deshacer» y mensaje de fallo visible (no pide confirmación previa, pero es reversible: aceptable). NO verificable en pantalla: los estados «resuelto/deshacer/fallo» no están capturados.
+Nota de captura: Salud-lleno muestra «1 avisos de Hotmart» y Uso-lleno muestra «2190 con foto» sin separador, aunque el código actual ya pluraliza bien y usa el formateador. Parecen capturas anteriores a la última edición de SaludVista/UsoVista: recapturar. Lo que se ve se califica como se ve.
+
+## RESOLUCIÓN DE DEFECTOS DE LA PRIMERA PASADA
+Resumen: 1 resuelto (aviso con conteo y enlace «Ver cuál en Salud»). 2 parcial (ya no menciona Ajustes; pero el héroe sigue siendo un guion corto de 32px, incluso con 41 ventas). 3 resuelto en lo esencial (héroe 44px en «Personas con cuenta»). 4 sin resolver en vacío (tres tiles con «2 2 2»). 5 resuelto (stagger + conteo).
+Salud: 1 resuelto (neutro «Sin problemas conocidos»). 2 resuelto en código (pendiente, deshacer, error visible), sin captura de esos estados. 3 resuelto (chip en las tres tarjetas, misma altura). 4 resuelto (frase clara + mensaje original plegado + tope de 5 con «Ver todos»). 5 parcial (estado con errores capturado; falta capturar el resuelto/fallo).
+Uso: 1 resuelto (pasos en cero plegados en «1 paso más sin nadie»). 2 resuelto (un solo mensaje a 15px). 3 resuelto (píldoras 7·30·90 + rango de fechas real). 4 resuelto (barras se dibujan, HTML válido). 5 resuelto (nombre unificado, «Primera comida registrada», «Vuelven a la app»).
+Costo de IA: 1 resuelto (neutro con 0 llamadas; verde solo con datos). 2 resuelto (una tarjeta vacía en vez de cuatro). 3 resuelto en lo visible. 4 resuelto (íconos únicos, chip en todas). 5 resuelto (viejo a nuevo, barras animadas).
 
 ---
 
 ## Pantalla: Resumen
-Screenshot: docs/revisiones/admin-resumen-1440.png
-Usabilidad: 27/40
-Craft: 11/20
+Screenshot: docs/revisiones/admin-resumen-lleno-375.png (+ vacio-375, lleno/vacio-1440)
+Usabilidad: 29/40
+Craft: 14/20
 Copy (si vende): N-A
 Fidelidad (si hubo referencia): N-A
 Veredicto: NO LISTA
-Detalle usabilidad: h1:2 h2:3 h3:3 h4:3 h5:3 h6:3 h7:2 h8:3 h9:2 h10:3
-Detalle craft: jerarquía:2 profundidad:3 identidad:2 movimiento:1 encaje:3
+Detalle usabilidad: h1:3 h2:3 h3:3 h4:2 h5:3 h6:3 h7:3 h8:3 h9:3 h10:3
+Detalle craft: jerarquía:3 profundidad:3 identidad:3 movimiento:2 encaje:3
 Top defectos:
-1. [Aviso peach superior] «Alguien pudo chocar con un problema en la app» es vago y la captura no tiene enlace a Salud (el código sí; recapturar). Fix: «1 error sin resolver: ver cuál» con el enlace visible.
-2. [Tarjeta «Ganancia real de este mes»] La métrica más importante es una frase de 15px sin héroe, y el texto en código remite a «la pestaña Ajustes de la próxima fase», que no existe (jerga del constructor). Fix: héroe «—» o «$0» a 44px con una línea y quitar la mención a Ajustes.
-3. [Todo el cuerpo] 3 de 5 tarjetas son «Sin datos» idénticas y el héroe 32px apenas supera al título 28px: nada manda. Fix: héroe 44-48px en «Personas con cuenta» y agrupar las tarjetas vacías en un bloque «Aún sin datos: se llenan cuando…».
-4. [Personas con cuenta] «2» héroe repetido en el chip «2 nuevas 7 días»; y no cuadra con Uso (activas 30 días = 1 aquí, «abrieron la app 30 días = 0» allá) sin explicación. Fix: unificar la definición de «activa» o rotular la diferencia.
-5. [Movimiento] Solo el aviso entra con fade; las tarjetas no escalonan, el número no cuenta. Fix: envolver cada Tarjeta en Entrada con i incremental y contar el héroe.
+1. [Tarjeta «Ganancia real de este mes», lleno] Tres formatos de dinero juntos: «US$ 204,59», «$ 380.000» y «$0.62» (el costo de IA en USD pierde «US$» y usa punto). La dueña no sabe qué moneda es cada «$». Fix: formatear todo con la misma función (moneda explícita: «US$ 0,62», «COP $ 380.000») en lugar de usd() en en-US.
+2. [Héroe «—» de Ganancia real] Con 41 ventas el protagonista de la tarjeta es un guion de 32px que parece roto. Fix: calcular ganancia con lo que haya («Ingresos − IA») marcada como estimada, o un héroe de texto «Aún no se puede calcular» a 22px con el motivo debajo.
+3. [Tarjeta «Personas con cuenta», vacío] Cuatro veces el mismo «2» (héroe + 3 tiles): dato repetido, sin información. Fix: con <5 cuentas ocultar los tiles y dejar «2 personas, ambas nuevas esta semana».
+4. [Movimiento] Solo entrada, conteo del héroe y pestañas con tap; sin transición entre pestañas ni popover de ℹ animado. Fix: fade 200ms del contenido al cambiar de pestaña y entrada suave del popover.
+5. [Navegación 375px] La pestaña «Costo de IA» queda fuera de vista cuando Resumen está activa (solo la sugiere el difuminado). Fix: dejar asomar medio chip o reducir el padding de píldora a 14px para que quepan 4,5.
 
 ---
 
 ## Pantalla: Salud
-Screenshot: docs/revisiones/admin-salud-1440.png
-Usabilidad: 25/40
-Craft: 10/20
+Screenshot: docs/revisiones/admin-salud-lleno-375.png (+ vacio-375, lleno/vacio-1440)
+Usabilidad: 29/40
+Craft: 13/20
 Copy (si vende): N-A
 Fidelidad (si hubo referencia): N-A
 Veredicto: NO LISTA
-Detalle usabilidad: h1:2 h2:3 h3:2 h4:3 h5:2 h6:3 h7:2 h8:3 h9:2 h10:3
-Detalle craft: jerarquía:2 profundidad:3 identidad:2 movimiento:1 encaje:2
+Detalle usabilidad: h1:3 h2:3 h3:3 h4:3 h5:3 h6:3 h7:3 h8:3 h9:2 h10:3
+Detalle craft: jerarquía:2 profundidad:3 identidad:3 movimiento:2 encaje:3
 Top defectos:
-1. [Banner verde «Todo en orden»] Dice todo bien mientras Hotmart no está conectado y las diferencias de cobro no se pueden medir: tranquilidad falsa para el dueño. Fix: estado neutro «Sin problemas conocidos; falta conectar Hotmart» (gris/lima suave con ícono distinto).
-2. [Botón «Marcar como resuelto», solo visible en código] Cierra de golpe TODOS los errores con ese mensaje, sin confirmar, sin feedback de envío, sin deshacer ni reabrir, y si falla solo hace console.error (silencioso). Fix: estado pendiente (useFormStatus), aviso «Marcados N como resueltos · Deshacer» y mensaje visible si falla.
-3. [Tarjeta «Diferencias de cobro»] No tiene chip de ícono: el título queda más cerca del texto (58px vs 76px de las otras) y la tarjeta se ve de otra familia. Fix: darle ícono (Scale/Receipt) o reservar la misma altura de cabecera.
-4. [Lista de errores, solo código] Muestra `e.mensaje` crudo (puede ser técnico) bajo un subtítulo que promete «lenguaje claro», y sin límite de elementos (con 2000 filas, lista sin tope). Fix: traducir mensajes conocidos y mostrar los 5 primeros con «Ver todos».
-5. [Estado de error] La captura solo muestra el estado resuelto: el estado con errores no está verificado visualmente. Fix: capturarlo con un error de ejemplo.
+1. [Aviso naranja + tarjeta «Conexión con Hotmart», lleno] «1 avisos de Hotmart con problema» (gramática, ver nota de captura) y el problema no dice cuál es ni qué hacer; la tarjeta de Hotmart lo repite en texto plano sin tono de atención. Fix: tarjeta Hotmart con borde/chip durazno y frase «Hacer: revisar el aviso en Hotmart → Herramientas → Notificaciones» o enlace a ayuda.
+2. [Tres bloques de error] Tres cajas grises idénticas, cada una con su botón con borde negro de 2px: pesa lo mismo el error repetido 7 veces que el de 1 vez; ninguna jerarquía. Fix: poner la cantidad («7 veces») como dato destacado a la derecha y ordenar/teñir en durazno solo el más frecuente.
+3. [Tarjeta de errores, código] El estado «Marcado como resuelto · Deshacer» y el de fallo no están capturados; además marcarResuelto solo revalida '/admin' (no '/admin/salud'), así que el aviso de arriba «10 errores sin resolver» puede quedar desactualizado tras resolver. Fix: revalidatePath('/admin/salud') y capturar los dos estados.
+4. [Jerarquía de pantalla] Sin héroe ni protagonista: título 28px y títulos de tarjeta de 12px en mayúsculas, todo pesa lo mismo. Fix: mostrar el número de errores abiertos como héroe 44px en la tarjeta de errores.
+5. [Texto] «servidor» y «Pantalla desconocida» son lenguaje de ingeniero para la dueña. Fix: «Se cortó la conexión de internet de la persona» y «Pantalla sin nombre».
 
 ---
 
 ## Pantalla: Uso
-Screenshot: docs/revisiones/admin-uso-1440.png
-Usabilidad: 27/40
-Craft: 11/20
+Screenshot: docs/revisiones/admin-uso-lleno-375.png (+ vacio-375, lleno/vacio-1440)
+Usabilidad: 30/40
+Craft: 14/20
 Copy (si vende): N-A
 Fidelidad (si hubo referencia): N-A
 Veredicto: NO LISTA
-Detalle usabilidad: h1:2 h2:3 h3:3 h4:3 h5:3 h6:3 h7:2 h8:2 h9:3 h10:3
-Detalle craft: jerarquía:2 profundidad:3 identidad:2 movimiento:2 encaje:2
+Detalle usabilidad: h1:3 h2:3 h3:3 h4:3 h5:3 h6:3 h7:3 h8:3 h9:3 h10:3
+Detalle craft: jerarquía:3 profundidad:3 identidad:3 movimiento:3 encaje:2
 Top defectos:
-1. [Recorrido de venta] 8 filas de las cuales 6 son «0 0%» con barra vacía: ruido, y «0» + «0%» juntos es redundante. Fix: mostrar solo la tasa de paso al siguiente escalón y plegar los escalones en cero.
-2. [Retención] Tres tiles idénticos con «Sin datos: nadie cumple aún ese día» a 11px (bajo contraste/legibilidad) y «—» como héroe. Fix: un solo mensaje «Sin datos todavía: se llena cuando alguien cumpla 1 día» a 14px.
-3. [Navegación del período] «Últimos 30 días» fijo, sin selector 7/30/90 ni fechas reales (regla de vistas temporales). Fix: píldoras 7·30·90 con rango de fechas visible.
-4. [Código del embudo] `<ol>` contiene `<div>` (Entrada) antes del `<li>`: HTML inválido que rompe la semántica de lista; además las barras no se dibujan (ancho estático) ni cuentan los números. Fix: animar el ancho de la barra de 0 al valor y mover la animación dentro del `<li>`.
-5. [Vocabulario] «Chequeo de aceite» en el embudo vs «Chequeo de Grasas Ocultas» en la ayuda; «Activación» y «Retención» son jerga de producto para una dueña no técnica. Fix: unificar el nombre y renombrar a «Primera comida registrada» / «Vuelven a la app».
+1. [Recorrido de venta, lleno 375] La primera barra ocupa todo el ancho y las demás son más cortas porque reservan 80px para «% pasó»: 410 de 940 se ve como ~44% de una pista más corta. La escala miente. Fix: reservar siempre el espacio de la columna «% pasó» (también en la 1.ª fila) para que todas las pistas midan igual.
+2. [Gate de carga] El embudo muestra 7 pasos seguidos (límite 4-5) más 4 tarjetas: sobrecarga leve. Fix: agrupar en 3 etapas (Descubren · Deciden · Entran) con el detalle plegado.
+3. [Comidas registradas, lleno] «2190 con foto» sin separador junto al héroe «2.814» (ver nota de captura: el código ya lo corrige). Fix: recapturar y confirmar.
+4. [Vacío, Vuelven a la app] Sigue mostrando la línea «Personas que abrieron la app: hoy 1 · 7 días 2 · 30 días 2» bajo un «Todavía no hay datos», y choca con «entraron en 7 días» del Resumen sin que se aclare. Fix: mover esa línea a su propia tarjeta «Abrieron la app» o unificar el término con el Resumen.
+5. [Movimiento] Barras y conteo bien; faltan transición entre períodos (los números saltan al cambiar 7/30/90) y feedback inmediato al tocar la píldora. Fix: estado pendiente en la píldora (useTransition) mientras carga el nuevo período.
 
 ---
 
 ## Pantalla: Costo de IA
-Screenshot: docs/revisiones/admin-ia-1440.png
-Usabilidad: 25/40
-Craft: 10/20
+Screenshot: docs/revisiones/admin-ia-lleno-375.png (+ vacio-375, lleno/vacio-1440)
+Usabilidad: 29/40
+Craft: 14/20
 Copy (si vende): N-A
 Fidelidad (si hubo referencia): N-A
 Veredicto: NO LISTA
-Detalle usabilidad: h1:2 h2:2 h3:3 h4:2 h5:3 h6:3 h7:2 h8:2 h9:3 h10:3
-Detalle craft: jerarquía:2 profundidad:3 identidad:2 movimiento:1 encaje:2
+Detalle usabilidad: h1:3 h2:3 h3:3 h4:2 h5:3 h6:3 h7:3 h8:3 h9:3 h10:3
+Detalle craft: jerarquía:3 profundidad:3 identidad:3 movimiento:3 encaje:2
 Top defectos:
-1. [Banner verde «El gasto de IA está en orden»] Aparece con CERO llamadas medidas: un verde afirmativo sin datos que lo respalden, contrario a la regla de no inventar. Fix: estado neutro «Aún no hay gasto que evaluar» cuando delMes.length === 0.
-2. [Cuatro tarjetas «Sin datos»] Costo del mes, Costo de hoy, Llamadas y Rapidez dicen casi lo mismo y ocupan la mitad de la pantalla. Fix: un único bloque vacío que explique «se llena al activar la clave de producción» y mostrar las 4 métricas solo con datos.
-3. [Jerga] «con tokens reales», «precio del modelo», «clave de producción»: lenguaje de ingeniero para la dueña. Fix: «Cuánto cuesta analizar las fotos» y «Falta activar la IA real» / «Falta anotar el precio de la IA».
-4. [Iconos y cabeceras] El mismo ícono Cpu en «Costo del mes» y «Llamadas del mes»; «Últimos 14 días» sin chip (espaciado distinto). Fix: íconos únicos (Wallet, Phone-call/Hash, Gauge, Timer) y chip en todas las tarjetas.
-5. [Gráfico de 14 días, solo código] 14 filas de barras negras con barra de ancho estático, orden del más nuevo al más viejo (al revés de lo habitual en gráficos temporales) y sin animación de dibujo. Fix: ordenar de más viejo a más nuevo y animar el ancho.
+1. [Tarjetas «Costo del mes» y «Costo de hoy»] En la misma pantalla: «US$0,62» (coma, con US$) y «$0.02» (punto, sin US$), «0.8%» con punto vs «1,2 s» con coma. Dos convenciones numéricas y monetarias mezcladas. Fix: una sola función de formato es-CO con «US$» y coma decimal en todo (hero, filas de 14 días, Resumen).
+2. [Cuadrícula 1440] «Costo de hoy» y «Rapidez» son más bajas que su vecina: alturas desiguales y huecos bajo ellas. Fix: grid con items-stretch y altura igual (h-full en Entrada/Tarjeta).
+3. [Vacío, tarjeta «Cuánto cuesta analizar las fotos», 375] El título largo envuelve a 2 líneas y el ℹ queda huérfano en una 3.ª línea. Fix: acortar a «Costo de las fotos» o poner el chip y el ℹ en la misma línea que la primera palabra.
+4. [Últimos 14 días] Dos filas «0 · —» con barra vacía y costos con precisión cambiante («$0.0021», «$0.02», «$0.04»): ruido y cifras no comparables. Fix: plegar los días vacíos y usar siempre 2-3 decimales en la columna de costo.
+5. [Aviso verde] Con 1.840 fotos y 12 fallos (1%) dice «en orden» sin mirar los fallos; fix: pasar a atención si fallidas/llamadas > 5% y decir qué hacer.
 
 ---
 
-## Defectos comunes (las 4)
-- Banners verdes «todo en orden» sin datos que los respalden (Salud, IA; Resumen igual con «este mes»/«esta semana» incoherente).
-- Jerarquía plana: héroe 32px ≈ h1 28px, las métricas clave son frases, todas las tarjetas pesan igual y hay muchos «Sin datos» repetidos; falta un protagonista por pantalla.
-- Movimiento casi nulo: solo aviso/embudo hacen fade; no hay conteo de números, ni barras que se dibujan, ni transición de pestañas.
-- Móvil sin verificar: la barra de pestañas (5 píldoras, ~475px) hace scroll horizontal oculto sin indicio y la pestaña activa «Costo de IA» puede quedar fuera de vista en 375px; el menú ℹ de 40px (<44) cambia el layout al abrir y no cierra con Escape ni fuera.
-- Fidelidad a FICHA-ARTE v3: paleta (#F5F7F2/#FEFFFC/lima/durazno/negro píldora), radios 24 y Figtree coinciden; desvío menor: hex directos (#A83D06, #8A3A06) en componentes en vez de tokens. Tampoco clona Capítulo ni Umbral.
-- Sin pestaña ni selector de período ni fechas reales en Resumen/Uso/IA.
+## Resumen del gate
+Ninguna de las cuatro pestañas llega a 36/40 ni a 16/20: todas NO LISTA. Mejora fuerte respecto a la primera pasada (25-27 a 29-30 en usabilidad; 10-11 a 13-14 en craft). Los bloqueos que quedan son de consistencia de formato (dinero/decimales), jerarquía de Salud, escala del embudo, alturas de la cuadrícula y movimiento (sin transición de pestañas). Recapturar Salud-lleno y Uso-lleno tras la última edición, y capturar los estados resuelto/deshacer/fallo.
