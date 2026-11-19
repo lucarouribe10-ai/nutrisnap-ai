@@ -167,6 +167,7 @@ export function Registrar() {
             {foto && <img src={foto} alt={ia.plato} width={176} height={176} className="mx-auto size-44 rounded-full border-[6px] border-white object-cover shadow-[0_22px_34px_-14px_rgb(21_25_26/.55)]" />}
             <p className="mt-4 text-[22px] font-extrabold leading-tight tracking-[-0.02em] [font-family:var(--font-display)]">{ia.plato}</p>
             <p className="mt-0.5 text-[14px] font-semibold text-[var(--accent)]">{ia.demo ? 'Ejemplo ilustrativo (estimado)' : 'Estimado con margen de error'}</p>
+            <p className="mt-1 text-[13px] text-[var(--text-secondary)]">Calculado por IA. No es consejo médico. <a href="/aviso-ia" target="_blank" rel="noopener" className="underline underline-offset-4">Más información</a></p>
           </div>
           <ul className="-mt-4 mb-3 grid grid-cols-3 gap-2 px-1" aria-label="Macros de este plato">
             {[['Proteína', ia.proteina_g, 'var(--lima-2)'], ['Carbos', ia.carbos_g, '#BCE0F2'], ['Grasas', ia.grasas_g, '#FFD3A3']].map(([n, v, f]) => (

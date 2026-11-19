@@ -17,6 +17,7 @@ import { CtaFinal } from '@/components/landing/CtaFinal';
 import { FooterLegal } from '@/components/landing/FooterLegal';
 import { StickyCtaMobile } from '@/components/landing/ui';
 import { ChequeoDemo } from '@/components/landing/ChequeoDemo';
+import { RESPONSABLE } from '@/lib/legal';
 
 // Modelo 2 (onboarding-first, aprobado en Sesión 1): el CTA va a /onboarding, no al checkout.
 const CTA_HREF = '/onboarding';
@@ -178,6 +179,7 @@ export default function Page() {
         appName="NutriSnap AI"
         logo={<Isotipo size={20} />}
         anio={2026}
+        soporteEmail={RESPONSABLE.correo}
         enlaces={[
           { label: 'Privacidad', href: '/privacidad' },
           { label: 'Términos y Condiciones', href: '/terminos' },

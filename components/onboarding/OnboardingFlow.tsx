@@ -421,7 +421,7 @@ export function OnboardingFlow() {
                   {foto && <img src={foto.url} alt={ia.plato} width={72} height={72} className="size-[72px] rounded-full border-[3px] border-white object-cover shadow-[0_4px_10px_-4px_rgb(36_43_36/.35)]" />}
                   <div>
                     <p className="text-[16px] font-bold">{ia.plato}</p>
-                    <p className="text-[13px] text-[var(--text-secondary)]">{ia.demo ? 'Ejemplo ilustrativo (estimado)' : 'Estimado con margen de error'}</p>
+                    <p className="text-[13px] text-[var(--text-secondary)]">{ia.demo ? 'Ejemplo ilustrativo (estimado)' : 'Estimado con margen de error'} · Calculado por IA, no es consejo médico. <a href="/aviso-ia" target="_blank" rel="noopener" className="underline underline-offset-4">Más info</a></p>
                   </div>
                 </div>
                 <div className="panel-campo mt-3 rounded-[var(--radius-card)] p-4">

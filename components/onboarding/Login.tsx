@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { motion, useReducedMotion } from 'motion/react';
 import { Loader2, MailCheck, ShieldCheck } from 'lucide-react';
 import { BotonPrimario, EASE } from './ui';
+import { CasillaAutorizacion } from './Consentimiento';
 import { Isotipo } from '@/components/landing/Isotipo';
 import { track } from '@/lib/eventos';
 import { createClient } from '@/lib/supabase/client';
@@ -30,6 +31,7 @@ export function Login() {
   const [paso, setPaso] = useState<Paso>('correo');
   const [email, setEmail] = useState('');
   const [codigo, setCodigo] = useState('');
+  const [autoriza, setAutoriza] = useState(false);
   const [ocupado, setOcupado] = useState(false);
   const [error, setError] = useState<string | null>(params.get('error') === 'enlace' ? 'Ese enlace ya se usó o venció. Pide un código nuevo.' : null);
   const [espera, setEspera] = useState(0);
@@ -44,7 +46,7 @@ export function Login() {
   }, [espera]);
 
   const pedirCodigo = async () => {
-    if (!valido || enviando.current) return;
+    if (!valido || !autoriza || enviando.current) return;
     enviando.current = true;
     setOcupado(true);
     setError(null);
@@ -83,6 +85,8 @@ export function Login() {
         setCodigo('');
       } else {
         track('login_exitoso');
+        // La autorización se registra ya con la cuenta verificada. Si fallara, la puerta de la app la vuelve a pedir.
+        await fetch('/api/consentimiento', { method: 'POST' }).catch(() => undefined);
         router.replace(destino);
         router.refresh();
         return;
@@ -114,7 +118,8 @@ export function Login() {
               <input type="email" inputMode="email" autoComplete="email" autoFocus value={email} onChange={(e) => { setEmail(e.target.value); if (error) setError(null); }} placeholder="tu@correo.com" className="mt-1 h-14 w-full rounded-[var(--radius-card)] border border-[color-mix(in_oklab,var(--text-secondary)_28%,transparent)] bg-[var(--surface)] px-4 text-[17px] outline-none focus:border-[var(--accent)]" />
             </label>
             {error && <p role="alert" className="text-[14px] font-medium text-[var(--accent-2)]">{error}</p>}
-            <BotonPrimario type="submit" disabled={!valido || ocupado}>
+            <CasillaAutorizacion marcada={autoriza} onCambio={setAutoriza} />
+            <BotonPrimario type="submit" disabled={!valido || !autoriza || ocupado}>
               {ocupado ? <><Loader2 size={18} className="animate-spin" aria-hidden="true" /> Enviando…</> : 'Enviarme mi código'}
             </BotonPrimario>
           </motion.form>
