@@ -8,7 +8,8 @@ import { ArrowRight, Camera, Check, Droplet, Mic, ShieldCheck, X } from 'lucide-
 import { BotonPrimario, EASE, PieFijo } from './ui';
 import { calcularPlan, DOLORES, ETIQUETA_OBJETIVO, fechaMeta, perfilCompleto, type Plan } from '@/lib/plan';
 import { leerEstado, type EstadoOnboarding } from '@/lib/onboarding-store';
-import { track } from '@/lib/eventos';
+import { sesionAnonima, track } from '@/lib/eventos';
+import { urlDePago, VENTA_ACTIVA } from '@/lib/hotmart';
 
 type Elegido = 'anual' | 'mensual';
 const fecha = (d: Date) => new Intl.DateTimeFormat('es-CO', { day: 'numeric', month: 'long' }).format(d);
@@ -73,7 +74,8 @@ export function Paywall() {
     setErrorNav(false);
     try {
       track('checkout_iniciado', { plan: elegido });
-      router.push(`/entrar?plan=${elegido}`);
+      if (VENTA_ACTIVA) window.location.assign(urlDePago(elegido, sesionAnonima()));
+      else router.push(`/entrar?plan=${elegido}`);
       // Si la siguiente pantalla no abre en 10 s, el botón vuelve a quedar disponible y se avisa (nunca se queda atenuado sin salida).
       temporizador.current = setTimeout(() => { setEnviando(false); setErrorNav(true); }, 10_000);
     } catch {

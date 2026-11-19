@@ -53,7 +53,7 @@ await p.waitForURL('**/paywall', { timeout: 12000 });
 await p.waitForTimeout(1500);
 await shot('09-paywall');
 await p.screenshot({ path: `${out}/09-paywall-completo.png`, fullPage: true });
-await p.getByRole('button', { name: /Empezar mis 3 días gratis/ }).click();
+await p.getByRole('button', { name: /Empezar mis 7 días gratis/ }).click();
 await p.waitForURL('**/entrar**');
 await p.waitForTimeout(600);
 await shot('10-login');
