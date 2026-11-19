@@ -53,6 +53,7 @@ export function Registrar() {
     try {
       const r = await fetch('/api/analizar', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ imagen, demo, nota: (notaUsar ?? nota).trim() || undefined }) });
       if (!r.ok) throw new Error('ia');
+      if (r.status === 402) { setErrorTexto('Tu plan de pago no está activo. Actívalo para analizar fotos con IA; mientras tanto puedes usar el registro rápido.'); setPaso('error'); return; }
       if (r.status === 429) { setErrorTexto('Ya usaste tus 8 fotos de hoy. Mañana se renuevan; mientras tanto puedes registrar con el registro rápido.'); setPaso('error'); return; }
       const data = (await r.json()) as IA;
       if (!data.kcal || data.kcal <= 0) { setPaso('error'); return; }
@@ -154,7 +155,7 @@ export function Registrar() {
 
       {paso === 'error' && (
         <div className="px-5 pt-12 text-center">
-          <p className="text-[24px] font-extrabold leading-tight [font-family:var(--font-display)]">{errorTexto ? 'Llegaste al máximo de hoy' : 'No pudimos analizar esa foto'}</p>
+          <p className="text-[24px] font-extrabold leading-tight [font-family:var(--font-display)]">{errorTexto ? (errorTexto.startsWith('Tu plan') ? 'Falta activar tu plan' : 'Llegaste al máximo de hoy') : 'No pudimos analizar esa foto'}</p>
           <p className="mx-auto mt-2 max-w-[320px] text-[15px] text-[var(--text-secondary)]">{errorTexto ?? 'Prueba con otra foto donde se vea el plato completo y con buena luz, o usa el registro rápido.'}</p>
           <div className="mt-8 flex flex-col gap-3"><BotonPrimario onClick={() => { setErrorTexto(null); setPaso('elegir'); }}>{errorTexto ? 'Volver' : 'Probar otra foto'}</BotonPrimario><button type="button" onClick={() => setPaso('rapido')} className="min-h-12 text-[15px] font-semibold text-[var(--accent)] underline underline-offset-4">Usar el registro rápido</button></div>
         </div>

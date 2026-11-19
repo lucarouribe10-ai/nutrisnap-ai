@@ -17,3 +17,11 @@ export function urlDePago(plan: 'mensual' | 'anual', sck?: string): string {
   if (sck) u.searchParams.set('sck', sck.slice(0, 64));
   return u.toString();
 }
+
+/** Código de oferta de Hotmart → plan. Lista cerrada (allowlist): una oferta que no esté aquí NO da acceso. */
+export const OFERTAS: Record<string, 'mensual' | 'anual'> = {
+  nqzy8nwo: 'mensual',
+  fv0tec1c: 'anual',
+};
+/** ID del producto en Hotmart (de ahí vienen los avisos). Se puede sobreescribir con HOTMART_PRODUCT_IDS (separados por coma). */
+export const PRODUCTO_ID_POR_DEFECTO = '9016066';

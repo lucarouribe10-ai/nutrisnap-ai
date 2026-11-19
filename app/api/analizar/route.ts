@@ -5,6 +5,8 @@ import { z } from 'zod';
 import { createHash } from 'node:crypto';
 import { adminDisponible, createAdminClient } from '@/lib/supabase/admin';
 import { createClient } from '@/lib/supabase/server';
+import { VENTA_ACTIVA } from '@/lib/hotmart';
+import { accesoVigente } from '@/lib/hotmart-eventos';
 
 
 const Salida = z.object({
@@ -141,6 +143,11 @@ export async function POST(req: Request) {
   if (!m || m[2].length > 2_500_000) return NextResponse.json({ error: 'imagen_invalida' }, { status: 400 });
 
   const quien = await identidad(req);
+  // Con la venta encendida, la foto con IA es del plan de pago: se verifica EN EL SERVIDOR (nunca solo escondiendo botones).
+  if (VENTA_ACTIVA && quien.userId) {
+    const { data: permiso } = await createAdminClient().from('entitlements').select('plan,estado,renueva_el').eq('user_id', quien.userId).maybeSingle();
+    if (!accesoVigente(permiso)) return NextResponse.json({ error: 'plan_requerido' }, { status: 402 });
+  }
   const tope = await superaCupo(quien);
   if (tope === 'usuario') return NextResponse.json({ error: 'limite_diario' }, { status: 429 });
   if (tope !== null) return NextResponse.json({ ...DEMO, limite: true }); // visitante o tope global: resultado de ejemplo, honesto (demo:true)
