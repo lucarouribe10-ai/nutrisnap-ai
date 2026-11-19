@@ -43,3 +43,6 @@ next-env.d.ts
 # Fotos privadas de prueba de la IA
 pruebas-fotos/
 .tsbuildinfo-hook
+
+# Informes internos (seguridad): NUNCA al repositorio
+docs/privado/

@@ -3,7 +3,7 @@
 import { z } from 'zod';
 import { adminDisponible, createAdminClient } from '@/lib/supabase/admin';
 import { createClient } from '@/lib/supabase/server';
-import { ipDe, limitado } from '@/lib/servidor/limite';
+import { ipDe, limitado, mismoOrigen } from '@/lib/servidor/limite';
 
 const Cuerpo = z.object({
   tipo: z.string().regex(/^[a-z][a-z0-9_]{2,59}$/),
@@ -13,6 +13,7 @@ const Cuerpo = z.object({
 });
 
 export async function POST(req: Request) {
+  if (!mismoOrigen(req)) return new Response(null, { status: 403 });
   if (limitado(`ev:${ipDe(req)}`, 120, 60_000)) return new Response(null, { status: 429 });
   const crudo = await req.text();
   if (crudo.length > 4000) return new Response(null, { status: 413 });
