@@ -14,7 +14,7 @@ export const TEXTO_AUTORIZACION = 'Autorizo el tratamiento de mis datos personal
 export const RESPONSABLE = {
   nombre: 'Luisa',
   pais: 'Colombia',
-  correo: 'lucarouribe10@gmail.com',
+  correo: 'soporte.nutrisnap@gmail.com',
   producto: 'NutriSnap AI',
   actualizacion: '18 de noviembre de 2026',
 } as const;
