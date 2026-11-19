@@ -112,16 +112,16 @@ export default function Page() {
       />
 
       <Oferta
-        tituloMarked="Empieza gratis. Sigue por [acento]US$4.17 al mes[/acento]"
+        tituloMarked="Empieza gratis. Sigue por [acento]US$7.50 al mes[/acento]"
         trialDias={3}
         aviso="Acceso anticipado: estamos terminando la app y estás entre los primeros en probarla."
         anual={{
           nombre: 'Anual',
-          badge: 'MEJOR PRECIO',
-          precioMes: 'US$4.17',
-          totalAnual: 'Se cobra US$49.99 una vez al año',
-          ahorro: 'Casi 6 meses gratis',
-          descomposicionDia: 'menos de US$0.14 al día',
+          badge: '3 MESES GRATIS',
+          precioMes: 'US$7.50',
+          totalAnual: 'Se cobra US$89.99 una vez al año',
+          ahorro: 'Pagas 9 meses y usas 12',
+          descomposicionDia: 'menos de US$0.25 al día',
           ctaLabel: CTA_LABEL,
           ctaHref: '/onboarding?plan=anual',
           notaCta: 'Aviso 1 día antes de cobrar · Reembolso de 7 días',
@@ -134,7 +134,7 @@ export default function Page() {
         }}
         mensual={{
           nombre: 'Mensual',
-          precioMes: 'US$7.99',
+          precioMes: 'US$9.99',
           ctaLabel: 'Probar mi primera foto gratis',
           ctaHref: '/onboarding?plan=mensual',
           notaCta: 'Aviso 1 día antes de cobrar · Reembolso de 7 días',

@@ -26,7 +26,7 @@ export default function Page() {
           cuerpo: (
             <Lista items={[
               'Plan gratuito: incluye el escáner de códigos de barras, sin límite de tiempo.',
-              'Plan de pago: incluye fotos con el Chequeo de Grasas Ocultas (hasta 8 por día), corrección por voz, puntos, logros y tu camino a la meta. Precios de lanzamiento: US$7.99 al mes o US$49.99 al año.',
+              'Plan de pago: incluye fotos con el Chequeo de Grasas Ocultas (hasta 8 por día), corrección por voz, puntos, logros y tu camino a la meta. Precios de lanzamiento: US$9.99 al mes o US$89.99 al año.',
               'Los cobros los procesa Hotmart. El valor final en tu moneda puede variar según tu banco o el tipo de cambio.',
             ]} />
           ),

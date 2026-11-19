@@ -3,7 +3,7 @@
 - MyFitnessPal Premium: US$19.99/mes · US$79.99/año (EE.UU., varias fuentes 2026; verificar en la tienda).
 - Cal AI (ficha App Store, EE.UU.): US$14.99/mes · US$39.99/año · semanal US$4.99 · familiar US$59.99/año. Fuentes de terceros discrepan.
 - Fitia (español/LATAM): precio NO ENCONTRADO — verificar en la app. Trial 3 días SOLO en plan anual (fitia.app/help).
-- Mediana de referencia ≈ US$14.99/mes · ~US$60/año. Nuestro precio propuesto: US$7.99/mes · US$49.99/año (dentro de ±30% en anual; mensual a casi la mitad de Cal AI).
+- Mediana de referencia ≈ US$14.99/mes · ~US$60/año. Nuestro precio (actualizado 2026-11-18): US$9.99/mes · US$89.99/año (3 meses gratis) (dentro de ±30% en anual; mensual a casi la mitad de Cal AI).
 ## 2. Prueba gratis
 - Referencia: Fitia 3 días (solo plan anual; fitia.app/help). Elegida: 3 días en ambos planes (el valor se siente en la primera foto; el reporte semanal no depende de la prueba). Se avisa 1 día antes del cobro, con fecha y monto.
 ## 3. Medios de pago

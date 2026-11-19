@@ -61,7 +61,7 @@ export function Paywall() {
   }
 
   const { perfil } = estado;
-  const monto = elegido === 'anual' ? 'US$49.99' : 'US$7.99';
+  const monto = elegido === 'anual' ? 'US$89.99' : 'US$9.99';
   const periodo = elegido === 'anual' ? 'año' : 'mes';
   const metaFecha = fechaMeta(perfil, plan);
   const freno = perfil.dolor ? DOLORES[perfil.dolor] : null;
@@ -123,8 +123,8 @@ export function Paywall() {
 
       <motion.section {...entrada(4)} aria-label="Elige tu plan" className="mt-6 flex flex-col gap-3" role="radiogroup" onKeyDown={alTeclado}>
         {([
-          ['anual', 'Anual', 'US$49.99 al año', 'US$4.17', 'Ahorras 48%'],
-          ['mensual', 'Mensual', 'Sin compromiso', 'US$7.99', ''],
+          ['anual', 'Anual', 'US$89.99 al año', 'US$7.50', '3 meses gratis'],
+          ['mensual', 'Mensual', 'Sin compromiso', 'US$9.99', ''],
         ] as const).map(([id, nombre, det, precio, badge]) => (
           <motion.button key={id} type="button" whileTap={{ scale: 0.98 }} role="radio" aria-checked={elegido === id} tabIndex={elegido === id ? 0 : -1} onClick={() => setElegido(id)} className={`relative rounded-[var(--radius-card)] border p-4 text-left ${elegido === id ? 'border-2 border-[var(--accent)] bg-[color-mix(in_oklab,var(--accent)_8%,var(--surface))] shadow-[var(--shadow-2)]' : 'border-[color-mix(in_oklab,var(--text-secondary)_55%,transparent)] bg-[var(--surface)]'}`}>
             {badge && <span className="absolute -top-3 left-4 rounded-full bg-[var(--accent)] px-3 py-1 text-[12px] font-bold uppercase tracking-[0.06em] text-[var(--bg)]">{badge}</span>}
